@@ -14,8 +14,9 @@ public class ClienteConexion implements IConexion<Cliente>{
 
     private static final String SQL_INSERT = "INSERT INTO CLIENTES (RUT,NOMBRE,TELEFONO,DIRECCION,TIPO) VALUES (?,?,?,?,?)";
     private static final String SQL_SELECT_ALL = "SELECT * FROM CLIENTES";
-    static final String SQL_BY_ID = "SELECT * FROM CLIENTES WHERE ID = ?";
-
+    private static final String SQL_UPDATE = "UPDATE CLIENTES SET RUT = ?, NOMBRE = ? , TELEFONO = ? , DIRECCION = ?,TIPO=? WHERE ID = ?";
+    private static final String SQL_BY_ID = "SELECT * FROM CLIENTES WHERE ID = ?";
+    private static final String SQL_DELETE = "DELETE FROM CLIENTES WHERE ID = ?";
 
     @Override
     public CustomResponseEntity<Cliente> save(Cliente cliente) {
@@ -49,7 +50,7 @@ public class ClienteConexion implements IConexion<Cliente>{
 
                 }
             }
-            response.setStatus(HttpStatus.OK);
+            response.setStatus(HttpStatus.CREATED);
             response.setBody(cliente);
         }
         return response;
@@ -65,7 +66,7 @@ public class ClienteConexion implements IConexion<Cliente>{
             statement.setInt(1,id);
             ResultSet rs = statement.executeQuery();
             while(rs.next()){
-                c = new Cliente (rs.getBigDecimal(2),rs.getString(3),rs.getBigDecimal(4),rs.getString(5),rs.getString(7));
+                c = new Cliente (0,rs.getBigDecimal(2),rs.getString(3),rs.getBigDecimal(4),rs.getString(5),rs.getString(7));
                 c.setId(rs.getInt(1));
             }
 
@@ -89,12 +90,71 @@ public class ClienteConexion implements IConexion<Cliente>{
 
     @Override
     public CustomResponseEntity<Cliente> update(Cliente cliente) {
-        return null;
+        CustomResponseEntity<Cliente> response = new CustomResponseEntity<>();
+        java.sql.Connection connection = null;
+        try{
+            if(cliente.getId() != -1) {
+                connection = (java.sql.Connection) Conexion.GetConexion();
+                PreparedStatement ps = connection.prepareStatement(SQL_UPDATE);
+                ps.setBigDecimal(1, cliente.getRut());
+                ps.setString(2, cliente.getNombre());
+                ps.setBigDecimal(3, cliente.getNumeroTelefono());
+                ps.setString(4, cliente.getDireccion());
+                ps.setString(5, cliente.getTipo());
+                ps.setInt(6, cliente.getId());
+                ps.execute();
+                response.setStatus(HttpStatus.OK);
+                response.setBody(cliente);
+            }else {
+                response.setStatus(HttpStatus.BAD_REQUEST);
+                response.setMessage("El cliente no se encontro");
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+            response.setStatus(HttpStatus.BAD_REQUEST);
+            response.setMessage("Error en el update");
+        }finally{
+            try{
+                connection.close();
+            }catch(Exception e){
+
+            }
+        }
+        return response;
     }
 
     @Override
     public CustomResponseEntity<Cliente> delete(Integer id) {
-        return null;
+        CustomResponseEntity<Cliente> response = new CustomResponseEntity<>();
+        java.sql.Connection conexion=null;
+        try{
+            if(id!=null) {
+                Cliente cliente = this.findById(id).getBody();
+                if(cliente!=null) {
+                    conexion = (java.sql.Connection) Conexion.GetConexion();
+                    PreparedStatement ps = conexion.prepareStatement(SQL_DELETE);
+                    ps.setInt(1, id);
+                    ps.execute();
+                    response.setStatus(HttpStatus.OK);
+                    response.setBody(cliente);
+                    response.setMessage("Cliente borrado");
+                }
+            }else{
+                response.setStatus(HttpStatus.BAD_REQUEST);
+                response.setMessage("El cliente no se encontro");
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+            response.setStatus(HttpStatus.BAD_REQUEST);
+            response.setMessage("Error en el delete");
+        }finally{
+            try{
+                conexion.close();
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+        }
+        return response;
     }
     @Override
     public CustomResponseEntity<List<Cliente>> findAll() {
@@ -108,7 +168,7 @@ public class ClienteConexion implements IConexion<Cliente>{
             ResultSet rs = statement.executeQuery();
             while(rs.next()){
                 //int id, int rut, String nombre, int numeroTelefono, String direccion
-                c = new Cliente (rs.getBigDecimal(2),rs.getString(3),rs.getBigDecimal(4),rs.getString(5),rs.getString(7));
+                c = new Cliente (0,rs.getBigDecimal(2),rs.getString(3),rs.getBigDecimal(4),rs.getString(5),rs.getString(7));
                 c.setId(rs.getInt(1));
                 Clientes.add(c);
             }

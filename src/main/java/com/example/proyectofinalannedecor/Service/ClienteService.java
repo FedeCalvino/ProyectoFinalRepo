@@ -7,15 +7,31 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 @Service
-public class ClienteService{
+public class ClienteService implements IService<Cliente>{
 
     private static final ClienteConexion ClienteConexion= new ClienteConexion();
 
     public ClienteService() {
     }
 
+    @Override
     public CustomResponseEntity<Cliente> Save(Cliente c){
         return ClienteConexion.save(c);
+    }
+
+    @Override
+    public CustomResponseEntity<Cliente> update(Cliente venta) {
+        return null;
+    }
+
+    @Override
+    public CustomResponseEntity<Cliente> delete(int id) {
+        return null;
+    }
+
+    @Override
+    public CustomResponseEntity<Cliente> findById(int id) {
+        return null;
     }
 
     public CustomResponseEntity<List<Cliente>> findAll(){

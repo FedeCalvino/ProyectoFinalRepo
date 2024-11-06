@@ -13,7 +13,8 @@ public class Cliente {
 
 
 
-    public Cliente( BigDecimal rut,String Nombre, BigDecimal NumeroTelefono, String direccion, String Tipo) {
+    public Cliente(int Id, BigDecimal rut,String Nombre, BigDecimal NumeroTelefono, String direccion, String Tipo) {
+        this.Id = Id;
         this.Nombre = Nombre;
         this.direccion = direccion;
         Rut=rut;

@@ -24,34 +24,32 @@ public class ClienteController implements IController<Cliente>{
     @GetMapping
     @Override
     public CustomResponseEntity<List<Cliente>> findAll() {
-        CustomResponseEntity<List<Cliente>> ClientesResponse = clienteService.findAll();
-        CustomResponseEntity<List<Cliente>> response = new CustomResponseEntity<>();
+        CustomResponseEntity<List<Cliente>> response = clienteService.findAll();
         return response;
     }
 
     @PostMapping
     @Override
     public CustomResponseEntity<Cliente> Save(Cliente cliente) {
-        clienteService.Save(cliente);
-        CustomResponseEntity<Cliente> response = new CustomResponseEntity<>();
-        response.setStatus(HttpStatus.CREATED);
-        response.setMessage("Se ha agregado el registro");
-        response.setBody(cliente);
+        CustomResponseEntity<Cliente> response = clienteService.Save(cliente);
         return response;
     }
 
     @Override
     public CustomResponseEntity<Cliente> update(Cliente cliente) {
-        return null;
+        CustomResponseEntity<Cliente> response = clienteService.update(cliente);
+        return response;
     }
 
     @Override
     public CustomResponseEntity<Cliente> delete(int id) {
-        return null;
+        CustomResponseEntity<Cliente> response = clienteService.delete(id);
+        return response;
     }
 
     @Override
     public CustomResponseEntity<Cliente> findById(int id) {
-        return null;
+        CustomResponseEntity<Cliente> response = clienteService.findById(id);
+        return response;
     }
 }
