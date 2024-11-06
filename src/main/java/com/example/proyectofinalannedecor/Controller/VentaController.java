@@ -1,5 +1,6 @@
 package com.example.proyectofinalannedecor.Controller;
 
+import com.example.proyectofinalannedecor.Clases.Cliente;
 import com.example.proyectofinalannedecor.Clases.Venta;
 import com.example.proyectofinalannedecor.Service.VentaService;
 import org.springframework.http.HttpStatus;
@@ -21,12 +22,15 @@ public class VentaController implements IController<Venta> {
 
     @GetMapping()
     @Override
-    public ResponseEntity<List<Venta>> findAll() {
+    public CustomResponseEntity<List<Venta>> findAll() {
+        CustomResponseEntity<List<Venta>> response = new CustomResponseEntity<>();
         List<Venta> ventas = ventaService.findAll();
         if (ventas.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            response.setStatus(HttpStatus.NO_CONTENT);
+            return response;
         }
-        return new ResponseEntity<>(ventas, HttpStatus.OK);
+        response.setStatus(HttpStatus.OK);
+        return response;
     }
 
 

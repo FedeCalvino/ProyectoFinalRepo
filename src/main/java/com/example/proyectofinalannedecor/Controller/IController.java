@@ -7,7 +7,7 @@ import java.util.List;
     public interface IController<T> {
 
 
-        ResponseEntity<List<T>> findAll();
+        CustomResponseEntity<List<T>> findAll();
 
 
         CustomResponseEntity<T> Save(T venta);

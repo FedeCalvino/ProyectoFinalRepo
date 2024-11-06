@@ -2,6 +2,7 @@ package com.example.proyectofinalannedecor.Service;
 
 import com.example.proyectofinalannedecor.Clases.Cliente;
 import com.example.proyectofinalannedecor.Conexion.ClienteConexion;
+import com.example.proyectofinalannedecor.Controller.CustomResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,11 +14,11 @@ public class ClienteService{
     public ClienteService() {
     }
 
-    public Cliente Save(Cliente c){
+    public CustomResponseEntity<Cliente> Save(Cliente c){
         return ClienteConexion.save(c);
     }
 
-    public List<Cliente> findAll(){
+    public CustomResponseEntity<List<Cliente>> findAll(){
         return ClienteConexion.findAll();
     }
 

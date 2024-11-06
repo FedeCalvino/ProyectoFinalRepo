@@ -23,13 +23,10 @@ public class ClienteController implements IController<Cliente>{
 
     @GetMapping
     @Override
-    public ResponseEntity<List<Cliente>> findAll() {
-        List<Cliente> Clientes = clienteService.findAll();
-        //ResponseEntity<List<Cliente>> response = new ResponseEntity<>();
-        /*response.setStatus(HttpStatus.CREATED);
-        response.setMessage("Se ha agregado el registro");
-        response.setBody(Clientes);*/
-        return null;
+    public CustomResponseEntity<List<Cliente>> findAll() {
+        CustomResponseEntity<List<Cliente>> ClientesResponse = clienteService.findAll();
+        CustomResponseEntity<List<Cliente>> response = new CustomResponseEntity<>();
+        return response;
     }
 
     @PostMapping

@@ -5,6 +5,9 @@
 package com.example.proyectofinalannedecor.Conexion;
 
 
+import com.example.proyectofinalannedecor.Clases.Cliente;
+import com.example.proyectofinalannedecor.Controller.CustomResponseEntity;
+
 import java.util.List;
 
 /**
@@ -12,9 +15,9 @@ import java.util.List;
  * @author calvi
  */
 public interface IConexion<T> {
-    T save(T t);
-    T findById(Integer id);
-    T Update(T t);
-    T delete(Integer id);
-    List<T> findAll();
+    CustomResponseEntity<T> save(T t);
+    CustomResponseEntity<T> findById(Integer id);
+    CustomResponseEntity<T> update(T t);
+    CustomResponseEntity<T> delete(Integer id);
+    CustomResponseEntity<List<T>> findAll();
 }
