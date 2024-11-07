@@ -43,6 +43,10 @@ public class ClienteConexion implements IConexion<Cliente>{
                 }
             } catch (Exception e) {
                 e.printStackTrace();
+                response.setStatus(HttpStatus.SERVICE_UNAVAILABLE);
+                response.setBody(null);
+                response.setMessage("error en la conexion");
+                return response;
             } finally {
                 try {
                     connection.close();
@@ -72,6 +76,10 @@ public class ClienteConexion implements IConexion<Cliente>{
 
         }catch(Exception e){
             e.printStackTrace();
+            response.setStatus(HttpStatus.SERVICE_UNAVAILABLE);
+            response.setBody(null);
+            response.setMessage("error en la conexion");
+            return response;
         }finally{
             try{
                 connection.close();
@@ -111,8 +119,10 @@ public class ClienteConexion implements IConexion<Cliente>{
             }
         }catch(Exception e){
             e.printStackTrace();
-            response.setStatus(HttpStatus.BAD_REQUEST);
-            response.setMessage("Error en el update");
+            response.setStatus(HttpStatus.SERVICE_UNAVAILABLE);
+            response.setBody(null);
+            response.setMessage("error en la conexion");
+            return response;
         }finally{
             try{
                 connection.close();
@@ -145,8 +155,10 @@ public class ClienteConexion implements IConexion<Cliente>{
             }
         }catch(Exception e){
             e.printStackTrace();
-            response.setStatus(HttpStatus.BAD_REQUEST);
-            response.setMessage("Error en el delete");
+            response.setStatus(HttpStatus.SERVICE_UNAVAILABLE);
+            response.setBody(null);
+            response.setMessage("error en la conexion");
+            return response;
         }finally{
             try{
                 conexion.close();
@@ -174,6 +186,10 @@ public class ClienteConexion implements IConexion<Cliente>{
             }
         }catch(Exception e){
             e.printStackTrace();
+            response.setStatus(HttpStatus.SERVICE_UNAVAILABLE);
+            response.setBody(null);
+            response.setMessage("error en la conexion");
+            return response;
         }finally{
             try{
                 connection.close();
@@ -183,6 +199,8 @@ public class ClienteConexion implements IConexion<Cliente>{
         }
         if(Clientes.isEmpty()) {
             response.setStatus(HttpStatus.NO_CONTENT);
+            response.setBody(null);
+            response.setMessage("no se encontro ningun cliente");
         }else{
             response.setStatus(HttpStatus.OK);
         }

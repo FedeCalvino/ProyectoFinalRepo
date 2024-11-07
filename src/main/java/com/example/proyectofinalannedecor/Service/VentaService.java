@@ -3,6 +3,7 @@ package com.example.proyectofinalannedecor.Service;
 import com.example.proyectofinalannedecor.Clases.Venta;
 import com.example.proyectofinalannedecor.Conexion.ClienteConexion;
 import com.example.proyectofinalannedecor.Conexion.VentasConexion;
+import com.example.proyectofinalannedecor.Controller.CustomResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -10,7 +11,7 @@ import java.util.List;
 
 
 @Service
-public class VentaService{
+public class VentaService implements IService<Venta>{
 
     private static final VentasConexion VentasConexion= new VentasConexion();
     private static final ClienteConexion ClienteConexion= new ClienteConexion();
@@ -19,80 +20,31 @@ public class VentaService{
 
     }
 
-    public Venta save(Venta venta) {
-        System.out.println(venta);
-      /*  Cliente c = ClienteConexion.findById(IdCli);
-        venta.setCliente(c);
-        return VentasConexion.save(venta);*/
-        return null;
-    }
-    public List<Venta> findAll(){
-        List<Venta> ventas = new ArrayList<>();
-        return ventas;
-    }
-
-/*
-    public Venta findById(Integer i){
-        return VentasConexion.findById(i);
-    }
-
-    public ResponseEntity<Venta> Update(Venta venta) {
-        return null;
-    }
-
-    public void update(Venta v){
-        VentasConexion.Update(v);
-    }
-    public void delete(Integer id){
-        VentasConexion.delete(id);
-    }
-    public List<Venta> findAll(){
+    @Override
+    public CustomResponseEntity<List<Venta>> findAll() {
         return VentasConexion.findAll();
     }
 
-    public Cortina SaveCortinasVenta(int IdCortina, int VentaId) {
-        return VentasConexion.SaveCortinaVenta(IdCortina,VentaId);
+    @Override
+    public CustomResponseEntity<Venta> Save(Venta venta) {
+        ClienteConexion.save(venta.getCliente());
+        return VentasConexion.save(venta);
     }
 
-    public List<DtoVenta> findAllDto() {
-        return VentasConexion.findAllDto();
+    @Override
+    public CustomResponseEntity<Venta> update(Venta venta) {
+        return VentasConexion.update(venta);
     }
 
-    public VentaCortinasDto findAllDtoVC(int idVenta) {
-        return VentasConexion.findAllDtoVC(idVenta);
+    @Override
+    public CustomResponseEntity<Venta> delete(int id) {
+        return VentasConexion.delete(id);
     }
 
-    public List<DtoVenta> findAllDtoLike(String nombreCli) {
-        return VentasConexion.findAllDtoLike(nombreCli);
+    @Override
+    public CustomResponseEntity<Venta> findById(int id) {
+        return VentasConexion.findById(id);
     }
 
-    public List<DtoVenta> findNextDto() {
-        return VentasConexion.findNextDto();
-    }
-
-    public List<DtoVenta> findSinCorVentaDto() {
-        return VentasConexion.findSinCorVentaDto();
-    }
-
-    public List<DtoVenta> findSinInsVentaDto() {
-        return VentasConexion.findSinInsrVentaDto();
-    }
-
-    public void UpdateInstVenta(int idVenta) {
-        VentasConexion.UpdateInstVenta(idVenta);
-    }
-
-    public List<DtoDatosTela> DatosTela() {
-        return VentasConexion.DatosTela();
-    }
-
-    public List<DtoDatosTelaMetros> DatosTelaMetros() {
-        return VentasConexion.DatosTelaMetros();
-    }
-    public List<DtoDatosTelaMetrosClientes> DatosTelaMetrosClientes() {
-        return VentasConexion.DatosTelaMetrosCliente();
-    }
-
- */
 }
 

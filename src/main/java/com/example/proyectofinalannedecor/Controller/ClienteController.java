@@ -30,25 +30,26 @@ public class ClienteController implements IController<Cliente>{
 
     @PostMapping
     @Override
-    public CustomResponseEntity<Cliente> Save(Cliente cliente) {
+    public CustomResponseEntity<Cliente> Save(@RequestBody Cliente cliente) {
         CustomResponseEntity<Cliente> response = clienteService.Save(cliente);
         return response;
     }
 
+    @PutMapping
     @Override
-    public CustomResponseEntity<Cliente> update(Cliente cliente) {
+    public CustomResponseEntity<Cliente> update(@RequestBody Cliente cliente) {
         CustomResponseEntity<Cliente> response = clienteService.update(cliente);
         return response;
     }
-
+    @DeleteMapping
     @Override
-    public CustomResponseEntity<Cliente> delete(int id) {
+    public CustomResponseEntity<Cliente> delete(@PathVariable int id) {
         CustomResponseEntity<Cliente> response = clienteService.delete(id);
         return response;
     }
-
+    @GetMapping("/Id")
     @Override
-    public CustomResponseEntity<Cliente> findById(int id) {
+    public CustomResponseEntity<Cliente> findById(@PathVariable int id) {
         CustomResponseEntity<Cliente> response = clienteService.findById(id);
         return response;
     }

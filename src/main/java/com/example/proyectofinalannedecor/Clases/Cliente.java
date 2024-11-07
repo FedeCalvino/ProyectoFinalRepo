@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 
 
 public class Cliente {
-    int Id;
+    Integer Id;
     BigDecimal Rut;
     String Nombre;
     BigDecimal NumeroTelefono;
@@ -13,7 +13,7 @@ public class Cliente {
 
 
 
-    public Cliente(int Id, BigDecimal rut,String Nombre, BigDecimal NumeroTelefono, String direccion, String Tipo) {
+    public Cliente(Integer Id, BigDecimal rut,String Nombre, BigDecimal NumeroTelefono, String direccion, String Tipo) {
         this.Id = Id;
         this.Nombre = Nombre;
         this.direccion = direccion;
@@ -46,7 +46,7 @@ public class Cliente {
         return -1;
     }
 
-    public int getId() {
+    public Integer getId() {
         return Id;
     }
 

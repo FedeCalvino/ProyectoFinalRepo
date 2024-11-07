@@ -8,17 +8,18 @@ public class Venta {
     private Cliente cliente;
     private ArrayList<Cortina> cortinas = new ArrayList<>();
     public java.sql.Date fecha;
-    public Integer precioFinal;
+    public Integer precio;
     public Date fechaInstalacion;
     public String obra;
 
-    public Venta(Cliente cliente, ArrayList<Cortina> cortinas, Date fecha, Date fechaInstalacion, Integer precioFinal, String obra) {
+    public Venta(Integer Id,Cliente cliente, ArrayList<Cortina> cortinas, Date fecha, Date fechaInstalacion, Integer precioFinal, String obra) {
+        this.id = id;
         this.cliente = cliente;
         this.cortinas = cortinas;
         this.fecha = fecha;
         this.fechaInstalacion = fechaInstalacion;
         this.obra = obra;
-        this.precioFinal = precioFinal;
+        this.precio = precioFinal;
     }
 
     public String getObra() {
@@ -37,16 +38,16 @@ public class Venta {
         this.fechaInstalacion = fechaInstalacion;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
-    public Integer getPrecioFinal() {
-        return precioFinal;
+    public Integer getPrecio() {
+        return precio;
     }
 
     public java.sql.Date getFecha() {
@@ -54,9 +55,9 @@ public class Venta {
     }
 
     public int compareTo(Venta r) {
-        if (r.precioFinal > this.precioFinal) {
+        if (r.precio > this.precio) {
             return 1;
-        } else if (r.precioFinal.equals(this.precioFinal)) {
+        } else if (r.precio.equals(this.precio)) {
             return 0;
         }
         return -1;
@@ -79,8 +80,8 @@ public class Venta {
         this.fecha = fecha;
     }
 
-    public void setPrecioFinal(Integer precio) {
-        this.precioFinal = precio;
+    public void setPrecio(Integer precio) {
+        this.precio = precio;
     }
 
     public ArrayList<Cortina> getListaCortinas() {
@@ -102,7 +103,7 @@ public class Venta {
                 ", cliente=" + cliente +
                 ", cortinas=" + cortinas +
                 ", fecha=" + fecha +
-                ", precioFinal=" + precioFinal +
+                ", precioFinal=" + precio +
                 ", fechaInstalacion=" + fechaInstalacion +
                 ", obra='" + obra + '\'' +
                 '}';

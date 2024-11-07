@@ -23,13 +23,7 @@ public class VentaController implements IController<Venta> {
     @GetMapping()
     @Override
     public CustomResponseEntity<List<Venta>> findAll() {
-        CustomResponseEntity<List<Venta>> response = new CustomResponseEntity<>();
-        List<Venta> ventas = ventaService.findAll();
-        if (ventas.isEmpty()) {
-            response.setStatus(HttpStatus.NO_CONTENT);
-            return response;
-        }
-        response.setStatus(HttpStatus.OK);
+        CustomResponseEntity<List<Venta>> response = ventaService.findAll();
         return response;
     }
 
@@ -37,38 +31,26 @@ public class VentaController implements IController<Venta> {
     @PostMapping()
     @Override
     public CustomResponseEntity<Venta> Save(@RequestBody Venta venta) {
-
-        if (venta.getCliente() == null) {
-            return CustomResponseEntity.badRequest("El cliente está vacío");
-        }
-
-        if (venta.getListaCortinas().isEmpty()) {
-            CustomResponseEntity response = CustomResponseEntity.badRequest("No se agregó ninguna cortina");
-            response.setBody(venta);
-            return response;
-        }
-        return CustomResponseEntity.ok("Se ha agregado el registro", venta);
-        /*ventaService.save(venta);
-        CustomResponseEntity<Venta> response = new CustomResponseEntity<>();
-        response.setStatus(HttpStatus.CREATED);
-        response.setMessage("Se ha agregado el registro");
-        response.setBody(venta);
-        return response;*/
+        CustomResponseEntity<Venta> response = ventaService.Save(venta);
+        return response;
     }
 
     @Override
     public CustomResponseEntity<Venta> update(Venta venta) {
-        return null;
+        CustomResponseEntity<Venta> response = ventaService.update(venta);
+        return response;
     }
 
     @Override
     public CustomResponseEntity<Venta> delete(int id) {
-        return null;
+        CustomResponseEntity<Venta> response = ventaService.delete(id);
+        return response;
     }
 
     @Override
     public CustomResponseEntity<Venta> findById(int id) {
-        return null;
+        CustomResponseEntity<Venta> response = ventaService.findById(id);
+        return response;
     }
 
 }
