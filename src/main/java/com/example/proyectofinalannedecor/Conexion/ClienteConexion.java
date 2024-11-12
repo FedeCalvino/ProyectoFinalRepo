@@ -12,11 +12,13 @@ import java.util.List;
 
 public class ClienteConexion implements IConexion<Cliente>{
 
-    private static final String SQL_INSERT = "INSERT INTO CLIENTES (RUT,NOMBRE,TELEFONO,DIRECCION,TIPO) VALUES (?,?,?,?,?)";
-    private static final String SQL_SELECT_ALL = "SELECT * FROM CLIENTES";
-    private static final String SQL_UPDATE = "UPDATE CLIENTES SET RUT = ?, NOMBRE = ? , TELEFONO = ? , DIRECCION = ?,TIPO=? WHERE ID = ?";
-    private static final String SQL_BY_ID = "SELECT * FROM CLIENTES WHERE ID = ?";
-    private static final String SQL_DELETE = "DELETE FROM CLIENTES WHERE ID = ?";
+    private static final String SQL_INSERT = "INSERT INTO CLIENTE (RUT,NOMBRE,NUMERO_TELEFONO,DIRECCION,TIPO) VALUES (?,?,?,?,?)";
+    private static final String SQL_SELECT_ALL = "SELECT * FROM CLIENTE";
+    private static final String SQL_UPDATE = "UPDATE CLIENTE SET RUT = ?, NOMBRE = ? , NUMERO_TELEFONO = ? , DIRECCION = ?,TIPO=? WHERE ID_CLIENTE = ?";
+    private static final String SQL_BY_ID = "SELECT * FROM CLIENTE WHERE ID_CLIENTE = ?";
+    private static final String SQL_DELETE = "DELETE FROM CLIENTE WHERE ID_CLIENTE = ?";
+    private static final String SQL_LIKE_NAME = "SELECT * FROM CLIENTE WHERE NOMBRE LIKE '%' + ? + '%'";
+
 
     @Override
     public CustomResponseEntity<Cliente> save(Cliente cliente) {
@@ -44,7 +46,7 @@ public class ClienteConexion implements IConexion<Cliente>{
             } catch (Exception e) {
                 e.printStackTrace();
                 response.setStatus(HttpStatus.SERVICE_UNAVAILABLE);
-                response.setBody(null);
+                response.setBody(cliente);
                 response.setMessage("error en la conexion");
                 return response;
             } finally {
@@ -70,8 +72,7 @@ public class ClienteConexion implements IConexion<Cliente>{
             statement.setInt(1,id);
             ResultSet rs = statement.executeQuery();
             while(rs.next()){
-                c = new Cliente (0,rs.getBigDecimal(2),rs.getString(3),rs.getBigDecimal(4),rs.getString(5),rs.getString(7));
-                c.setId(rs.getInt(1));
+                c = new Cliente (1,rs.getBigDecimal(2),rs.getString(3),rs.getBigDecimal(4),rs.getString(5),rs.getString(6));
             }
 
         }catch(Exception e){
@@ -89,9 +90,12 @@ public class ClienteConexion implements IConexion<Cliente>{
         }
         if(c!=null){
             response.setStatus(HttpStatus.OK);
+            response.setMessage("Cliente encontrado");
             response.setBody(c);
         }else{
             response.setStatus(HttpStatus.NOT_FOUND);
+            response.setMessage("no se encontro el cliente");
+            response.setBody(null);
         }
         return response;
     }
@@ -101,7 +105,7 @@ public class ClienteConexion implements IConexion<Cliente>{
         CustomResponseEntity<Cliente> response = new CustomResponseEntity<>();
         java.sql.Connection connection = null;
         try{
-            if(cliente.getId() != -1) {
+            if(cliente.getId() > 0) {
                 connection = (java.sql.Connection) Conexion.GetConexion();
                 PreparedStatement ps = connection.prepareStatement(SQL_UPDATE);
                 ps.setBigDecimal(1, cliente.getRut());
@@ -112,10 +116,11 @@ public class ClienteConexion implements IConexion<Cliente>{
                 ps.setInt(6, cliente.getId());
                 ps.execute();
                 response.setStatus(HttpStatus.OK);
+                response.setMessage("Cliente actualizado");
                 response.setBody(cliente);
             }else {
                 response.setStatus(HttpStatus.BAD_REQUEST);
-                response.setMessage("El cliente no se encontro");
+                response.setMessage("El cliente no tiene id");
             }
         }catch(Exception e){
             e.printStackTrace();
@@ -179,9 +184,7 @@ public class ClienteConexion implements IConexion<Cliente>{
             PreparedStatement statement = connection.prepareStatement(SQL_SELECT_ALL);
             ResultSet rs = statement.executeQuery();
             while(rs.next()){
-                //int id, int rut, String nombre, int numeroTelefono, String direccion
-                c = new Cliente (0,rs.getBigDecimal(2),rs.getString(3),rs.getBigDecimal(4),rs.getString(5),rs.getString(7));
-                c.setId(rs.getInt(1));
+                c = new Cliente (1,rs.getBigDecimal(2),rs.getString(3),rs.getBigDecimal(4),rs.getString(5),rs.getString(6));
                 Clientes.add(c);
             }
         }catch(Exception e){
@@ -202,6 +205,46 @@ public class ClienteConexion implements IConexion<Cliente>{
             response.setBody(null);
             response.setMessage("no se encontro ningun cliente");
         }else{
+            response.setBody(Clientes);
+            response.setStatus(HttpStatus.OK);
+        }
+        return response;
+    }
+
+    public CustomResponseEntity<List<Cliente>> findByName(String name) {
+        CustomResponseEntity<List<Cliente>> response = new CustomResponseEntity<>();
+        java.sql.Connection connection = null;
+        List<Cliente> clientes = new ArrayList<>();
+        Cliente c=null;
+
+        try{
+            connection = (java.sql.Connection) Conexion.GetConexion();
+            PreparedStatement statement = connection.prepareStatement(SQL_LIKE_NAME);
+            statement.setString(1,name);
+            ResultSet rs = statement.executeQuery();
+            while(rs.next()){
+                c = new Cliente (1,rs.getBigDecimal(2),rs.getString(3),rs.getBigDecimal(4),rs.getString(5),rs.getString(6));
+                clientes.add(c);
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+            response.setStatus(HttpStatus.SERVICE_UNAVAILABLE);
+            response.setBody(null);
+            response.setMessage("error en la conexion");
+            return response;
+        }finally{
+            try{
+                connection.close();
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+        }
+        if(clientes.isEmpty()) {
+            response.setStatus(HttpStatus.NO_CONTENT);
+            response.setBody(null);
+            response.setMessage("no se encontro ningun cliente");
+        }else{
+            response.setBody(clientes);
             response.setStatus(HttpStatus.OK);
         }
         return response;

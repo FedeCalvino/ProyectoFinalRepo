@@ -20,22 +20,25 @@ public class ClienteService implements IService<Cliente>{
     }
 
     @Override
-    public CustomResponseEntity<Cliente> update(Cliente venta) {
-        return null;
+    public CustomResponseEntity<Cliente> update(Cliente cliente) {
+        return ClienteConexion.update(cliente);
     }
 
     @Override
     public CustomResponseEntity<Cliente> delete(int id) {
-        return null;
+        return ClienteConexion.delete(id);
     }
 
     @Override
     public CustomResponseEntity<Cliente> findById(int id) {
-        return null;
+        return ClienteConexion.findById(id);
     }
 
     public CustomResponseEntity<List<Cliente>> findAll(){
         return ClienteConexion.findAll();
     }
 
+    public CustomResponseEntity<List<Cliente>> findByName(String name) {
+        return ClienteConexion.findByName(name);
+    }
 }
