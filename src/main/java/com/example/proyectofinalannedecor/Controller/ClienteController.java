@@ -1,9 +1,8 @@
 package com.example.proyectofinalannedecor.Controller;
 
 import com.example.proyectofinalannedecor.Clases.Cliente;
+import com.example.proyectofinalannedecor.Clases.CustomResponseEntity;
 import com.example.proyectofinalannedecor.Service.ClienteService;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

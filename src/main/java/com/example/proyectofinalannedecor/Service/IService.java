@@ -1,6 +1,6 @@
 package com.example.proyectofinalannedecor.Service;
 
-import com.example.proyectofinalannedecor.Controller.CustomResponseEntity;
+import com.example.proyectofinalannedecor.Clases.CustomResponseEntity;
 
 import java.util.List;
 

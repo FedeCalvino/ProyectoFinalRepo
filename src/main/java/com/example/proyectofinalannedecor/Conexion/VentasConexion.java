@@ -8,7 +8,7 @@ package com.example.proyectofinalannedecor.Conexion;
 import com.example.proyectofinalannedecor.Clases.Cliente;
 import com.example.proyectofinalannedecor.Clases.Cortina;
 import com.example.proyectofinalannedecor.Clases.Venta;
-import com.example.proyectofinalannedecor.Controller.CustomResponseEntity;
+import com.example.proyectofinalannedecor.Clases.CustomResponseEntity;
 import com.sun.jdi.connect.spi.Connection;
 import org.springframework.http.HttpStatus;
 
@@ -30,7 +30,7 @@ public class VentasConexion implements IConexion<Venta>{
     private static final String SQL_INSERT = "INSERT INTO VENTA(CLIENTE_ID, FECHA, OBRA, FECHA_INSTALACION) VALUES(?, ?, ?, ?)";;
     private static final String SQL_DELETE = "DELETE FROM VENTA WHERE ID_VENTA = ?";
     private static final String SQL_UPDATE = "UPDATE VENTA SET FECHA = ? , CLIENTE_ID = ?,OBRA=?,FECHA_INSTALACION=?  WHERE ID_VENTA = ?";
-
+    private static final String SQL_SELECT_ALL="SELECT * FROM venta v JOIN CLIENTE c on c.ID_CLIENTE=v.CLIENTE_ID";
 
     public static Connection conexion;
 
@@ -45,6 +45,7 @@ public class VentasConexion implements IConexion<Venta>{
             return response;
         }
         if (v.getListaCortinas().isEmpty()) {
+            response.setStatus(HttpStatus.BAD_REQUEST);
             response.setMessage("No se agregó ninguna cortina");
             response.setBody(v);
             return response;
@@ -65,18 +66,25 @@ public class VentasConexion implements IConexion<Venta>{
             while (rs.next()) {
                 v.setId(rs.getInt(1));
             }
-            response.setStatus(HttpStatus.CREATED);
-            response.setMessage("Venta creada con exito");
         }catch(Exception e){
             e.printStackTrace();
             response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
-            response.setMessage("Error al crear la venta");
+            response.setMessage(e.getMessage());
         }finally{
             try{
                 conexion.close();
             }catch(Exception e){
                 e.printStackTrace();
             }
+        }
+        if(v.getId()==null){
+            response.setStatus(HttpStatus.BAD_REQUEST);
+            response.setBody(v);
+            response.setMessage("La venta no tiene id");
+        }else{
+            response.setStatus(HttpStatus.OK);
+            response.setBody(v);
+            response.setMessage("Venta creada con exito");
         }
         return response;
     }
@@ -116,7 +124,7 @@ public class VentasConexion implements IConexion<Venta>{
         } catch (Exception e) {
             e.printStackTrace();
             response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
-            response.setMessage("Error al buscar la venta");
+            response.setMessage(e.getMessage());
         } finally {
             try {
                 if (conexion != null) {
@@ -156,12 +164,68 @@ public class VentasConexion implements IConexion<Venta>{
 
     @Override
     public CustomResponseEntity<Venta> delete(Integer id) {
-        return null;
+        CustomResponseEntity<Venta> response = new CustomResponseEntity<>();
+        java.sql.Connection conexion=null;
+        try{
+            Venta v = this.findById(id).getBody();
+            if(v!=null) {
+                conexion = (java.sql.Connection) Conexion.GetConexion();
+                PreparedStatement ps = conexion.prepareStatement(SQL_DELETE);
+                ps.setInt(1, id);
+                ps.execute();
+                response.setBody(v);
+                response.setStatus(HttpStatus.OK);
+                response.setMessage("Venta eliminada");
+            }else{
+                response.setStatus(HttpStatus.NOT_FOUND);
+                response.setMessage("Venta no encontrada");
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }finally{
+            try{
+                conexion.close();
+            }catch(Exception e){
+            }
+        }
+        return response;
     }
 
     @Override
     public CustomResponseEntity<List<Venta>> findAll() {
-        return null;
+        CustomResponseEntity<List<Venta>> response = new CustomResponseEntity<>();
+        List<Venta> ventas=new ArrayList<>();
+        java.sql.Connection connection = null;
+        try{
+            connection = (java.sql.Connection) Conexion.GetConexion();
+            PreparedStatement statement = connection.prepareStatement(SQL_SELECT_ALL);
+            ResultSet rs = statement.executeQuery();
+            while(rs.next()){
+                Venta v = new Venta(rs.getInt(1),
+                        new Cliente(rs.getInt(7),rs.getBigDecimal(8),rs.getString(9),rs.getBigDecimal(10),rs.getString(11),rs.getString(11))
+                        ,null,rs.getDate(3),rs.getDate(5),rs.getInt(4),rs.getString(6));
+                ventas.add(v);
+            }
+            response.setBody(ventas);
+        }catch(Exception e){
+            e.printStackTrace();
+            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
+            response.setMessage(e.getMessage());
+        }finally{
+            try{
+                connection.close();
+            }catch(Exception e){
+
+            }
+        }
+        if(ventas.isEmpty()){
+            response.setStatus(HttpStatus.NOT_FOUND);
+            response.setMessage("no se encontraron ventas");
+        }else{
+            response.setStatus(HttpStatus.OK);
+            response.setBody(ventas);
+        }
+        return response;
     }
 
 }

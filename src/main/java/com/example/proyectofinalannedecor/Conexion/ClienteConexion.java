@@ -1,7 +1,7 @@
 package com.example.proyectofinalannedecor.Conexion;
 
 import com.example.proyectofinalannedecor.Clases.Cliente;
-import com.example.proyectofinalannedecor.Controller.CustomResponseEntity;
+import com.example.proyectofinalannedecor.Clases.CustomResponseEntity;
 import org.springframework.http.HttpStatus;
 
 import java.sql.PreparedStatement;

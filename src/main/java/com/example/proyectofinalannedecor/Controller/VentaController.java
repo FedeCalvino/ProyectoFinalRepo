@@ -1,10 +1,8 @@
 package com.example.proyectofinalannedecor.Controller;
 
-import com.example.proyectofinalannedecor.Clases.Cliente;
+import com.example.proyectofinalannedecor.Clases.CustomResponseEntity;
 import com.example.proyectofinalannedecor.Clases.Venta;
 import com.example.proyectofinalannedecor.Service.VentaService;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -36,18 +34,21 @@ public class VentaController implements IController<Venta> {
     }
 
     @Override
-    public CustomResponseEntity<Venta> update(Venta venta) {
+    @PutMapping()
+    public CustomResponseEntity<Venta> update(@RequestBody Venta venta) {
         CustomResponseEntity<Venta> response = ventaService.update(venta);
         return response;
     }
 
     @Override
+    @DeleteMapping("/{id}")
     public CustomResponseEntity<Venta> delete(int id) {
         CustomResponseEntity<Venta> response = ventaService.delete(id);
         return response;
     }
 
     @Override
+    @GetMapping("/{id}")
     public CustomResponseEntity<Venta> findById(int id) {
         CustomResponseEntity<Venta> response = ventaService.findById(id);
         return response;

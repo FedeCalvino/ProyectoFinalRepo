@@ -2,7 +2,7 @@ package com.example.proyectofinalannedecor.Service;
 
 import com.example.proyectofinalannedecor.Clases.Cliente;
 import com.example.proyectofinalannedecor.Conexion.ClienteConexion;
-import com.example.proyectofinalannedecor.Controller.CustomResponseEntity;
+import com.example.proyectofinalannedecor.Clases.CustomResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

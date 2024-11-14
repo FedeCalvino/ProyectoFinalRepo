@@ -1,6 +1,6 @@
 package com.example.proyectofinalannedecor.Controller;
 
-import org.springframework.http.ResponseEntity;
+import com.example.proyectofinalannedecor.Clases.CustomResponseEntity;
 
 import java.util.List;
 

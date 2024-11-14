@@ -1,12 +1,12 @@
 package com.example.proyectofinalannedecor.Service;
 
+import com.example.proyectofinalannedecor.Clases.Cliente;
 import com.example.proyectofinalannedecor.Clases.Venta;
 import com.example.proyectofinalannedecor.Conexion.ClienteConexion;
 import com.example.proyectofinalannedecor.Conexion.VentasConexion;
-import com.example.proyectofinalannedecor.Controller.CustomResponseEntity;
+import com.example.proyectofinalannedecor.Clases.CustomResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -27,7 +27,9 @@ public class VentaService implements IService<Venta>{
 
     @Override
     public CustomResponseEntity<Venta> Save(Venta venta) {
-        ClienteConexion.save(venta.getCliente());
+        Cliente c = ClienteConexion.save(venta.getCliente()).getBody();
+        System.out.println(c);
+        venta.setCliente(c);
         return VentasConexion.save(venta);
     }
 

@@ -1,4 +1,4 @@
-package com.example.proyectofinalannedecor.Controller;
+package com.example.proyectofinalannedecor.Clases;
 
 import org.springframework.http.HttpStatus;
 
