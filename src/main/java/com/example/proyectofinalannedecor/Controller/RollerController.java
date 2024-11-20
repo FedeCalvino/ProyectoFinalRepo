@@ -1,26 +1,20 @@
-package com.example.proyectofinalannedecor.Service;
+package com.example.proyectofinalannedecor.Controller;
 
 import com.example.proyectofinalannedecor.Clases.CustomResponseEntity;
 import com.example.proyectofinalannedecor.Clases.TipoCortina.Roller;
-import com.example.proyectofinalannedecor.Conexion.CortinaConexion;
-import com.example.proyectofinalannedecor.Conexion.RollerConexion;
-import com.example.proyectofinalannedecor.Conexion.VentasConexion;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
-public class RollerService implements IService<Roller>{
+public class RollerController implements IController<Roller> {
 
-    private static final RollerConexion rollerConexion= new RollerConexion();
     @Override
     public CustomResponseEntity<List<Roller>> findAll() {
-        return rollerConexion.findAll();
+        return null;
     }
 
     @Override
     public CustomResponseEntity<Roller> Save(Roller venta) {
-        return rollerConexion.save(venta);
+        return null;
     }
 
     @Override

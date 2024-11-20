@@ -2,9 +2,9 @@ package com.example.proyectofinalannedecor.Clases;
 
 import java.util.Date;
 
-public class Cortina {
+public class Cortina extends Articulo{
+
     public int Id;
-    public int NumeroCortina;
     String Alto;
     public int IdTipoTela;
     public String Ambiente;
@@ -22,12 +22,12 @@ public class Cortina {
         return Ambiente;
     }
 
-    public Cortina(String Alto, String Ancho, Boolean motorizada, int Idtela, String Ambiente,String detalle,int numeroCortina) {
+    public Cortina(String nombre,String Alto, String Ancho, Boolean motorizada, int Idtela, String Ambiente,String detalle) {
+        super(nombre);
         this.IdTipoTela=Idtela;
         this.Alto = Alto;
         this.Ancho = Ancho;
         this.Ambiente = Ambiente;
-        this.NumeroCortina = numeroCortina;
         this.motorizada = motorizada;
         this.Detalle = detalle;
     }
@@ -38,14 +38,6 @@ public class Cortina {
 
     public void setDetalle(String detalle) {
         Detalle = detalle;
-    }
-
-    public int getNumeroCortina() {
-        return NumeroCortina;
-    }
-
-    public void setNumeroCortina(int numeroCortina) {
-        NumeroCortina = numeroCortina;
     }
 
 
@@ -88,10 +80,6 @@ public class Cortina {
     public void setMotorizada(Boolean motorizada) {
         this.motorizada = motorizada;
     }
-
-
-
-
 
     public String GetNombreTela(){
         return tela.getNombre();

@@ -5,10 +5,8 @@
 package com.example.proyectofinalannedecor.Conexion;
 
 
-import com.example.proyectofinalannedecor.Clases.Cliente;
-import com.example.proyectofinalannedecor.Clases.Cortina;
-import com.example.proyectofinalannedecor.Clases.Venta;
-import com.example.proyectofinalannedecor.Clases.CustomResponseEntity;
+import com.example.proyectofinalannedecor.Clases.*;
+import com.example.proyectofinalannedecor.Clases.TipoCortina.Roller;
 import com.sun.jdi.connect.spi.Connection;
 import org.springframework.http.HttpStatus;
 
@@ -22,21 +20,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-/**
- *
- * @author calvi
- */
+
 public class VentasConexion implements IConexion<Venta>{
-    private static final String SQL_INSERT = "INSERT INTO VENTA(CLIENTE_ID, FECHA, OBRA, FECHA_INSTALACION) VALUES(?, ?, ?, ?)";;
+    private static final String SQL_INSERT = "INSERT INTO VENTA(CLIENTE_ID, FECHA, OBRA, FECHA_INSTALACION,PRECIO) VALUES(?, ?, ?, ?,?)";;
     private static final String SQL_DELETE = "DELETE FROM VENTA WHERE ID_VENTA = ?";
     private static final String SQL_UPDATE = "UPDATE VENTA SET FECHA = ? , CLIENTE_ID = ?,OBRA=?,FECHA_INSTALACION=?  WHERE ID_VENTA = ?";
     private static final String SQL_SELECT_ALL="SELECT * FROM venta v JOIN CLIENTE c on c.ID_CLIENTE=v.CLIENTE_ID";
+    private static final String SQL_INSERT_ARTICULO_VENTA = "INSERT INTO VENTA_ARTICULO (ID_ARTICULO,ID_VENTA) VALUES (?,?)";
 
     public static Connection conexion;
 
     @Override
     public CustomResponseEntity<Venta> save(Venta v) {
         java.sql.Connection conexion=null;
+        System.out.println(v.getFechaInstalacion());
         CustomResponseEntity<Venta> response = new CustomResponseEntity<>();
         if(v.getCliente()==null){
             response.setStatus(HttpStatus.BAD_REQUEST);
@@ -44,7 +41,7 @@ public class VentasConexion implements IConexion<Venta>{
             response.setMessage("La venta no tiene cliente");
             return response;
         }
-        if (v.getListaCortinas().isEmpty()) {
+        if (v.getListaArticulos().isEmpty()) {
             response.setStatus(HttpStatus.BAD_REQUEST);
             response.setMessage("No se agregó ninguna cortina");
             response.setBody(v);
@@ -59,6 +56,7 @@ public class VentasConexion implements IConexion<Venta>{
             ps.setDate(2, fecha);;
             ps.setString(3, v.getObra());
             ps.setDate(4, v.getFechaInstalacion());
+            ps.setInt(5, v.getPrecio());
             ps.execute();
             v.setFecha(fecha);
 
@@ -68,7 +66,7 @@ public class VentasConexion implements IConexion<Venta>{
             }
         }catch(Exception e){
             e.printStackTrace();
-            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
+            response.setStatus(HttpStatus.BAD_REQUEST);
             response.setMessage(e.getMessage());
         }finally{
             try{
@@ -89,6 +87,33 @@ public class VentasConexion implements IConexion<Venta>{
         return response;
     }
 
+    public boolean SaveArticuloVenta(int ArticuloId,int VentaId) {
+        java.sql.Connection connection = null;
+        try {
+            connection = (java.sql.Connection) Conexion.GetConexion();
+            PreparedStatement ps = connection.prepareStatement(SQL_INSERT_ARTICULO_VENTA, Statement.RETURN_GENERATED_KEYS);
+            ps.setInt(1, ArticuloId);
+            ps.setInt(2, VentaId);
+            ps.execute();
+            ResultSet rs = ps.getGeneratedKeys();
+            if (rs.next()) {
+
+            }else{
+                return false;
+            }
+        } catch (Exception e) {
+            return false;
+        } finally {
+            try {
+                connection.close();
+            } catch (Exception e) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+
 
     @Override
     public CustomResponseEntity<Venta> findById(Integer id) {
@@ -107,7 +132,7 @@ public class VentasConexion implements IConexion<Venta>{
                 Venta venta = new Venta(
                 rs.getInt("ID_VENTA"),
                 new Cliente(rs.getInt("CLIENTE_ID"),bgdecimal,"",bgdecimal,"",""),
-                new ArrayList<Cortina>(),
+                new ArrayList<Articulo>(),
                 rs.getDate("FECHA"),
                         rs.getDate("FECHA_INSTALACION"),
                 rs.getInt("PRECIO"),
@@ -123,7 +148,7 @@ public class VentasConexion implements IConexion<Venta>{
             }
         } catch (Exception e) {
             e.printStackTrace();
-            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
+            response.setStatus(HttpStatus.BAD_REQUEST);
             response.setMessage(e.getMessage());
         } finally {
             try {
@@ -209,7 +234,7 @@ public class VentasConexion implements IConexion<Venta>{
             response.setBody(ventas);
         }catch(Exception e){
             e.printStackTrace();
-            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
+            response.setStatus(HttpStatus.BAD_REQUEST);
             response.setMessage(e.getMessage());
         }finally{
             try{

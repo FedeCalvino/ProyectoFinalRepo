@@ -40,8 +40,10 @@ public class ClienteConexion implements IConexion<Cliente>{
                 ps.setString(5, cliente.getTipo());
                 ps.execute();
                 ResultSet rs = ps.getGeneratedKeys();
-                while (rs.next()) {
+                if (rs.next()) {
                     cliente.setId(rs.getInt(1));
+                }else{
+                    response.setStatus(HttpStatus.BAD_REQUEST);
                 }
             } catch (Exception e) {
                 e.printStackTrace();

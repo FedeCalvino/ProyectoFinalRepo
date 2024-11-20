@@ -7,13 +7,11 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 
 import java.sql.Connection;
 
-
-@SpringBootApplication(exclude = {DataSourceAutoConfiguration.class })
+@SpringBootApplication()
 public class ProyectoFinalAnneDecorApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(ProyectoFinalAnneDecorApplication.class, args);
-
     }
 
 }

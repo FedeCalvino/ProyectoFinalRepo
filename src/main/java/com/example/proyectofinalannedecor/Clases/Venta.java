@@ -1,25 +1,27 @@
 package com.example.proyectofinalannedecor.Clases;
 
+import com.example.proyectofinalannedecor.Clases.TipoCortina.Roller;
+
 import java.sql.Date;
 import java.util.ArrayList;
 
 public class Venta {
     private int id;
     private Cliente cliente;
-    private ArrayList<Cortina> cortinas = new ArrayList<>();
+    private ArrayList<Articulo> Articulos = new ArrayList<>();
     public java.sql.Date fecha;
     public Integer precio;
     public Date fechaInstalacion;
     public String obra;
 
-    public Venta(Integer Id,Cliente cliente, ArrayList<Cortina> cortinas, Date fecha, Date fechaInstalacion, Integer precioFinal, String obra) {
+    public Venta(Integer Id,Cliente cliente, ArrayList<Articulo> Articulo, Date fecha, Date fechaInstalacion, Integer precio, String obra) {
         this.id = id;
         this.cliente = cliente;
-        this.cortinas = cortinas;
+        this.Articulos = Articulo;
         this.fecha = fecha;
         this.fechaInstalacion = fechaInstalacion;
         this.obra = obra;
-        this.precio = precioFinal;
+        this.precio = precio;
     }
 
     public String getObra() {
@@ -71,8 +73,8 @@ public class Venta {
         this.cliente = cliente;
     }
 
-    public void setCortinas(ArrayList<Cortina> cortinas) {
-        this.cortinas = cortinas;
+    public void setRoller(ArrayList<Articulo> rollers) {
+        this.Articulos = rollers;
     }
 
 
@@ -84,16 +86,12 @@ public class Venta {
         this.precio = precio;
     }
 
-    public ArrayList<Cortina> getListaCortinas() {
-        return this.cortinas;
+    public ArrayList<Articulo> getListaArticulos() {
+        return this.Articulos;
     }
 
-    public void addCortina(Cortina c) {
-        this.cortinas.add(c);
-    }
-
-    public void setListaCortinas(ArrayList<Cortina> cortinas) {
-        this.cortinas = cortinas;
+    public void addArticulo(Articulo r) {
+        this.Articulos.add(r);
     }
 
     @Override
@@ -101,7 +99,7 @@ public class Venta {
         return "Venta{" +
                 "id=" + id +
                 ", cliente=" + cliente +
-                ", cortinas=" + cortinas +
+                ", cortinas=" + Articulos +
                 ", fecha=" + fecha +
                 ", precioFinal=" + precio +
                 ", fechaInstalacion=" + fechaInstalacion +

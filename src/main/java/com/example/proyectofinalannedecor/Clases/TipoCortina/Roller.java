@@ -13,8 +13,8 @@ public class Roller extends Cortina {
     private byte trueBite = 1;
     private byte falseBite = 0;
 
-    public Roller(String Ambiente, String Alto, String Ancho, Boolean motorizada, int Idtela, String largoCadena, boolean cadenaMetalica, int Tubo, String Posicion, String LadoCadena,String detalle,int numeroCortina) {
-        super(Alto, Ancho, motorizada, Idtela, Ambiente,detalle,numeroCortina);
+    public Roller(String NombreArt,String Ambiente, String Alto, String Ancho, Boolean motorizada, int Idtela, String largoCadena, boolean cadenaMetalica, int Tubo, String Posicion, String LadoCadena,String detalle,int numeroCortina) {
+        super(NombreArt,Alto, Ancho, motorizada, Idtela, Ambiente,detalle);
         this.LargoCadena = largoCadena;
         this.CadenaMetalica = cadenaMetalica;
         this.Tubo = Tubo;
@@ -78,7 +78,6 @@ public class Roller extends Cortina {
                 ", Tubo=" + Tubo +
                 ", Posicion='" + Posicion + '\'' +
                 ", LadoCadena='" + LadoCadena + '\'' +
-                ", numeroCor='" + NumeroCortina + '\'' +
                 '}';
     }
 }

@@ -16,8 +16,8 @@ public class Tradicional extends Cortina {
     private byte trueBite = 1;
     private byte falseBite = 0;
 
-    public Tradicional(String Alto, String largo, Boolean motorizada, int Idtela, int cantidadPanos,String Ambiente,String detalle,int numeroCortina,String AnchoDerecho,String Acumula,String pinza) {
-        super(Alto, largo, motorizada, Idtela,Ambiente,detalle,numeroCortina);
+    public Tradicional(String NombreArt,String Alto, String largo, Boolean motorizada, int Idtela, int cantidadPanos,String Ambiente,String detalle,int numeroCortina,String AnchoDerecho,String Acumula,String pinza) {
+        super(NombreArt,Alto, largo, motorizada, Idtela,Ambiente,detalle);
         CantidadPanos = cantidadPanos;
         this.Pinza=pinza;
         this.AnchoDerecho = AnchoDerecho;
