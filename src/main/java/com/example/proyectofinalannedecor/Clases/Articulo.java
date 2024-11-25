@@ -31,6 +31,10 @@ public class Articulo{
         return "ART-" + IdArticulo + "-" + uniqueID;
     }
 
+    public void setCodigoBarras(String codigoBarras) {
+        this.codigoBarras = codigoBarras;
+    }
+
     public String getCodigoBarras() {
         return codigoBarras;
     }

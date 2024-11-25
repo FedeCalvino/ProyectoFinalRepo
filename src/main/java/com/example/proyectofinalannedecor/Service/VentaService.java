@@ -24,7 +24,13 @@ public class VentaService implements IService<Venta>{
 
     @Override
     public CustomResponseEntity<List<Venta>> findAll() {
-        return VentasConexion.findAll();
+        CustomResponseEntity<List<Venta>> ventas = VentasConexion.findAll();
+        for(Venta v : ventas.getBody()){
+            System.out.println(v.getId());
+            List<Articulo> articulos = ArticuloService.findArticulosVenta(v.getId()).getBody();
+            v.setArticulos(articulos);
+        }
+        return ventas;
     }
 
     @Override

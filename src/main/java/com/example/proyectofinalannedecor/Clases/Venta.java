@@ -4,24 +4,29 @@ import com.example.proyectofinalannedecor.Clases.TipoCortina.Roller;
 
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Venta {
     private int id;
     private Cliente cliente;
-    private ArrayList<Articulo> Articulos = new ArrayList<>();
+    private List<Articulo> Articulos = new ArrayList<>();
     public java.sql.Date fecha;
     public Integer precio;
     public Date fechaInstalacion;
     public String obra;
 
-    public Venta(Integer Id,Cliente cliente, ArrayList<Articulo> Articulo, Date fecha, Date fechaInstalacion, Integer precio, String obra) {
-        this.id = id;
+    public Venta(Integer Id,Cliente cliente, List<Articulo> Articulo, Date fecha, Date fechaInstalacion, Integer precio, String obra) {
+        this.id = Id;
         this.cliente = cliente;
         this.Articulos = Articulo;
         this.fecha = fecha;
         this.fechaInstalacion = fechaInstalacion;
         this.obra = obra;
         this.precio = precio;
+    }
+
+    public void setArticulos(List<Articulo> articulos) {
+        Articulos = articulos;
     }
 
     public String getObra() {
@@ -86,7 +91,7 @@ public class Venta {
         this.precio = precio;
     }
 
-    public ArrayList<Articulo> getListaArticulos() {
+    public List<Articulo> getListaArticulos() {
         return this.Articulos;
     }
 

@@ -33,4 +33,8 @@ public class ArticuloService implements IService<Articulo>{
     public CustomResponseEntity<Articulo> findById(int id) {
         return null;
     }
+
+    public CustomResponseEntity<List<Articulo>> findArticulosVenta(int Venta_Id) {
+        return articuloConexion.findArticulosVenta(Venta_Id);
+    }
 }
