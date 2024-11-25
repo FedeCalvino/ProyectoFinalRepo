@@ -4,8 +4,11 @@ import com.example.proyectofinalannedecor.Clases.Cortina;
 
 
 public class Roller extends Cortina {
-
-    public String LargoCadena;
+    public int IdRoller;
+    public Double LargoCadena;
+    public Double AnchoTela;
+    public Double AnchoTubo;
+    public Double AltoTela;
     public boolean CadenaMetalica;
     public int Tubo;
     public String Posicion;
@@ -13,16 +16,47 @@ public class Roller extends Cortina {
     private byte trueBite = 1;
     private byte falseBite = 0;
 
-    public Roller(String NombreArt,String Ambiente, String Alto, String Ancho, Boolean motorizada, int Idtela, String largoCadena, boolean cadenaMetalica, int Tubo, String Posicion, String LadoCadena,String detalle,int numeroCortina) {
+    public Roller(String NombreArt,String Ambiente, Float Alto, Float Ancho, Boolean motorizada, int Idtela, boolean cadenaMetalica, int Tubo, String Posicion, String LadoCadena,String detalle,int numeroCortina) {
         super(NombreArt,Alto, Ancho, motorizada, Idtela, Ambiente,detalle);
-        this.LargoCadena = largoCadena;
         this.CadenaMetalica = cadenaMetalica;
         this.Tubo = Tubo;
         this.Posicion = Posicion;
         this.LadoCadena = LadoCadena;
+        setAltoTelaCadena();
+        setAnchoTuboTela();
     }
 
-    public String getLargoCadena() {
+    public void setAltoTelaCadena() {
+        this.AltoTela = Math.round((this.getAlto() + 0.30) * 1000.0) / 1000.0;
+
+        if (this.Tubo == 30) {
+            this.LargoCadena = Math.round((this.getAlto() * 1.75) * 1000.0) / 1000.0;
+        } else {
+            this.LargoCadena = Math.round((this.getAlto() * 1.85) * 1000.0) / 1000.0;
+        }
+    }
+
+
+    public int getIdRoller() {
+        return IdRoller;
+    }
+
+    public void setIdRoller(int idRoller) {
+        IdRoller = idRoller;
+    }
+
+    public void setAnchoTuboTela() {
+        if (!this.getMotorizada()) {
+            this.AnchoTela = Math.round((this.getAncho() - 0.030) * 1000.0) / 1000.0;
+            this.AnchoTubo = Math.round((this.getAncho() - 0.025 - 0.030) * 1000.0) / 1000.0;
+        } else {
+            this.AnchoTela = Math.round((this.getAncho() - 0.040 - 0.030) * 1000.0) / 1000.0;
+            this.AnchoTubo = Math.round((this.getAncho() - 0.040 - 0.030) * 1000.0) / 1000.0;
+        }
+    }
+
+
+    public double getLargoCadena() {
         return LargoCadena;
     }
 
@@ -38,7 +72,7 @@ public class Roller extends Cortina {
         return Tubo;
     }
 
-    public void setLargoCadena(String LargoCadena) {
+    public void setLargoCadena(double LargoCadena) {
         this.LargoCadena = LargoCadena;
     }
 

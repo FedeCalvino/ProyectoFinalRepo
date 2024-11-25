@@ -15,10 +15,10 @@ public class Venta {
     public Date fechaInstalacion;
     public String obra;
 
-    public Venta(Integer Id,Cliente cliente, List<Articulo> Articulo, Date fecha, Date fechaInstalacion, Integer precio, String obra) {
+    public Venta(Integer Id,Cliente cliente, List<Articulo> Articulos, Date fecha, Date fechaInstalacion, Integer precio, String obra) {
         this.id = Id;
         this.cliente = cliente;
-        this.Articulos = Articulo;
+        this.Articulos = Articulos;
         this.fecha = fecha;
         this.fechaInstalacion = fechaInstalacion;
         this.obra = obra;

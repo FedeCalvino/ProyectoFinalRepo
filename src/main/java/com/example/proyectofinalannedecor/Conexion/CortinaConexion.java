@@ -33,8 +33,8 @@ public class CortinaConexion implements IConexion<Cortina>{
 
             // Preparar la sentencia SQL con RETURN_GENERATED_KEYS
             PreparedStatement ps = conexion.prepareStatement(SQL_INSERT_CORTINA, Statement.RETURN_GENERATED_KEYS);
-            ps.setString(1, C.getAlto());
-            ps.setNString(2, C.getAncho());
+            ps.setFloat(1, C.getAlto());
+            ps.setFloat(2, C.getAncho());
             ps.setInt(3, C.GetTipoTelaId());
             ps.setString(5, C.getAmbiente());
             ps.setString(6, C.getDetalle());
@@ -104,7 +104,7 @@ public class CortinaConexion implements IConexion<Cortina>{
             ResultSet rs = statement.executeQuery();
             while(rs.next()){
                     boolean motorizada = rs.getByte(5)==trueBite;
-                    Cortina c = new Cortina ("Cortina",rs.getNString(4),rs.getNString(3),motorizada, rs.getInt(6),rs.getString(2),rs.getString(7));
+                    Cortina c = new Cortina ("Cortina",rs.getFloat(4),rs.getFloat(3),motorizada, rs.getInt(6),rs.getString(2),rs.getString(7));
                     cortinas.add(c);
             }
             if(cortinas.isEmpty()){

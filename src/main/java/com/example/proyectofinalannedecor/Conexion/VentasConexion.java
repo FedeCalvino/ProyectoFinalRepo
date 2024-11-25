@@ -22,7 +22,7 @@ import java.util.List;
 
 
 public class VentasConexion implements IConexion<Venta>{
-    private static final String SQL_INSERT = "INSERT INTO VENTA(CLIENTE_ID, FECHA, OBRA, FECHA_INSTALACION,PRECIO) VALUES(?, ?, ?, ?,?)";;
+    private static final String SQL_INSERT = "INSERT INTO VENTA(CLIENTE_ID, FECHA, OBRA, FECHA_INSTALACION) VALUES( ?, ?, ?,?)";;
     private static final String SQL_DELETE = "DELETE FROM VENTA WHERE ID_VENTA = ?";
     private static final String SQL_UPDATE = "UPDATE VENTA SET FECHA = ? , CLIENTE_ID = ?,OBRA=?,FECHA_INSTALACION=?  WHERE ID_VENTA = ?";
     private static final String SQL_SELECT_ALL="SELECT * FROM venta v JOIN CLIENTE c on c.ID_CLIENTE=v.CLIENTE_ID";
@@ -56,7 +56,6 @@ public class VentasConexion implements IConexion<Venta>{
             ps.setDate(2, fecha);;
             ps.setString(3, v.getObra());
             ps.setDate(4, v.getFechaInstalacion());
-            ps.setInt(5, v.getPrecio());
             ps.execute();
             v.setFecha(fecha);
 

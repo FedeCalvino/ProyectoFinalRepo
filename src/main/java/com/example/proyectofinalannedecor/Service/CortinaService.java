@@ -37,4 +37,5 @@ public class CortinaService implements IService<Cortina>{
     public CustomResponseEntity<Cortina> findById(int id) {
         return cortinaConexion.findById(id);
     }
+
 }

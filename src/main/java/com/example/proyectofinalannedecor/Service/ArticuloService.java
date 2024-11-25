@@ -5,10 +5,12 @@ import com.example.proyectofinalannedecor.Clases.CustomResponseEntity;
 import com.example.proyectofinalannedecor.Conexion.ArticuloConexion;
 import com.example.proyectofinalannedecor.Conexion.RollerConexion;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ArticuloService implements IService<Articulo>{
     private static final ArticuloConexion articuloConexion= new ArticuloConexion();
+    private static final RollerService rollerService= new RollerService();
     @Override
     public CustomResponseEntity<List<Articulo>> findAll() {
         return null;
@@ -35,6 +37,20 @@ public class ArticuloService implements IService<Articulo>{
     }
 
     public CustomResponseEntity<List<Articulo>> findArticulosVenta(int Venta_Id) {
-        return articuloConexion.findArticulosVenta(Venta_Id);
+        CustomResponseEntity<List<Articulo>> response  = new CustomResponseEntity<>();
+        List<Articulo> articulos  = articuloConexion.findArticulosVenta(Venta_Id).getBody();
+        List<Articulo> articulosVenta  = new ArrayList<>();
+
+        for(Articulo articulo : articulos){
+            if(articulo.getNombre().equals("Cortina")){
+                Articulo articuloAdd = rollerService.findRollerArticulo(articulo).getBody();
+                if(articuloAdd!=null){
+                    articulosVenta.add(articuloAdd);
+                }
+            }
+        }
+
+        response.setBody(articulosVenta);
+        return response;
     }
 }

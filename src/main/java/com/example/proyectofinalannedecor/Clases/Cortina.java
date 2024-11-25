@@ -5,10 +5,10 @@ import java.util.Date;
 public class Cortina extends Articulo{
 
     public int Id;
-    String Alto;
+    Float Alto;
     public int IdTipoTela;
     public String Ambiente;
-    String Ancho;
+    Float Ancho;
     String Detalle;
     TipoTela tela;
     Boolean motorizada;
@@ -22,7 +22,7 @@ public class Cortina extends Articulo{
         return Ambiente;
     }
 
-    public Cortina(String nombre,String Alto, String Ancho, Boolean motorizada, int Idtela, String Ambiente,String detalle) {
+    public Cortina(String nombre,Float Alto, Float Ancho, Boolean motorizada, int Idtela, String Ambiente,String detalle) {
         super(nombre);
         this.IdTipoTela=Idtela;
         this.Alto = Alto;
@@ -57,19 +57,19 @@ public class Cortina extends Articulo{
         this.Id = Id;
     }
 
-    public String getAlto() {
+    public Float getAlto() {
         return Alto;
     }
 
-    public void setAlto(String Alto) {
+    public void setAlto(Float Alto) {
         this.Alto = Alto;
     }
 
-    public String getAncho() {
+    public Float getAncho() {
         return Ancho;
     }
 
-    public void setAncho(String ancho) {
+    public void setAncho(Float ancho) {
         this.Ancho = ancho;
     }
 

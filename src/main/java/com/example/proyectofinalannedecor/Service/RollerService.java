@@ -1,5 +1,6 @@
 package com.example.proyectofinalannedecor.Service;
 
+import com.example.proyectofinalannedecor.Clases.Articulo;
 import com.example.proyectofinalannedecor.Clases.CustomResponseEntity;
 import com.example.proyectofinalannedecor.Clases.TipoCortina.Roller;
 import com.example.proyectofinalannedecor.Conexion.CortinaConexion;
@@ -21,6 +22,9 @@ public class RollerService implements IService<Roller>{
     @Override
     public CustomResponseEntity<Roller> Save(Roller venta) {
         return rollerConexion.save(venta);
+    }
+    public CustomResponseEntity<Roller> findRollerArticulo(Articulo articulo) {
+        return rollerConexion.findRollerArticulo(articulo);
     }
 
     @Override

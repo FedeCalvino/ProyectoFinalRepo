@@ -2,6 +2,7 @@ package com.example.proyectofinalannedecor.Controller;
 
 import com.example.proyectofinalannedecor.Clases.Cortina;
 import com.example.proyectofinalannedecor.Clases.CustomResponseEntity;
+import com.example.proyectofinalannedecor.Clases.TipoCortina.Roller;
 import com.example.proyectofinalannedecor.Service.ClienteService;
 import com.example.proyectofinalannedecor.Service.CortinaService;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -25,6 +26,7 @@ public class CortinaController implements IController<Cortina> {
     public CustomResponseEntity<List<Cortina>> findAll() {
         return null;
     }
+
 
     @Override
     public CustomResponseEntity<Cortina> Save(Cortina venta) {
