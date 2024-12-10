@@ -5,6 +5,7 @@ import com.example.proyectofinalannedecor.Clases.Cortina;
 
 public class Roller extends Cortina {
     public int IdRoller;
+    public boolean Exterior;
     public Double LargoCadena;
     public Double AnchoTela;
     public Double AnchoTubo;
@@ -24,6 +25,14 @@ public class Roller extends Cortina {
         this.LadoCadena = LadoCadena;
         setAltoTelaCadena();
         setAnchoTuboTela();
+    }
+
+    public boolean isExterior() {
+        return Exterior;
+    }
+
+    public void setExterior(boolean exterior) {
+        Exterior = exterior;
     }
 
     public void setAltoTelaCadena() {

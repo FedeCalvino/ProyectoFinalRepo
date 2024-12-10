@@ -2,6 +2,7 @@ package com.example.proyectofinalannedecor.Controller;
 
 import com.example.proyectofinalannedecor.Clases.CustomResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
@@ -11,10 +12,10 @@ import java.util.List;
         CustomResponseEntity<List<T>> findAll();
 
 
-        CustomResponseEntity<T> Save(T venta);
+        CustomResponseEntity<T> Save(@RequestBody T clase);
 
 
-        CustomResponseEntity<T> update(T venta);
+        CustomResponseEntity<T> update(@RequestBody T clase);
 
         CustomResponseEntity<T> delete(int id);
 

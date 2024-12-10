@@ -9,10 +9,10 @@ public interface IService<T> {
     CustomResponseEntity<List<T>> findAll();
 
 
-    CustomResponseEntity<T> Save(T venta);
+    CustomResponseEntity<T> Save(T Clase);
 
 
-    CustomResponseEntity<T> update(T venta);
+    CustomResponseEntity<T> update(T Clase);
 
     CustomResponseEntity<T> delete(int id);
 

@@ -16,6 +16,7 @@ import java.util.List;
 @RequestMapping("/Cortina")
 
 public class CortinaController implements IController<Cortina> {
+
     private CortinaService CortinaService;
 
     public CortinaController(CortinaService cs) {

@@ -22,6 +22,10 @@ dependencies {
     implementation 'com.microsoft.sqlserver:mssql-jdbc:9.4.1.jre11'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'io.github.cdimascio:java-dotenv:5.2.2'
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'  // JUnit 5 runtime
 }
@@ -32,7 +36,7 @@ tasks.named('test') {
 }
 
 springBoot {
-    mainClass = 'com.example.sistemaannedecor2.SistemaAnneDecor2Application'
+    mainClass = 'com.example.proyectofinalannedecor.ProyectoFinalAnneDecorApplication'
 }
 
 test {
@@ -42,6 +46,6 @@ test {
 tasks.withType(com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
     archiveClassifier.set('')
     manifest {
-        attributes 'Main-Class': 'com.example.sistemaannedecor2.SistemaAnneDecor2Application'
+        attributes 'Main-Class': 'com.example.proyectofinalannedecor.ProyectoFinalAnneDecorApplication'
     }
 }
