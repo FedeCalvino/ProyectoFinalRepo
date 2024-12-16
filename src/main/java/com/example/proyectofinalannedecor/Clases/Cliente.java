@@ -9,12 +9,14 @@ public class Cliente {
     String Nombre;
     BigDecimal NumeroTelefono;
     String direccion;
+    String Mail;
     String Tipo;
 
 
 
-    public Cliente(Integer Id, BigDecimal rut,String Nombre, BigDecimal NumeroTelefono, String direccion, String Tipo) {
+    public Cliente(Integer Id, BigDecimal rut,String Nombre, BigDecimal NumeroTelefono, String direccion, String Tipo,String Mail) {
         this.Id = Id;
+        this.Mail=Mail;
         this.Nombre = Nombre;
         this.direccion = direccion;
         Rut=rut;

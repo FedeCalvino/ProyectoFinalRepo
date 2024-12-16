@@ -1,10 +1,9 @@
 package com.example.proyectofinalannedecor.Conexion;
 
 import com.example.proyectofinalannedecor.Clases.Articulo;
-import com.example.proyectofinalannedecor.Clases.Cortina;
+import com.example.proyectofinalannedecor.Clases.ConfiguracionCortinas.*;
 import com.example.proyectofinalannedecor.Clases.CustomResponseEntity;
 import com.example.proyectofinalannedecor.Clases.TipoCortina.Roller;
-import com.example.proyectofinalannedecor.Clases.Venta;
 import org.springframework.http.HttpStatus;
 
 import java.sql.PreparedStatement;
@@ -14,21 +13,23 @@ import java.util.List;
 
 public class RollerConexion implements IConexion<Roller> {
     private static final String SQL_SELECT_ROLLER_ARTICULO = "SELECT * FROM ROLLER R JOIN CORTINA C ON R.ID_CORTINA=C.ID_CORTINA WHERE C.ID_ARTICULO=?";
-    private static final String SQL_INSERT = "INSERT INTO ROLLER(ID_CORTINA,CADENA_METALICA,CANO,LADO_CADENA,POSICION) VALUES(?,?,?,?,?)";
+    private static final String SQL_INSERT = "INSERT INTO ROLLER(ID_CORTINA,ID_CADENA,ID_MOTOR,ID_POSICION,ID_LADO_CADENA,ID_CANO) VALUES(?,?,?,?,?,?)";
 
+    Byte truebyte=1;
     @Override
     public CustomResponseEntity<Roller> save(Roller R) {
+        System.out.println(R.toString());
         CustomResponseEntity<Roller> response = new CustomResponseEntity<>();
         java.sql.Connection conexion = null;
         try {
             conexion = Conexion.GetConexion();
             PreparedStatement ps = conexion.prepareStatement(SQL_INSERT, Statement.RETURN_GENERATED_KEYS);
             ps.setInt(1, R.getId());
-            ps.setByte(2, R.isCadenaMetalicaByte());
-            ps.setInt(3, R.getTubo());
-            ps.setString(4, R.getLadoCadena());
-            ps.setString(5, R.getPosicion());
-
+            ps.setInt(2, R.getTipoCadena().getIdTipoCadena());
+            ps.setInt(3, R.getMotorRoller().getIdMotor());
+            ps.setInt(4, R.getPosicion().getPosicionId());
+            ps.setInt(5, R.getLadoCadena().getLadoId());
+            ps.setInt(6, R.getCano().getId());
             // Ejecutar la inserción
             ps.execute();
 
@@ -93,22 +94,19 @@ public class RollerConexion implements IConexion<Roller> {
             statement.setInt(1,articulo.getIdArticulo());
             ResultSet rs = statement.executeQuery();
             while(rs.next()){
-                byte trueBite=1;
-                boolean motorizada = rs.getByte(11)==trueBite;
-                boolean CadenaMetalica = rs.getByte(3)==trueBite;
                 Roller r = new Roller (
                         articulo.getNombre(),
-                        rs.getString(8),
+                        rs.getString(9),
                         rs.getFloat(10),
-                        rs.getFloat(9),
-                        motorizada,
+                        rs.getFloat(11),
                         rs.getInt(12),
-                        CadenaMetalica,
-                        rs.getInt(4),
-                        rs.getString(6),
-                        rs.getString(5),
-                        "",
-                        0);
+                        new TipoCadena(rs.getInt(3)),
+                        new Cano(rs.getInt(7)),
+                        new Posicion(rs.getInt(5)),
+                        new LadoCadena(rs.getInt(6)),
+                        rs.getString(12),
+                        1,
+                        new Motor(rs.getInt(4)));
                 r.setIdRoller(rs.getInt(1));
                 response.setBody(r);
                 response.setStatus(HttpStatus.OK);

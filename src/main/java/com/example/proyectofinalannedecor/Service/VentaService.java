@@ -24,10 +24,13 @@ public class VentaService implements IService<Venta>{
 
     @Override
     public CustomResponseEntity<List<Venta>> findAll() {
+
         CustomResponseEntity<List<Venta>> ventas = VentasConexion.findAll();
+
         for(Venta v : ventas.getBody()){
             System.out.println(v.getId());
-            List<Articulo> articulos = ArticuloService.findArticulosVenta(v.getId()).getBody();
+            //Roller
+            List<Articulo> articulos = ArticuloService.findArticulos(v.getId()).getBody();
             v.setArticulos(articulos);
         }
         return ventas;
@@ -36,32 +39,33 @@ public class VentaService implements IService<Venta>{
     @Override
     public CustomResponseEntity<Venta> Save(Venta venta) {
         CustomResponseEntity<Venta> responseVenta = new CustomResponseEntity<>();
+
         CustomResponseEntity<Cliente> responseCliente = ClienteService.Save(venta.getCliente());
+
         if(responseCliente.getStatus() == HttpStatus.CREATED) {
             responseVenta = VentasConexion.save(venta);
             if (responseVenta.getStatus() == HttpStatus.OK) {
                 Cliente c = responseCliente.getBody();
                 venta.setCliente(c);
                 for (Articulo articulo : venta.getListaArticulos()) {
-
                     CustomResponseEntity<Articulo> responseArticulo = ArticuloService.Save(articulo);
                     if(responseArticulo.getStatus()!= HttpStatus.CREATED) {
                         responseVenta.setStatus(HttpStatus.BAD_REQUEST);
                         responseVenta.setMessage(responseArticulo.getMessage());
                         return responseVenta;
                     }
-                    boolean ventaArticulo = VentasConexion.SaveArticuloVenta(responseArticulo.getBody().getIdArticulo(),responseVenta.getBody().getId());
-                    if(!ventaArticulo) {
-                        responseVenta.setStatus(HttpStatus.BAD_REQUEST);
-                        responseVenta.setMessage(responseArticulo.getMessage());
-                        return responseVenta;
-                    }
+                    if(articulo instanceof Roller){
+                        boolean ventaArticulo = VentasConexion.SaveArticuloVenta(responseArticulo.getBody().getIdArticulo(),responseVenta.getBody().getId());
 
+                        if(!ventaArticulo) {
+                            responseVenta.setStatus(HttpStatus.BAD_REQUEST);
+                            responseVenta.setMessage(responseArticulo.getMessage());
+                            return responseVenta;
+                        }
 
-                    if(articulo instanceof Roller) {
-                        Roller roller = (Roller) articulo;
-
+                            Roller roller = (Roller) articulo;
                             CustomResponseEntity<Cortina> responseCortina = CortinaService.Save(roller);
+
                             if (responseCortina.getStatus() != HttpStatus.OK) {
                                 responseVenta.setStatus(HttpStatus.BAD_REQUEST);
                                 responseVenta.setMessage(responseCortina.getMessage());

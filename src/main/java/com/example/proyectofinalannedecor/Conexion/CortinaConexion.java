@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CortinaConexion implements IConexion<Cortina>{
-    private static final String SQL_INSERT_CORTINA = "INSERT INTO CORTINA(ALTO,ANCHO,ID_TIPO_TELA,MOTORIZADA,AMBIENTE,DETALLES,ID_ARTICULO) VALUES(?,?,?,?,?,?,?)";
+    private static final String SQL_INSERT_CORTINA = "INSERT INTO CORTINA(ALTO,ANCHO,ID_TIPO_TELA,AMBIENTE,DETALLES,ID_ARTICULO) VALUES(?,?,?,?,?,?)";
 
     private static final String SQL_DELETE = "DELETE FROM CORTINAS WHERE ID_CORTINA = ?";
     private static final String SQL_UPDATE_CORTINA = "UPDATE CORTINAS SET AMBIENTE =? ,ALTO = ?, ANCHO = ? , TIPO_TELA_ID = ? , MOTORIZADA = ? WHERE ID_CORTINA = ?";
@@ -31,19 +31,13 @@ public class CortinaConexion implements IConexion<Cortina>{
             // Obtener la conexión
             conexion = (java.sql.Connection) Conexion.GetConexion();
 
-            // Preparar la sentencia SQL con RETURN_GENERATED_KEYS
             PreparedStatement ps = conexion.prepareStatement(SQL_INSERT_CORTINA, Statement.RETURN_GENERATED_KEYS);
             ps.setFloat(1, C.getAlto());
             ps.setFloat(2, C.getAncho());
             ps.setInt(3, C.GetTipoTelaId());
-            ps.setString(5, C.getAmbiente());
-            ps.setString(6, C.getDetalle());
-            ps.setInt(7, C.getIdArticulo());
-            if (C.getMotorizada()) {
-                ps.setByte(4, trueBite);
-            } else {
-                ps.setByte(4, falseBite);
-            }
+            ps.setString(4, C.getAmbiente());
+            ps.setString(5, C.getDetalle());
+            ps.setInt(6, C.getIdArticulo());
 
             ps.execute();
             ResultSet rs = ps.getGeneratedKeys();
@@ -104,7 +98,7 @@ public class CortinaConexion implements IConexion<Cortina>{
             ResultSet rs = statement.executeQuery();
             while(rs.next()){
                     boolean motorizada = rs.getByte(5)==trueBite;
-                    Cortina c = new Cortina ("Cortina",rs.getFloat(4),rs.getFloat(3),motorizada, rs.getInt(6),rs.getString(2),rs.getString(7));
+                    Cortina c = new Cortina ("Cortina",rs.getFloat(4),rs.getFloat(3),0,rs.getString(2),rs.getString(7));
                     cortinas.add(c);
             }
             if(cortinas.isEmpty()){

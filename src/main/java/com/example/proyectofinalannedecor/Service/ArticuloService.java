@@ -36,16 +36,17 @@ public class ArticuloService implements IService<Articulo>{
         return null;
     }
 
-    public CustomResponseEntity<List<Articulo>> findArticulosVenta(int Venta_Id) {
+    public CustomResponseEntity<List<Articulo>> findArticulos(int Venta_Id) {
         CustomResponseEntity<List<Articulo>> response  = new CustomResponseEntity<>();
         List<Articulo> articulos  = articuloConexion.findArticulosVenta(Venta_Id).getBody();
         List<Articulo> articulosVenta  = new ArrayList<>();
-
-        for(Articulo articulo : articulos){
-            if(articulo.getNombre().equals("Cortina")){
-                Articulo articuloAdd = rollerService.findRollerArticulo(articulo).getBody();
-                if(articuloAdd!=null){
-                    articulosVenta.add(articuloAdd);
+        if(articulos!=null){
+            for (Articulo articulo : articulos) {
+                if (articulo.getNombre().equals("Roller")) {
+                    Articulo articuloAdd = rollerService.findRollerArticulo(articulo).getBody();
+                    if (articuloAdd != null) {
+                        articulosVenta.add(articuloAdd);
+                    }
                 }
             }
         }

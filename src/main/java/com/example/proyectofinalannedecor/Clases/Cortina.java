@@ -1,5 +1,7 @@
 package com.example.proyectofinalannedecor.Clases;
 
+import com.example.proyectofinalannedecor.Clases.ConfiguracionCortinas.Motor;
+
 import java.util.Date;
 
 public class Cortina extends Articulo{
@@ -11,7 +13,6 @@ public class Cortina extends Articulo{
     Float Ancho;
     String Detalle;
     TipoTela tela;
-    Boolean motorizada;
 
 
     public void setTela(TipoTela tela) {
@@ -22,13 +23,12 @@ public class Cortina extends Articulo{
         return Ambiente;
     }
 
-    public Cortina(String nombre,Float Alto, Float Ancho, Boolean motorizada, int Idtela, String Ambiente,String detalle) {
+    public Cortina(String nombre,Float Alto, Float Ancho, int Idtela, String Ambiente,String detalle) {
         super(nombre);
         this.IdTipoTela=Idtela;
         this.Alto = Alto;
         this.Ancho = Ancho;
         this.Ambiente = Ambiente;
-        this.motorizada = motorizada;
         this.Detalle = detalle;
     }
 
@@ -71,14 +71,6 @@ public class Cortina extends Articulo{
 
     public void setAncho(Float ancho) {
         this.Ancho = ancho;
-    }
-
-    public Boolean getMotorizada() {
-        return motorizada;
-    }
-
-    public void setMotorizada(Boolean motorizada) {
-        this.motorizada = motorizada;
     }
 
     public String GetNombreTela(){

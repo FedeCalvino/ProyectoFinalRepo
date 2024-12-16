@@ -14,6 +14,8 @@ import java.util.List;
 public class RollerService implements IService<Roller>{
 
     private static final RollerConexion rollerConexion= new RollerConexion();
+    private static final ConfigService configService= new ConfigService();
+
     @Override
     public CustomResponseEntity<List<Roller>> findAll() {
         return rollerConexion.findAll();
@@ -24,7 +26,17 @@ public class RollerService implements IService<Roller>{
         return rollerConexion.save(venta);
     }
     public CustomResponseEntity<Roller> findRollerArticulo(Articulo articulo) {
-        return rollerConexion.findRollerArticulo(articulo);
+        CustomResponseEntity<Roller> response = new CustomResponseEntity<>();
+        Roller roll =  rollerConexion.findRollerArticulo(articulo).getBody();
+        System.out.println(roll);
+        roll.setCano(configService.findCanobyId(roll.getCano().getId()).getBody());
+        roll.setLadoCadena(configService.findLadoCadenabyId(roll.getLadoCadena().getLadoId()).getBody());
+        roll.setMotorRoller(configService.findMotorbyId(roll.getMotorRoller().getIdMotor()).getBody());
+        roll.setPosicion(configService.findPosbyId(roll.getPosicion().getPosicionId()).getBody());
+        roll.setTipoCadena(configService.findTipoCadenabyId(roll.getTipoCadena().getIdTipoCadena()).getBody());
+
+        response.setBody(roll);
+        return response;
     }
 
     @Override

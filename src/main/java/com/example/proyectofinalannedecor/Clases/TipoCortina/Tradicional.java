@@ -5,6 +5,7 @@
 package com.example.proyectofinalannedecor.Clases.TipoCortina;
 
 
+import com.example.proyectofinalannedecor.Clases.ConfiguracionCortinas.Motor;
 import com.example.proyectofinalannedecor.Clases.Cortina;
 
 public class Tradicional extends Cortina {
@@ -16,8 +17,8 @@ public class Tradicional extends Cortina {
     private byte trueBite = 1;
     private byte falseBite = 0;
 
-    public Tradicional(String NombreArt,Float Alto, Float largo, Boolean motorizada, int Idtela, int cantidadPanos,String Ambiente,String detalle,int numeroCortina,String AnchoDerecho,String Acumula,String pinza) {
-        super(NombreArt,Alto, largo, motorizada, Idtela,Ambiente,detalle);
+    public Tradicional(String NombreArt, Float Alto, Float largo, Motor motorizada, int Idtela, int cantidadPanos, String Ambiente, String detalle, int numeroCortina, String AnchoDerecho, String Acumula, String pinza) {
+        super(NombreArt,Alto, largo, Idtela,Ambiente,detalle);
         CantidadPanos = cantidadPanos;
         this.Pinza=pinza;
         this.AnchoDerecho = AnchoDerecho;

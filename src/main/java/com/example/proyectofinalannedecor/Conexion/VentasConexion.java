@@ -130,7 +130,7 @@ public class VentasConexion implements IConexion<Venta>{
 
                 Venta venta = new Venta(
                 rs.getInt("ID_VENTA"),
-                new Cliente(rs.getInt("CLIENTE_ID"),bgdecimal,"",bgdecimal,"",""),
+                new Cliente(rs.getInt("CLIENTE_ID"),bgdecimal,"",bgdecimal,"","",""),
                 new ArrayList<Articulo>(),
                 rs.getDate("FECHA"),
                         rs.getDate("FECHA_INSTALACION"),
@@ -226,7 +226,7 @@ public class VentasConexion implements IConexion<Venta>{
             ResultSet rs = statement.executeQuery();
             while(rs.next()){
                 Venta v = new Venta(rs.getInt(1),
-                        new Cliente(rs.getInt(7),rs.getBigDecimal(8),rs.getString(9),rs.getBigDecimal(10),rs.getString(11),rs.getString(11))
+                        new Cliente(rs.getInt(7),rs.getBigDecimal(8),rs.getString(9),rs.getBigDecimal(10),rs.getString(11),rs.getString(12),rs.getString(13))
                         ,null,rs.getDate(3),rs.getDate(5),rs.getInt(4),rs.getString(6));
                 ventas.add(v);
             }

@@ -40,19 +40,22 @@ public class ClienteController implements IController<Cliente>{
         CustomResponseEntity<Cliente> response = clienteService.update(cliente);
         return response;
     }
+
     @DeleteMapping("/{id}")
     @Override
     public CustomResponseEntity<Cliente> delete(@PathVariable int id) {
         CustomResponseEntity<Cliente> response = clienteService.delete(id);
         return response;
     }
+
     @GetMapping("/{id}")
     @Override
     public CustomResponseEntity<Cliente> findById(@PathVariable int id) {
         CustomResponseEntity<Cliente> response = clienteService.findById(id);
         return response;
     }
-    @GetMapping("Name/{name}")
+
+    @GetMapping("/Name/{name}")
     public CustomResponseEntity<List<Cliente>> findByName(@PathVariable String name){
         CustomResponseEntity<List<Cliente>> response = clienteService.findByName(name);
         return response;
