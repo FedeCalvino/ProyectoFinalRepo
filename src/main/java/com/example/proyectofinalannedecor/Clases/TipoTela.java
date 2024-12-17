@@ -2,15 +2,15 @@ package com.example.proyectofinalannedecor.Clases;
 
 
 public class TipoTela {
-    public int Id;
-    public String Nombre;
-    public String Color;
-    public int Tipo;
-    public String Codigo;
+    private int Id;
+    private String Nombre;
+    private String Color;
+    private int Tipo;
+    private String Codigo;
 
-    public TipoTela(String nombre, String color, int tipo, String codigo) {
-        Nombre = nombre;
-        Color = color;
+    public TipoTela(String Nombre, String Color, int tipo, String codigo) {
+        this.Nombre = Nombre;
+        this.Color = Color;
         Tipo = tipo;
         Codigo = codigo;
     }
@@ -35,8 +35,8 @@ public class TipoTela {
         return Color;
     }
 
-    public void setColor(String color) {
-        Color = color;
+    public void setColor(String Color) {
+        this.Color = Color;
     }
 
     public int getTipo() {
