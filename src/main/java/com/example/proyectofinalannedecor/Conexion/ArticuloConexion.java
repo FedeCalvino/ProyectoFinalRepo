@@ -3,6 +3,7 @@ package com.example.proyectofinalannedecor.Conexion;
 import com.example.proyectofinalannedecor.Clases.Articulo;
 import com.example.proyectofinalannedecor.Clases.Cliente;
 import com.example.proyectofinalannedecor.Clases.CustomResponseEntity;
+import com.example.proyectofinalannedecor.Clases.Orden.Orden;
 import com.example.proyectofinalannedecor.Clases.Venta;
 import org.springframework.http.HttpStatus;
 
@@ -16,6 +17,8 @@ import java.util.List;
 public class ArticuloConexion implements IConexion<Articulo>{
     private static final String SQL_INSERT = "INSERT INTO ARTICULO (NOMBRE,CODIGO) VALUES (?,?)";
     private static final String SQL_SELECT_ARTICULOS_VENTA_ID = "SELECT  * FROM ARTICULO A JOIN  VENTA_ARTICULO VA ON VA.ID_ARTICULO=A.ID_ARTICULO WHERE VA.ID_VENTA=?";
+    private static final String SelectArticulosByIdOrden = "SELECT * FROM ARTICULO a JOIN ORDEN o ON o.ID_ARTICULO=a.ID_ARTICULO WHERE ID_ORDEN = ?";
+
     @Override
     public CustomResponseEntity<Articulo> save(Articulo articulo) {
         CustomResponseEntity<Articulo> response = new CustomResponseEntity<>();
@@ -54,6 +57,44 @@ public class ArticuloConexion implements IConexion<Articulo>{
             }
             response.setStatus(HttpStatus.CREATED);
             response.setBody(articulo);
+        }
+        return response;
+    }
+
+    public CustomResponseEntity<List<Articulo>> findArticulosByIdOrden(Integer id) {
+        CustomResponseEntity<List<Articulo>> response = new CustomResponseEntity<>();
+        List<Articulo> articulos =new ArrayList<>();
+        java.sql.Connection connection = null;
+        try{
+            connection = (java.sql.Connection) Conexion.GetConexion();
+            PreparedStatement statement = connection.prepareStatement(SelectArticulosByIdOrden);
+            statement.setInt(1, id);
+            ResultSet rs = statement.executeQuery();
+            while(rs.next()){
+                Articulo A = new Articulo(rs.getString(2));
+                A.setIdArticulo(rs.getInt(1));
+                A.setCodigoBarras(rs.getString(3));
+                articulos.add(A);
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+            response.setStatus(HttpStatus.BAD_REQUEST);
+            response.setMessage(e.getMessage());
+        }finally{
+            try{
+                connection.close();
+            }catch(Exception e){
+                e.printStackTrace();
+                response.setStatus(HttpStatus.BAD_REQUEST);
+                response.setMessage(e.getMessage());
+            }
+        }
+        if(articulos.isEmpty()){
+            response.setStatus(HttpStatus.NOT_FOUND);
+            response.setMessage("no se encontraron articulos");
+        }else{
+            response.setStatus(HttpStatus.OK);
+            response.setBody(articulos);
         }
         return response;
     }

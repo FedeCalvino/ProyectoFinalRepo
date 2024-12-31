@@ -29,12 +29,14 @@ public class RollerService implements IService<Roller>{
         CustomResponseEntity<Roller> response = new CustomResponseEntity<>();
         Roller roll =  rollerConexion.findRollerArticulo(articulo).getBody();
         System.out.println(roll);
+
+        /*
         roll.setCano(configService.findCanobyId(roll.getCano().getId()).getBody());
         roll.setLadoCadena(configService.findLadoCadenabyId(roll.getLadoCadena().getLadoId()).getBody());
         roll.setMotorRoller(configService.findMotorbyId(roll.getMotorRoller().getIdMotor()).getBody());
         roll.setPosicion(configService.findPosbyId(roll.getPosicion().getPosicionId()).getBody());
         roll.setTipoCadena(configService.findTipoCadenabyId(roll.getTipoCadena().getIdTipoCadena()).getBody());
-
+        */
         response.setBody(roll);
         return response;
     }

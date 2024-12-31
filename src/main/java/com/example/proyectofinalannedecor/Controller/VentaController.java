@@ -49,7 +49,8 @@ public class VentaController implements IController<Venta> {
 
     @Override
     @GetMapping("/{id}")
-    public CustomResponseEntity<Venta> findById(int id) {
+    public CustomResponseEntity<Venta> findById(@PathVariable int id) {
+        System.out.println(id);
         CustomResponseEntity<Venta> response = ventaService.findById(id);
         return response;
     }

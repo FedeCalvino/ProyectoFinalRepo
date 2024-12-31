@@ -1,8 +1,8 @@
 package com.example.proyectofinalannedecor.Service;
 
 import com.example.proyectofinalannedecor.Clases.*;
+import com.example.proyectofinalannedecor.Clases.Orden.Orden;
 import com.example.proyectofinalannedecor.Clases.TipoCortina.Roller;
-import com.example.proyectofinalannedecor.Conexion.CortinaConexion;
 import com.example.proyectofinalannedecor.Conexion.VentasConexion;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -18,6 +18,8 @@ public class VentaService implements IService<Venta>{
     private static final CortinaService CortinaService = new CortinaService();
     private static final ArticuloService ArticuloService = new ArticuloService();
     private static final RollerService RollerService = new RollerService();
+    private static final OrderService orderService = new OrderService();
+
     public VentaService() {
 
     }
@@ -26,13 +28,14 @@ public class VentaService implements IService<Venta>{
     public CustomResponseEntity<List<Venta>> findAll() {
 
         CustomResponseEntity<List<Venta>> ventas = VentasConexion.findAll();
-
+        /*
         for(Venta v : ventas.getBody()){
             System.out.println(v.getId());
             //Roller
             List<Articulo> articulos = ArticuloService.findArticulos(v.getId()).getBody();
             v.setArticulos(articulos);
         }
+        */
         return ventas;
     }
 
@@ -46,6 +49,7 @@ public class VentaService implements IService<Venta>{
             responseVenta = VentasConexion.save(venta);
             if (responseVenta.getStatus() == HttpStatus.OK) {
                 Cliente c = responseCliente.getBody();
+
                 venta.setCliente(c);
                 for (Articulo articulo : venta.getListaArticulos()) {
                     CustomResponseEntity<Articulo> responseArticulo = ArticuloService.Save(articulo);
@@ -54,7 +58,9 @@ public class VentaService implements IService<Venta>{
                         responseVenta.setMessage(responseArticulo.getMessage());
                         return responseVenta;
                     }
+
                     if(articulo instanceof Roller){
+
                         boolean ventaArticulo = VentasConexion.SaveArticuloVenta(responseArticulo.getBody().getIdArticulo(),responseVenta.getBody().getId());
 
                         if(!ventaArticulo) {
@@ -78,6 +84,8 @@ public class VentaService implements IService<Venta>{
                                 responseVenta.setMessage(responseRoller.getMessage());
                                 return responseVenta;
                             }
+
+                            Orden orden = orderService.CrearNuevaOrdenRoller(responseRoller.getBody());
 
                     }
                 }
@@ -108,7 +116,13 @@ public class VentaService implements IService<Venta>{
 
     @Override
     public CustomResponseEntity<Venta> findById(int id) {
-        return VentasConexion.findById(id);
+        CustomResponseEntity<Venta> responseVenta = new CustomResponseEntity<>();
+        Venta v = VentasConexion.findById(id).getBody();
+        List<Articulo> articulos = ArticuloService.findArticulos(id).getBody();
+        v.setArticulos(articulos);
+        responseVenta.setBody(v);
+        responseVenta.setMessage("Ok");
+        return responseVenta;
     }
 
 }

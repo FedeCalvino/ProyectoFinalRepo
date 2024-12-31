@@ -186,7 +186,7 @@ public class ClienteConexion implements IConexion<Cliente>{
             PreparedStatement statement = connection.prepareStatement(SQL_SELECT_ALL);
             ResultSet rs = statement.executeQuery();
             while(rs.next()){
-                c = new Cliente (1,rs.getBigDecimal(2),rs.getString(3),rs.getBigDecimal(4),rs.getString(5),rs.getString(6),rs.getString(7));
+                c = new Cliente (rs.getInt(1),rs.getBigDecimal(2),rs.getString(3),rs.getBigDecimal(4),rs.getString(5),rs.getString(6),rs.getString(7));
                 Clientes.add(c);
             }
         }catch(Exception e){

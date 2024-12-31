@@ -20,9 +20,12 @@ public class ArticuloService implements IService<Articulo>{
     public CustomResponseEntity<Articulo> Save(Articulo articulo) {
         return articuloConexion.save(articulo);
     }
+    public CustomResponseEntity<List<Articulo>> findArticulosByIdOrden(Integer id) {
+        return articuloConexion.findArticulosByIdOrden(id);
+    }
 
     @Override
-    public CustomResponseEntity<Articulo> update(Articulo venta) {
+    public CustomResponseEntity<Articulo> update(Articulo articulo) {
         return null;
     }
 
