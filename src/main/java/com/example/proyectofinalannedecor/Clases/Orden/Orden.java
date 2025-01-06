@@ -9,29 +9,48 @@ import java.util.List;
 
 public class Orden {
 
+
     private int idOrden;
+    private int idVenta;
+    private int IdArticulo;
     private Articulo articulo;
     private EstadosPasosOrden estado;
     private java.sql.Date fechaFinalizado;
     private java.sql.Date fechacCreacion;
     private List<PasoOrden> pasos;
 
-    public Orden(int idOrden,List<PasoOrden> pasos,Articulo articulo,EstadosPasosOrden estado){
+    public Orden(int idOrden,List<PasoOrden> pasos,EstadosPasosOrden estado,int IDarticulo){
         this.idOrden=idOrden;
-        this.articulo = articulo;
         this.estado = estado;
         this.pasos = pasos;
+        this.IdArticulo=IDarticulo;
     }
 
+    public int getIdArticulo() {
+        return IdArticulo;
+    }
+
+    public void setIdArticulo(int idArticulo) {
+        IdArticulo = idArticulo;
+    }
 
     @Override
     public String toString() {
         return super.toString();
     }
 
+    public int getIdVenta() {
+        return idVenta;
+    }
+
+    public void setIdVenta(int idVenta) {
+        this.idVenta = idVenta;
+    }
+
     public Date getFechacCreacion() {
         return fechacCreacion;
     }
+
 
     public void setFechacCreacion(Date fechacCreacion) {
         this.fechacCreacion = fechacCreacion;

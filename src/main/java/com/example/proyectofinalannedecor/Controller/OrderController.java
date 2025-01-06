@@ -65,7 +65,7 @@ public class OrderController implements IController<Orden>{
 
     @Override
     public CustomResponseEntity<Orden> findById(int id) {
-        return null;
+        return Oservice.findById(id);
     }
 
 }

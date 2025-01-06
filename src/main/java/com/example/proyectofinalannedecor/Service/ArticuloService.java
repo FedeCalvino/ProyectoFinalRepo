@@ -20,6 +20,7 @@ public class ArticuloService implements IService<Articulo>{
     public CustomResponseEntity<Articulo> Save(Articulo articulo) {
         return articuloConexion.save(articulo);
     }
+
     public CustomResponseEntity<List<Articulo>> findArticulosByIdOrden(Integer id) {
         return articuloConexion.findArticulosByIdOrden(id);
     }
@@ -36,7 +37,16 @@ public class ArticuloService implements IService<Articulo>{
 
     @Override
     public CustomResponseEntity<Articulo> findById(int id) {
-        return null;
+
+        CustomResponseEntity<Articulo> response = articuloConexion.findById(id);
+
+        if (response.getBody().getNombre().equals("Roller")) {
+            Articulo articuloret= rollerService.findRollerArticulo(response.getBody()).getBody();
+            response.setBody(articuloret);
+            response.setMessage("OK");
+        }
+
+        return response;
     }
 
     public CustomResponseEntity<List<Articulo>> findArticulos(int Venta_Id) {

@@ -4,10 +4,7 @@ import com.example.proyectofinalannedecor.Clases.Articulo;
 import com.example.proyectofinalannedecor.Clases.Cliente;
 import com.example.proyectofinalannedecor.Clases.ConfiguracionCortinas.*;
 import com.example.proyectofinalannedecor.Clases.CustomResponseEntity;
-import com.example.proyectofinalannedecor.Clases.Orden.EstadosPasosOrden;
-import com.example.proyectofinalannedecor.Clases.Orden.Orden;
-import com.example.proyectofinalannedecor.Clases.Orden.PasoOrden;
-import com.example.proyectofinalannedecor.Clases.Orden.PasosArticulo;
+import com.example.proyectofinalannedecor.Clases.Orden.*;
 import com.example.proyectofinalannedecor.Clases.TipoCortina.Roller;
 import org.springframework.http.HttpStatus;
 
@@ -22,11 +19,14 @@ public class OrdenConexion implements IConexion<Orden>{
     private static final String InsertOrder = "INSERT INTO ORDEN(ID_ARTICULO,ESTADO) VALUES (?,?)";
     private static final String InsertPasoOrder = "INSERT INTO PASO_ORDEN(ID_ORDEN,NOMBRE_PASO,ESTADO_PASO,TERMINADA) VALUES (?,?,?,?)";
     private static final String SelectPasosOrden = "SELECT * FROM PASO_ORDEN WHERE ID_ORDEN = ?";
-    private static final String SelectOrdenes = "SELECT * FROM ORDEN";
+    private static final String SelectOrdenes = "SELECT o.FECHA_CREACION,o.ID_ORDEN,o.ID_ARTICULO,o.ESTADO,va.ID_VENTA FROM ORDEN o join articulo a on o.ID_ARTICULO=a.ID_ARTICULO join VENTA_ARTICULO va on va.ID_ARTICULO=a.ID_ARTICULO";
     private static final String DeleteOrder = "DELETE FROM ORDEN WHERE ORDER_ID = ?";
     private static final String UpdatePasoOrden = "UPDATE PASO_ORDEN SET TERMINADA = ?, FECHA_FINALIZACION = ? WHERE ID_PASO_ORDEN = ?";
     private static final String UpdateOrden = "UPDATE ORDER SET FECHA_FINALIZADO = ?, SET ESTADO = ? WHERE ID_ORDEN = ?";
     private static final String CheckForUpdateRollerTela_Corte = "SELECT po.TERMINADA FROM PASO_ORDEN po JOIN ORDEN o ON o.ID_ORDEN = po.ID_ORDEN WHERE o.ID_ORDEN = ? AND (po.NOMBRE_PASO = 'CORTE_TELA' OR po.NOMBRE_PASO = 'CORTE_CANO');";
+
+
+
     private Byte trueByte =1;
     private Byte falseByte =0;
 
@@ -49,7 +49,7 @@ public class OrdenConexion implements IConexion<Orden>{
                 orden.setIdOrden(generatedId);
             }else {
                 response.setStatus(HttpStatus.BAD_REQUEST);
-                response.setMessage("No se pudo agregar el roller");
+                response.setMessage("No se pudo agregar la orden");
                 return response;
             }
         } catch (Exception e) {
@@ -116,6 +116,8 @@ public class OrdenConexion implements IConexion<Orden>{
         response.setBody(pasoorden);
         return response;
     }
+
+
 
     @Override
     public CustomResponseEntity<Orden> findById(Integer id) {
@@ -251,13 +253,11 @@ public class OrdenConexion implements IConexion<Orden>{
             ResultSet rs = statement.executeQuery();
 
             while (rs.next()) {
-                Orden orden = new Orden(0,new ArrayList<>(),new Articulo(""),null);
-                orden.setFechacCreacion(rs.getDate(4));
-                orden.setIdOrden(rs.getInt(1));
-                Articulo artic = new Articulo("");
-                artic.setIdArticulo(rs.getInt(2));
-                orden.setArticulo(artic);
-                orden.setEstado(EstadosPasosOrden.valueOf(rs.getString(3)));
+                Orden orden = new Orden(0,new ArrayList<>(),null,rs.getInt(3));
+                orden.setFechacCreacion(rs.getDate(1));
+                orden.setIdOrden(rs.getInt(2));
+                orden.setEstado(EstadosPasosOrden.valueOf(rs.getString(4)));
+                orden.setIdVenta(rs.getInt(5));
                 ListOrdenes.add(orden);
             }
 

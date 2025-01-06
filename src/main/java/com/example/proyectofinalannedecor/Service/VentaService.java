@@ -1,6 +1,7 @@
 package com.example.proyectofinalannedecor.Service;
 
 import com.example.proyectofinalannedecor.Clases.*;
+import com.example.proyectofinalannedecor.Clases.Orden.Lote;
 import com.example.proyectofinalannedecor.Clases.Orden.Orden;
 import com.example.proyectofinalannedecor.Clases.TipoCortina.Roller;
 import com.example.proyectofinalannedecor.Conexion.VentasConexion;
@@ -19,7 +20,7 @@ public class VentaService implements IService<Venta>{
     private static final ArticuloService ArticuloService = new ArticuloService();
     private static final RollerService RollerService = new RollerService();
     private static final OrderService orderService = new OrderService();
-
+private static final LoteService LoteService = new LoteService();
     public VentaService() {
 
     }
@@ -49,10 +50,10 @@ public class VentaService implements IService<Venta>{
             responseVenta = VentasConexion.save(venta);
             if (responseVenta.getStatus() == HttpStatus.OK) {
                 Cliente c = responseCliente.getBody();
-
                 venta.setCliente(c);
                 for (Articulo articulo : venta.getListaArticulos()) {
                     CustomResponseEntity<Articulo> responseArticulo = ArticuloService.Save(articulo);
+
                     if(responseArticulo.getStatus()!= HttpStatus.CREATED) {
                         responseVenta.setStatus(HttpStatus.BAD_REQUEST);
                         responseVenta.setMessage(responseArticulo.getMessage());

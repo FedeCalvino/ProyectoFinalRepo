@@ -4,6 +4,9 @@ public enum PasosArticulo {
     CORTE_TELA,
     CORTE_CANO,
     ARMADO,
-    INSTALACION
+    INSTALACION,
+    CORTE_RIEL,
+    ARMADO_RIEL,
+    CONFECCION
 }
 

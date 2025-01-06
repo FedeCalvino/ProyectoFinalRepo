@@ -18,7 +18,7 @@ public class ArticuloConexion implements IConexion<Articulo>{
     private static final String SQL_INSERT = "INSERT INTO ARTICULO (NOMBRE,CODIGO) VALUES (?,?)";
     private static final String SQL_SELECT_ARTICULOS_VENTA_ID = "SELECT  * FROM ARTICULO A JOIN  VENTA_ARTICULO VA ON VA.ID_ARTICULO=A.ID_ARTICULO WHERE VA.ID_VENTA=?";
     private static final String SelectArticulosByIdOrden = "SELECT * FROM ARTICULO a JOIN ORDEN o ON o.ID_ARTICULO=a.ID_ARTICULO WHERE ID_ORDEN = ?";
-
+    private static final String SQL_BY_ID = "SELECT * FROM ARTICULO WHERE ID_ARTICULO = ?";
     @Override
     public CustomResponseEntity<Articulo> save(Articulo articulo) {
         CustomResponseEntity<Articulo> response = new CustomResponseEntity<>();
@@ -101,7 +101,34 @@ public class ArticuloConexion implements IConexion<Articulo>{
 
     @Override
     public CustomResponseEntity<Articulo> findById(Integer id) {
-        return null;
+        CustomResponseEntity<Articulo> response = new CustomResponseEntity<>();
+        java.sql.Connection connection = null;
+        try{
+            connection = (java.sql.Connection) Conexion.GetConexion();
+            PreparedStatement statement = connection.prepareStatement(SQL_BY_ID);
+            statement.setInt(1, id);
+            ResultSet rs = statement.executeQuery();
+            while(rs.next()){
+                Articulo A = new Articulo(rs.getString(2));
+                A.setIdArticulo(rs.getInt(1));
+                A.setCodigoBarras(rs.getString(3));
+                response.setBody(A);
+                response.setStatus(HttpStatus.OK);
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+            response.setStatus(HttpStatus.BAD_REQUEST);
+            response.setMessage(e.getMessage());
+        }finally{
+            try{
+                connection.close();
+            }catch(Exception e){
+                e.printStackTrace();
+                response.setStatus(HttpStatus.BAD_REQUEST);
+                response.setMessage(e.getMessage());
+            }
+        }
+        return response;
     }
 
     @Override

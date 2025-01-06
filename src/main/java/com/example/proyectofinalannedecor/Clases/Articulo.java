@@ -1,5 +1,6 @@
 package com.example.proyectofinalannedecor.Clases;
 
+import com.example.proyectofinalannedecor.Clases.Orden.Lote;
 import com.example.proyectofinalannedecor.Clases.TipoCortina.Roller;
 import com.example.proyectofinalannedecor.Clases.TipoCortina.Tradicional;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
@@ -19,12 +20,10 @@ public class Articulo{
     private int IdArticulo;
     private String codigoBarras;
     private String nombre;
-
     public Articulo(String nombre) {
         this.nombre = nombre;
         this.codigoBarras = generarCodigoBarras();
     }
-
 
     private String generarCodigoBarras() {
         String uniqueID = UUID.randomUUID().toString().substring(0, 8);
