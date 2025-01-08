@@ -11,11 +11,21 @@ public class PasoOrden {
     private Empleado responsable;
     private PasosArticulo Paso;
     private Date fechaCreacion;
+    private int IdOrden;
 
-    public PasoOrden(Boolean terminada, Date diafinalizado, PasosArticulo paso) {
+    public PasoOrden(int idPasoOrden,Boolean terminada, Date diafinalizado, PasosArticulo paso) {
+        this.IdPasoOrden = idPasoOrden;
         this.terminada = terminada;
         Diafinalizado = diafinalizado;
         Paso = paso;
+    }
+
+    public int getIdOrden() {
+        return IdOrden;
+    }
+
+    public void setIdOrden(int idOrden) {
+        IdOrden = idOrden;
     }
 
     public Date getDiafinalizado() {
@@ -78,6 +88,7 @@ public class PasoOrden {
     @Override
     public String toString() {
         return "PasoOrden{" +
+                "IdPasoOrden=" + IdPasoOrden +
                 "terminada=" + terminada +
                 ", finalizado=" + Diafinalizado +
                 ", responsable=" + responsable +

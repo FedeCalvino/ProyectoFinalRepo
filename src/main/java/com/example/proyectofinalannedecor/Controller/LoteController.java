@@ -2,11 +2,9 @@ package com.example.proyectofinalannedecor.Controller;
 
 import com.example.proyectofinalannedecor.Clases.CustomResponseEntity;
 import com.example.proyectofinalannedecor.Clases.Orden.Lote;
-import com.example.proyectofinalannedecor.Service.InstalacionService;
 import com.example.proyectofinalannedecor.Service.LoteService;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.Serializable;
 import java.util.List;
 
 @CrossOrigin(origins = "*")
@@ -34,8 +32,10 @@ public class LoteController implements IController<Lote> {
     }
 
     @Override
-    public CustomResponseEntity<Lote> Save(Lote clase) {
-        return Lservice.Save(clase);
+    @PostMapping
+    public CustomResponseEntity<Lote> Save(@RequestBody Lote lote) {
+        System.out.println(lote.getPasosordenes().get(1).getIdPasoOrden());
+        return Lservice.Save(lote);
     }
 
     @Override

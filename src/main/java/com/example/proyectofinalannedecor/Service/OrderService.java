@@ -24,15 +24,15 @@ public class OrderService implements IService<Orden> {
         Orden orden = new Orden(0,new ArrayList<>(),EstadosPasosOrden.TELA_CANO,articulo.getIdArticulo());
         orden.setArticulo(articulo);
         OrdenConexion.save(orden);
-        PasoOrden paso1 = new PasoOrden(false,null,PasosArticulo.CORTE_TELA);
-        PasoOrden paso2 =  new PasoOrden(false,null,PasosArticulo.CORTE_CANO);
-        PasoOrden paso3 =  new PasoOrden(false,null,PasosArticulo.ARMADO);
-        PasoOrden paso4 =  new PasoOrden(false,null,PasosArticulo.INSTALACION);
+
+        PasoOrden paso1 = new PasoOrden(0,false,null,PasosArticulo.CORTE_TELA);
+        PasoOrden paso2 =  new PasoOrden(0,false,null,PasosArticulo.CORTE_CANO);
+        PasoOrden paso3 =  new PasoOrden(0,false,null,PasosArticulo.ARMADO);
+
 
         agregarPaso(orden,paso1);
         agregarPaso(orden,paso2);
         agregarPaso(orden,paso3);
-        agregarPaso(orden,paso4);
 
         return orden;
     }
@@ -40,7 +40,7 @@ public class OrderService implements IService<Orden> {
     public CustomResponseEntity<List<Articulo>> findArticulosByIdOrden(Integer id) {
         return articuloService.findArticulosByIdOrden(id);
     }
-
+/*
 
     public Orden AvanzarPasoRoller(PasoOrden paso,Orden orden){
 
@@ -162,11 +162,51 @@ public class OrderService implements IService<Orden> {
         }
         return orden;
     }
-
+*/
     private void agregarPaso(Orden orden, PasoOrden nuevoPaso) {
         orden.getPasos().add(nuevoPaso);
         OrdenConexion.savePasoOrden(nuevoPaso,orden);
     }
+
+    public CustomResponseEntity<List<Orden>> GetOrdenesLote(Lote l) {
+        CustomResponseEntity<List<Orden>> respuesta = new CustomResponseEntity<>();
+        List<Orden> ordenes = new ArrayList<>();
+        List<PasoOrden> pasos = OrdenConexion.GetOrdenesLote(l).getBody();
+        ArrayList<Integer> IdOrdenes = new ArrayList<>();
+
+        if (pasos != null) {
+            for (PasoOrden paso : pasos) {
+                if (!IdOrdenes.contains(paso.getIdOrden())) {
+                    List<PasoOrden> pasosAdd = new ArrayList<>();
+
+                    Orden ord = OrdenConexion.findById(paso.getIdOrden()).getBody();
+
+                    if (ord != null) {
+                        for (PasoOrden paso2 : pasos) {
+                            if (ord.getIdOrden() == paso2.getIdOrden()) {
+                                pasosAdd.add(paso2);
+                            }
+                        }
+                        ord.setPasos(pasosAdd);
+                        ord.setArticulo(articuloService.findById(ord.getIdArticulo()).getBody());
+                        ordenes.add(ord);
+                        IdOrdenes.add(paso.getIdOrden());
+                    }
+                }
+            }
+        }
+
+        respuesta.setBody(ordenes);
+        return respuesta;
+    }
+    public CustomResponseEntity<List<PasoOrden>> GetPasoOrdenesLote(Lote l) {
+        CustomResponseEntity<List<PasoOrden>> respuesta = new CustomResponseEntity<>();
+        List<PasoOrden> pasos = OrdenConexion.GetOrdenesLote(l).getBody();
+
+        respuesta.setBody(pasos);
+        return respuesta;
+    }
+
 
     @Override
     public CustomResponseEntity<List<Orden>> findAll() {
@@ -185,6 +225,12 @@ public class OrderService implements IService<Orden> {
         return retur;
     }
 
+    public CustomResponseEntity<List<PasoOrden>> findAllPasosSinTerminar(Orden o) {
+        CustomResponseEntity<List<PasoOrden>> retur = new CustomResponseEntity<>();
+        List<PasoOrden> pasos = OrdenConexion.selectPasosOrdenSinTerminar(o.getIdOrden()).getBody();
+        retur.setBody(pasos);
+        return retur;
+    }
     @Override
     public CustomResponseEntity<Orden> Save(Orden Clase) {
         return null;

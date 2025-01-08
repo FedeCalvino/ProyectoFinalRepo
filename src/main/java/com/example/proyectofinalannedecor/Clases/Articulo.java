@@ -16,14 +16,16 @@ import java.util.UUID;
         @JsonSubTypes.Type(value = Roller.class, name = "roller"),
         @JsonSubTypes.Type(value = Tradicional.class, name = "tradicional"),
 })
+
 public class Articulo{
-    private int IdArticulo;
+    public int IdArticulo;
     private String codigoBarras;
     private String nombre;
     public Articulo(String nombre) {
         this.nombre = nombre;
         this.codigoBarras = generarCodigoBarras();
     }
+
 
     private String generarCodigoBarras() {
         String uniqueID = UUID.randomUUID().toString().substring(0, 8);
@@ -44,7 +46,6 @@ public class Articulo{
 
     public void setIdArticulo(int idArticulo) {
         this.IdArticulo = idArticulo;
-        this.codigoBarras = generarCodigoBarras();
     }
 
     public String getNombre() {
@@ -58,6 +59,7 @@ public class Articulo{
     @Override
     public String toString() {
         return "Articulo{" +
+                "IdArticulo=" + IdArticulo +
                 "codigoArticulo=" + IdArticulo +
                 ", codigoBarras='" + codigoBarras + '\'' +
                 ", nombre='" + nombre + '\'' +

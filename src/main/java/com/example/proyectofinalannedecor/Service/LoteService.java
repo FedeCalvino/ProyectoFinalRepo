@@ -5,7 +5,6 @@ import com.example.proyectofinalannedecor.Clases.Orden.Lote;
 import com.example.proyectofinalannedecor.Clases.Orden.Orden;
 import com.example.proyectofinalannedecor.Clases.Orden.PasoOrden;
 import com.example.proyectofinalannedecor.Conexion.LoteConexion;
-import com.example.proyectofinalannedecor.Conexion.OrdenConexion;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,18 +13,27 @@ import java.util.List;
 public class LoteService implements IService<Lote> {
 
     private static final LoteConexion LConexion= new LoteConexion();
+    private static final OrderService OService= new OrderService();
 
     @Override
     public CustomResponseEntity<List<Lote>> findAll() {
-        return LConexion.findAll();
+        List<Lote> lista =  LConexion.findAll().getBody();
+        for (Lote lote : lista) {
+            lote.setPasosordenes(OService.GetPasoOrdenesLote(lote).getBody());
+        }
+        CustomResponseEntity<List<Lote>> response = new CustomResponseEntity<>();
+        response.setBody(lista);
+        return response;
     }
 
     @Override
     public CustomResponseEntity<Lote> Save(Lote lote) {
         CustomResponseEntity<Lote> response = new CustomResponseEntity<>();
         Lote Savedlote = LConexion.save(lote).getBody();
-        for (PasoOrden orden : lote.getOrdenes()) {
-            LConexion.savePasoLote(orden,Savedlote);
+        System.out.println(Savedlote);
+        for (PasoOrden orden : lote.getPasosordenes()) {
+            System.out.println(orden);
+            LConexion.savePasoLote(orden.getIdPasoOrden(),Savedlote.getIdlote());
         }
         response.setBody(Savedlote);
         return response;
@@ -47,6 +55,13 @@ public class LoteService implements IService<Lote> {
     }
 
     public CustomResponseEntity<List<Lote>> findAllFecha(String fecha) {
-        return LConexion.findAllFECHA(fecha);
+        List<Lote> lista =  LConexion.findAllFECHA(fecha).getBody();
+        for (Lote lote : lista) {
+            List<Orden> Ordenes = OService.GetOrdenesLote(lote).getBody();
+            lote.setOrdenes(Ordenes);
+        }
+        CustomResponseEntity<List<Lote>> response = new CustomResponseEntity<>();
+        response.setBody(lista);
+        return response;
     }
 }

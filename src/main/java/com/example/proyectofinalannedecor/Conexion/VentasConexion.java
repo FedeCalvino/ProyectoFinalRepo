@@ -27,7 +27,9 @@ public class VentasConexion implements IConexion<Venta>{
     private static final String SQL_UPDATE = "UPDATE VENTA SET FECHA = ? , CLIENTE_ID = ?,OBRA=?,FECHA_INSTALACION=?  WHERE ID_VENTA = ?";
     private static final String SQL_SELECT_ALL="SELECT * FROM venta v JOIN CLIENTE c on c.ID_CLIENTE=v.CLIENTE_ID";
     private static final String SQL_INSERT_ARTICULO_VENTA = "INSERT INTO VENTA_ARTICULO (ID_ARTICULO,ID_VENTA) VALUES (?,?)";
-
+    private static final String SQL_SELECT_ALL_CON_ORDEN = "SELECT * FROM venta v JOIN CLIENTE c on c.ID_CLIENTE=v.CLIENTE_ID WHERE v.ID_VENTA IN(\n" +
+            "SELECT v.ID_VENTA FROM venta v JOIN CLIENTE c on c.ID_CLIENTE=v.CLIENTE_ID JOIN VENTA_ARTICULO va on va.ID_VENTA=v.ID_VENTA JOIN Articulo a on a.ID_ARTICULO=va.ID_ARTICULO JOIN ORDEN O on O.ID_ARTICULO=a.ID_ARTICULO join PASO_ORDEN PO on PO.ID_ORDEN=O.ID_ORDEN where PO.TERMINADA=0\n" +
+            ")";
     public static Connection conexion;
 
     @Override
@@ -252,5 +254,40 @@ public class VentasConexion implements IConexion<Venta>{
         return response;
     }
 
+    public CustomResponseEntity<List<Venta>> findAllWorden() {
+        CustomResponseEntity<List<Venta>> response = new CustomResponseEntity<>();
+        List<Venta> ventas=new ArrayList<>();
+        java.sql.Connection connection = null;
+        try{
+            connection = (java.sql.Connection) Conexion.GetConexion();
+            PreparedStatement statement = connection.prepareStatement(SQL_SELECT_ALL_CON_ORDEN);
+            ResultSet rs = statement.executeQuery();
+            while(rs.next()){
+                Venta v = new Venta(rs.getInt(1),
+                        new Cliente(rs.getInt(7),rs.getBigDecimal(8),rs.getString(9),rs.getBigDecimal(10),rs.getString(11),rs.getString(12),rs.getString(13))
+                        ,null,rs.getDate(3),rs.getDate(5),rs.getInt(4),rs.getString(6));
+                ventas.add(v);
+            }
+            response.setBody(ventas);
+        }catch(Exception e){
+            e.printStackTrace();
+            response.setStatus(HttpStatus.BAD_REQUEST);
+            response.setMessage(e.getMessage());
+        }finally{
+            try{
+                connection.close();
+            }catch(Exception e){
+
+            }
+        }
+        if(ventas.isEmpty()){
+            response.setStatus(HttpStatus.NOT_FOUND);
+            response.setMessage("no se encontraron ventas");
+        }else{
+            response.setStatus(HttpStatus.OK);
+            response.setBody(ventas);
+        }
+        return response;
+    }
 }
 

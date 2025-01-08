@@ -19,12 +19,14 @@ public class OrdenConexion implements IConexion<Orden>{
     private static final String InsertOrder = "INSERT INTO ORDEN(ID_ARTICULO,ESTADO) VALUES (?,?)";
     private static final String InsertPasoOrder = "INSERT INTO PASO_ORDEN(ID_ORDEN,NOMBRE_PASO,ESTADO_PASO,TERMINADA) VALUES (?,?,?,?)";
     private static final String SelectPasosOrden = "SELECT * FROM PASO_ORDEN WHERE ID_ORDEN = ?";
+    private static final String SelectPasosOrdenSinT = "SELECT * FROM PASO_ORDEN WHERE TERMINADA=0 and ID_ORDEN = ?";
     private static final String SelectOrdenes = "SELECT o.FECHA_CREACION,o.ID_ORDEN,o.ID_ARTICULO,o.ESTADO,va.ID_VENTA FROM ORDEN o join articulo a on o.ID_ARTICULO=a.ID_ARTICULO join VENTA_ARTICULO va on va.ID_ARTICULO=a.ID_ARTICULO";
+    private static final String SQL_SELECT_BY_ID = "SELECT o.FECHA_CREACION,o.ID_ORDEN,o.ID_ARTICULO,o.ESTADO,va.ID_VENTA FROM ORDEN o join articulo a on o.ID_ARTICULO=a.ID_ARTICULO join VENTA_ARTICULO va on va.ID_ARTICULO=a.ID_ARTICULO WHERE o.ID_ORDEN = ?";
     private static final String DeleteOrder = "DELETE FROM ORDEN WHERE ORDER_ID = ?";
     private static final String UpdatePasoOrden = "UPDATE PASO_ORDEN SET TERMINADA = ?, FECHA_FINALIZACION = ? WHERE ID_PASO_ORDEN = ?";
     private static final String UpdateOrden = "UPDATE ORDER SET FECHA_FINALIZADO = ?, SET ESTADO = ? WHERE ID_ORDEN = ?";
     private static final String CheckForUpdateRollerTela_Corte = "SELECT po.TERMINADA FROM PASO_ORDEN po JOIN ORDEN o ON o.ID_ORDEN = po.ID_ORDEN WHERE o.ID_ORDEN = ? AND (po.NOMBRE_PASO = 'CORTE_TELA' OR po.NOMBRE_PASO = 'CORTE_CANO');";
-
+    private static final String SELECT_PASO_ORDEN_LOTE = "SELECT * FROM PASO_ORDEN po join LOTE_PASO lp on lp.ID_PASO=po.ID_PASO_ORDEN where lp.ID_LOTE =  ?";
 
 
     private Byte trueByte =1;
@@ -121,7 +123,41 @@ public class OrdenConexion implements IConexion<Orden>{
 
     @Override
     public CustomResponseEntity<Orden> findById(Integer id) {
-        return null;
+        CustomResponseEntity<Orden> response = new CustomResponseEntity<>();
+        java.sql.Connection connection = null;
+
+        try {
+            connection = (java.sql.Connection) Conexion.GetConexion();
+            PreparedStatement statement = connection.prepareStatement(SQL_SELECT_BY_ID);
+            statement.setInt(1, id);
+            ResultSet rs = statement.executeQuery();
+
+            while (rs.next()) {
+                Orden orden = new Orden(rs.getInt(2),new ArrayList<>(),null,rs.getInt(3));
+                orden.setFechacCreacion(rs.getDate(1));
+                orden.setEstado(EstadosPasosOrden.valueOf(rs.getString(4)));
+                orden.setIdVenta(rs.getInt(5));
+                response.setBody(orden);
+                response.setStatus(HttpStatus.OK);
+            }
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setStatus(HttpStatus.BAD_REQUEST);
+            response.setMessage(e.getMessage());
+            return response;
+        } finally {
+            try {
+                connection.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+                response.setStatus(HttpStatus.BAD_REQUEST);
+                response.setMessage(e.getMessage());
+                return response;
+            }
+        }
+        return response;
     }
 
     @Override
@@ -215,8 +251,7 @@ public class OrdenConexion implements IConexion<Orden>{
             statement.setInt(1, id);
             ResultSet rs = statement.executeQuery();
             while (rs.next()) {
-                PasoOrden po = new PasoOrden(rs.getByte(5) == trueByte, rs.getDate(6), PasosArticulo.valueOf(rs.getString(2).toUpperCase()));
-                po.setIdPasoOrden(rs.getInt(1));
+                PasoOrden po = new PasoOrden(rs.getInt(1),rs.getByte(5) == trueByte, rs.getDate(6), PasosArticulo.valueOf(rs.getString(2).toUpperCase()));
                 listaPasoOrden.add(po);
             }
             response.setBody(listaPasoOrden);
@@ -324,4 +359,76 @@ public class OrdenConexion implements IConexion<Orden>{
          return 1;
     }
 
+    public CustomResponseEntity<List<PasoOrden>> GetOrdenesLote(Lote l) {
+
+        CustomResponseEntity<List<PasoOrden>> response = new CustomResponseEntity<>();
+
+        List<PasoOrden> listaPasoOrden = new ArrayList<>();
+        java.sql.Connection connection = null;
+
+        try {
+            connection = (java.sql.Connection) Conexion.GetConexion();
+            PreparedStatement statement = connection.prepareStatement(SELECT_PASO_ORDEN_LOTE);
+            statement.setInt(1, l.getIdlote());
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()) {
+                PasoOrden po = new PasoOrden(rs.getInt(1),rs.getByte(5) == trueByte, rs.getDate(6), PasosArticulo.valueOf(rs.getString(2).toUpperCase()));
+                po.setIdOrden(rs.getInt(3));
+                listaPasoOrden.add(po);
+            }
+            response.setBody(listaPasoOrden);
+            response.setStatus(HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setStatus(HttpStatus.BAD_REQUEST);
+            response.setMessage(e.getMessage());
+            return response;
+        } finally {
+            try {
+                connection.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+                response.setStatus(HttpStatus.BAD_REQUEST);
+                response.setMessage(e.getMessage());
+                return response;
+            }
+        }
+        return response;
+    }
+
+    public CustomResponseEntity<List<PasoOrden>> selectPasosOrdenSinTerminar(int idOrden) {
+
+        CustomResponseEntity<List<PasoOrden>> response = new CustomResponseEntity<>();
+        List<PasoOrden> listaPasoOrden = new ArrayList<>();
+        java.sql.Connection connection = null;
+
+        try {
+            connection = (java.sql.Connection) Conexion.GetConexion();
+            PreparedStatement statement = connection.prepareStatement(SelectPasosOrdenSinT);
+            statement.setInt(1, idOrden);
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()) {
+                PasoOrden po = new PasoOrden(rs.getInt(1),rs.getByte(5) == trueByte, rs.getDate(6), PasosArticulo.valueOf(rs.getString(2).toUpperCase()));
+                listaPasoOrden.add(po);
+            }
+            response.setBody(listaPasoOrden);
+            response.setStatus(HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setStatus(HttpStatus.BAD_REQUEST);
+            response.setMessage(e.getMessage());
+            return response;
+        } finally {
+            try {
+                connection.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+                response.setStatus(HttpStatus.BAD_REQUEST);
+                response.setMessage(e.getMessage());
+                return response;
+            }
+        }
+        return response;
+
+    }
 }

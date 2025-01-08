@@ -30,8 +30,13 @@ public class OrderController implements IController<Orden>{
         List<Orden> updatedOrdenesList = new ArrayList<>();
 
         for (Orden orden : ordenesList) {
-            Orden updatedOrden = Oservice.findAllPasos(orden).getBody();
-            updatedOrdenesList.add(updatedOrden);
+
+            List<PasoOrden> pasos = Oservice.findAllPasosSinTerminar(orden).getBody();
+            if(!pasos.isEmpty()){
+                Orden updatedOrden=orden;
+                updatedOrden.setPasos(pasos);
+                updatedOrdenesList.add(updatedOrden);
+            }
         }
         ordenes.setBody(updatedOrdenesList);
         return ordenes;
@@ -48,7 +53,7 @@ public class OrderController implements IController<Orden>{
             @PathVariable String PasoNombre,
             @RequestBody Orden orden) {
         CustomResponseEntity<Orden> response = new CustomResponseEntity<>();
-        response.setBody(Oservice.avanzarPaso(PasoNombre, orden));
+        //response.setBody(Oservice.avanzarPaso(PasoNombre, orden));
         return response;
     }
 

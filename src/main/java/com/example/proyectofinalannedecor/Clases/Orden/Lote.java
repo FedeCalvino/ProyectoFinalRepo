@@ -8,14 +8,23 @@ public class Lote{
 
     private int Idlote;
     private String Estado;
-    List<PasoOrden> ordenes = new ArrayList();
+    List<PasoOrden> Pasosordenes = new ArrayList();
     private Date Fecha;
     private String Nombre;
+    private List<Orden> Ordenes = new ArrayList();
 
     public Lote(List<PasoOrden> PasosOrdenes,String Nombre, Date fecha){
         this.Fecha=fecha;
-        this.ordenes = PasosOrdenes;
+        this.Pasosordenes = PasosOrdenes;
         this.Nombre = Nombre;
+    }
+
+    public List<Orden> getOrdenes() {
+        return Ordenes;
+    }
+
+    public void setOrdenes(List<Orden> ordenes) {
+        Ordenes = ordenes;
     }
 
     public int getIdlote() {
@@ -34,12 +43,12 @@ public class Lote{
         Estado = estado;
     }
 
-    public List<PasoOrden> getOrdenes() {
-        return ordenes;
+    public List<PasoOrden> getPasosordenes() {
+        return Pasosordenes;
     }
 
-    public void setOrdenes(List<PasoOrden> ordenes) {
-        this.ordenes = ordenes;
+    public void setPasosordenes(List<PasoOrden> pasosordenes) {
+        this.Pasosordenes = pasosordenes;
     }
 
     public Date getFecha() {
@@ -56,5 +65,16 @@ public class Lote{
 
     public void setNombre(String nombre) {
         Nombre = nombre;
+    }
+
+    @Override
+    public String toString() {
+        return "Lote{" +
+                "Idlote=" + Idlote +
+                ", Estado='" + Estado + '\'' +
+                ", ordenes=" + Pasosordenes +
+                ", Fecha=" + Fecha +
+                ", Nombre='" + Nombre + '\'' +
+                '}';
     }
 }

@@ -19,8 +19,10 @@ public class ArticuloConexion implements IConexion<Articulo>{
     private static final String SQL_SELECT_ARTICULOS_VENTA_ID = "SELECT  * FROM ARTICULO A JOIN  VENTA_ARTICULO VA ON VA.ID_ARTICULO=A.ID_ARTICULO WHERE VA.ID_VENTA=?";
     private static final String SelectArticulosByIdOrden = "SELECT * FROM ARTICULO a JOIN ORDEN o ON o.ID_ARTICULO=a.ID_ARTICULO WHERE ID_ORDEN = ?";
     private static final String SQL_BY_ID = "SELECT * FROM ARTICULO WHERE ID_ARTICULO = ?";
+
     @Override
     public CustomResponseEntity<Articulo> save(Articulo articulo) {
+
         CustomResponseEntity<Articulo> response = new CustomResponseEntity<>();
 
         java.sql.Connection connection = null;
@@ -61,7 +63,7 @@ public class ArticuloConexion implements IConexion<Articulo>{
         return response;
     }
 
-    public CustomResponseEntity<List<Articulo>> findArticulosByIdOrden(Integer id) {
+    public CustomResponseEntity<List<Articulo>> findArticulosByIdOrden(Integer id){
         CustomResponseEntity<List<Articulo>> response = new CustomResponseEntity<>();
         List<Articulo> articulos =new ArrayList<>();
         java.sql.Connection connection = null;

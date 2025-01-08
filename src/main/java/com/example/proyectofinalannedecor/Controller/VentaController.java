@@ -25,6 +25,11 @@ public class VentaController implements IController<Venta> {
         return response;
     }
 
+    @GetMapping("/Wordenes")
+    public CustomResponseEntity<List<Venta>> findAllConOrden() {
+        CustomResponseEntity<List<Venta>> response = ventaService.findAllWordenes();
+        return response;
+    }
 
     @PostMapping()
     @Override

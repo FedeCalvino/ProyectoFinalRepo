@@ -20,9 +20,9 @@ public class LoteConexion implements IConexion<Lote>{
     private static final String SQL_INSERT_LOTE = "INSERT INTO LOTE(NOMBRE,FECHA) VALUES (?,?)";
     private static final String SQL_UPDATE_LOTE = "UPDATE LOTE SET FECHA =? ,NOMBRE = ? WHERE ID_LOTE = ?";
     private static final String SQL_GET_LOTES = "SELECT * FROM LOTE";
-    private static final String SQL_GET_LOTES_FECHA = "SELECT * FROM LOTE WHERE FECHA_COMIENZO=?";
+    private static final String SQL_GET_LOTES_FECHA = "SELECT * FROM LOTE WHERE FECHA=?";
 
-    private static final String INSERT_PASO_LOTE = "INSERT INTO LOTE_PASO (ID_LOTE,ID_PASO)";
+    private static final String INSERT_PASO_LOTE = "INSERT INTO LOTE_PASO (ID_LOTE,ID_PASO) VALUES(?,?)";
     @Override
     public CustomResponseEntity<Lote> save(Lote lote) {
         CustomResponseEntity<Lote> response = new CustomResponseEntity<>();
@@ -62,36 +62,42 @@ public class LoteConexion implements IConexion<Lote>{
         return response;
     }
 
-    public Boolean savePasoLote(PasoOrden pasoorden, Lote lote) {
-
+    public Boolean savePasoLote(int pasoorden, int lote) {
+        System.out.println(pasoorden);
+        System.out.println(lote);
         java.sql.Connection conexion = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
 
         try {
             conexion = Conexion.GetConexion();
-            PreparedStatement ps = conexion.prepareStatement(INSERT_PASO_LOTE);
-            ps.setInt(1, pasoorden.getIdPasoOrden());
-            ps.setInt(2, lote.getIdlote());
+            ps = conexion.prepareStatement(INSERT_PASO_LOTE, Statement.RETURN_GENERATED_KEYS);
+            ps.setInt(1, lote);
+            ps.setInt(2, pasoorden);
 
-            ps.execute();
+            // Execute the insert query
+            ps.executeUpdate();
 
-            ResultSet rs = ps.getGeneratedKeys();
+            // Retrieve generated keys (primary key)
+            rs = ps.getGeneratedKeys();
 
-            if (rs.next()){
-                int generatedId = rs.getInt(1);
-                pasoorden.setIdPasoOrden(generatedId);
-                return true;
-            }else {
-                return false;
+            if (rs.next()) {
+                int generatedId = rs.getInt(1);  // This is your generated ID
+                return true;  // Successfully inserted
+            } else {
+                return false;  // No generated key
             }
         } catch (Exception e) {
-            return false;
+            e.printStackTrace();  // Log the error
+            return false;  // Return false if an error occurs
         } finally {
-            if (conexion != null) {
-                try {
-                    conexion.close();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+            // Clean up resources
+            try {
+                if (rs != null) rs.close();
+                if (ps != null) ps.close();
+                if (conexion != null) conexion.close();
+            } catch (Exception e) {
+                e.printStackTrace();  // Log any error during cleanup
             }
         }
     }
@@ -152,7 +158,7 @@ public class LoteConexion implements IConexion<Lote>{
             PreparedStatement statement = connection.prepareStatement(SQL_GET_LOTES);
             ResultSet rs = statement.executeQuery();
             while (rs.next()) {
-                Lote l = new Lote(new ArrayList<>(),rs.getString(4),rs.getDate(5));
+                Lote l = new Lote(new ArrayList<>(),rs.getString(3),rs.getDate(4));
                 l.setIdlote(rs.getInt(1));
                 List.add(l);
             }
@@ -169,7 +175,7 @@ public class LoteConexion implements IConexion<Lote>{
         return response;
     }
 
-    public CustomResponseEntity<List<Lote>> findAllFECHA(String fechaComienzo) {
+    public CustomResponseEntity<List<Lote>> findAllFECHA(String fechaComienzo){
         CustomResponseEntity<List<Lote>> response = new CustomResponseEntity<>();
         List<Lote> List = new ArrayList<>();
         java.sql.Connection connection = null;
@@ -179,7 +185,7 @@ public class LoteConexion implements IConexion<Lote>{
             statement.setString(1,fechaComienzo);
             ResultSet rs = statement.executeQuery();
             while (rs.next()) {
-                Lote l = new Lote(new ArrayList<>(),rs.getString(4),rs.getDate(5));
+                Lote l = new Lote(new ArrayList<>(),rs.getString(3),rs.getDate(4));
                 l.setIdlote(rs.getInt(1));
                 List.add(l);
             }

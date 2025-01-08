@@ -1,6 +1,7 @@
 package com.example.proyectofinalannedecor.Clases.Orden;
 
 import com.example.proyectofinalannedecor.Clases.Articulo;
+import com.example.proyectofinalannedecor.Clases.Venta;
 
 import java.sql.Date;
 import java.util.ArrayList;
@@ -12,12 +13,13 @@ public class Orden {
 
     private int idOrden;
     private int idVenta;
-    private int IdArticulo;
+    public int IdArticulo;
     private Articulo articulo;
     private EstadosPasosOrden estado;
     private java.sql.Date fechaFinalizado;
     private java.sql.Date fechacCreacion;
     private List<PasoOrden> pasos;
+    private Venta venta;
 
     public Orden(int idOrden,List<PasoOrden> pasos,EstadosPasosOrden estado,int IDarticulo){
         this.idOrden=idOrden;

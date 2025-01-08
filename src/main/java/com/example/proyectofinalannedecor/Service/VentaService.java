@@ -20,7 +20,8 @@ public class VentaService implements IService<Venta>{
     private static final ArticuloService ArticuloService = new ArticuloService();
     private static final RollerService RollerService = new RollerService();
     private static final OrderService orderService = new OrderService();
-private static final LoteService LoteService = new LoteService();
+    private static final LoteService LoteService = new LoteService();
+
     public VentaService() {
 
     }
@@ -126,5 +127,9 @@ private static final LoteService LoteService = new LoteService();
         return responseVenta;
     }
 
+    public CustomResponseEntity<List<Venta>> findAllWordenes() {
+        CustomResponseEntity<List<Venta>> ventas = VentasConexion.findAllWorden();
+        return ventas;
+    }
 }
 

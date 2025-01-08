@@ -39,9 +39,10 @@ public class ArticuloService implements IService<Articulo>{
     public CustomResponseEntity<Articulo> findById(int id) {
 
         CustomResponseEntity<Articulo> response = articuloConexion.findById(id);
-
+        System.out.println(response.getBody());
         if (response.getBody().getNombre().equals("Roller")) {
             Articulo articuloret= rollerService.findRollerArticulo(response.getBody()).getBody();
+            articuloret.setIdArticulo(response.getBody().getIdArticulo());
             response.setBody(articuloret);
             response.setMessage("OK");
         }
