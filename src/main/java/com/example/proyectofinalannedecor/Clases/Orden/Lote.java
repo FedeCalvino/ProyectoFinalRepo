@@ -1,5 +1,7 @@
 package com.example.proyectofinalannedecor.Clases.Orden;
 
+import com.example.proyectofinalannedecor.Clases.Venta;
+
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +13,7 @@ public class Lote{
     List<PasoOrden> Pasosordenes = new ArrayList();
     private Date Fecha;
     private String Nombre;
-    private List<Orden> Ordenes = new ArrayList();
+    private List<Venta> Ventas = new ArrayList();
 
     public Lote(List<PasoOrden> PasosOrdenes,String Nombre, Date fecha){
         this.Fecha=fecha;
@@ -19,12 +21,12 @@ public class Lote{
         this.Nombre = Nombre;
     }
 
-    public List<Orden> getOrdenes() {
-        return Ordenes;
+    public List<Venta> getVentas() {
+        return Ventas;
     }
 
-    public void setOrdenes(List<Orden> ordenes) {
-        Ordenes = ordenes;
+    public void setVentas(List<Venta> ordenes) {
+        Ventas = ordenes;
     }
 
     public int getIdlote() {

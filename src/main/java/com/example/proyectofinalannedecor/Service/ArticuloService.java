@@ -58,6 +58,7 @@ public class ArticuloService implements IService<Articulo>{
             for (Articulo articulo : articulos) {
                 if (articulo.getNombre().equals("Roller")) {
                     Articulo articuloAdd = rollerService.findRollerArticulo(articulo).getBody();
+                    articuloAdd.setIdArticulo(articulo.getIdArticulo());
                     if (articuloAdd != null) {
                         articulosVenta.add(articuloAdd);
                     }

@@ -21,6 +21,7 @@ public class OrderService implements IService<Orden> {
 
 
     public Orden CrearNuevaOrdenRoller(Articulo articulo) {
+
         Orden orden = new Orden(0,new ArrayList<>(),EstadosPasosOrden.TELA_CANO,articulo.getIdArticulo());
         orden.setArticulo(articulo);
         OrdenConexion.save(orden);
@@ -34,14 +35,15 @@ public class OrderService implements IService<Orden> {
         agregarPaso(orden,paso2);
         agregarPaso(orden,paso3);
 
+
+
         return orden;
     }
 
     public CustomResponseEntity<List<Articulo>> findArticulosByIdOrden(Integer id) {
         return articuloService.findArticulosByIdOrden(id);
     }
-/*
-
+    /*
     public Orden AvanzarPasoRoller(PasoOrden paso,Orden orden){
 
         boolean CorteCano=false;
@@ -199,6 +201,7 @@ public class OrderService implements IService<Orden> {
         respuesta.setBody(ordenes);
         return respuesta;
     }
+
     public CustomResponseEntity<List<PasoOrden>> GetPasoOrdenesLote(Lote l) {
         CustomResponseEntity<List<PasoOrden>> respuesta = new CustomResponseEntity<>();
         List<PasoOrden> pasos = OrdenConexion.GetOrdenesLote(l).getBody();
@@ -249,5 +252,9 @@ public class OrderService implements IService<Orden> {
     @Override
     public CustomResponseEntity<Orden> findById(int id) {
         return null;
+    }
+
+    public boolean avanzarPaso(int id) {
+        return OrdenConexion.UpdatePaso(id);
     }
 }

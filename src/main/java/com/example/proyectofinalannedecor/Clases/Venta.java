@@ -1,5 +1,6 @@
 package com.example.proyectofinalannedecor.Clases;
 
+import com.example.proyectofinalannedecor.Clases.Orden.Orden;
 import com.example.proyectofinalannedecor.Clases.TipoCortina.Roller;
 
 import java.sql.Date;
@@ -14,6 +15,7 @@ public class Venta {
     public Integer precio;
     public Date fechaInstalacion;
     public String obra;
+    private List<Orden> ordenes = new ArrayList<>();
 
     public Venta(Integer Id,Cliente cliente, List<Articulo> Articulos, Date fecha, Date fechaInstalacion, Integer precio, String obra) {
         this.id = Id;
@@ -23,6 +25,17 @@ public class Venta {
         this.fechaInstalacion = fechaInstalacion;
         this.obra = obra;
         this.precio = precio;
+    }
+
+    public List<Orden> getOrdenes() {
+        return ordenes;
+    }
+
+    public void setOrdenes(List<Orden> ordenes) {
+        this.ordenes = ordenes;
+    }
+    public void addOrden(Orden orden) {
+        this.ordenes.add(orden);
     }
 
     public void setArticulos(List<Articulo> articulos) {

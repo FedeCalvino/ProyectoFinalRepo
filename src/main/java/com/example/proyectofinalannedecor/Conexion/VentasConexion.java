@@ -227,9 +227,7 @@ public class VentasConexion implements IConexion<Venta>{
             PreparedStatement statement = connection.prepareStatement(SQL_SELECT_ALL);
             ResultSet rs = statement.executeQuery();
             while(rs.next()){
-                Venta v = new Venta(rs.getInt(1),
-                        new Cliente(rs.getInt(7),rs.getBigDecimal(8),rs.getString(9),rs.getBigDecimal(10),rs.getString(11),rs.getString(12),rs.getString(13))
-                        ,null,rs.getDate(3),rs.getDate(5),rs.getInt(4),rs.getString(6));
+                Venta v = new Venta(rs.getInt(1),new Cliente(rs.getInt(7),null,null,null,null,null,null),null,rs.getDate(3),rs.getDate(5),rs.getInt(4),rs.getString(6));
                 ventas.add(v);
             }
             response.setBody(ventas);

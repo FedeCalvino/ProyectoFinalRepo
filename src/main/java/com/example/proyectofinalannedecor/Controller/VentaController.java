@@ -24,6 +24,10 @@ public class VentaController implements IController<Venta> {
         CustomResponseEntity<List<Venta>> response = ventaService.findAll();
         return response;
     }
+    @GetMapping("/Mensaje")
+    public String MandaMensaje() {
+        return ventaService.MandarMensaje("msj");
+    }
 
     @GetMapping("/Wordenes")
     public CustomResponseEntity<List<Venta>> findAllConOrden() {

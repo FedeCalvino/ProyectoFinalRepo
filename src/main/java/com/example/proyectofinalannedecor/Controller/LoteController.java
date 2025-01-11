@@ -31,10 +31,14 @@ public class LoteController implements IController<Lote> {
         return Lservice.findAllFecha(Fecha);
     }
 
+    @GetMapping("/Mensaje")
+    public String mensaje() {
+        return Lservice.mensajee();
+    }
+
     @Override
     @PostMapping
     public CustomResponseEntity<Lote> Save(@RequestBody Lote lote) {
-        System.out.println(lote.getPasosordenes().get(1).getIdPasoOrden());
         return Lservice.Save(lote);
     }
 
@@ -45,8 +49,9 @@ public class LoteController implements IController<Lote> {
     }
 
     @Override
-    public CustomResponseEntity<Lote> delete(int id) {
-        return null;
+    @DeleteMapping("/{id}")
+    public CustomResponseEntity<Lote> delete(@PathVariable int id) {
+        return Lservice.delete(id);
     }
 
     @Override

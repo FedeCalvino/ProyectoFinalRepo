@@ -6,6 +6,7 @@ import com.example.proyectofinalannedecor.Clases.Orden.Orden;
 import com.example.proyectofinalannedecor.Clases.TipoCortina.Roller;
 import com.example.proyectofinalannedecor.Conexion.VentasConexion;
 import org.springframework.http.HttpStatus;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,22 +23,19 @@ public class VentaService implements IService<Venta>{
     private static final OrderService orderService = new OrderService();
     private static final LoteService LoteService = new LoteService();
 
-    public VentaService() {
+    private final SimpMessagingTemplate messagingTemplate;
 
+    public VentaService(SimpMessagingTemplate messagingTemplate) {
+        this.messagingTemplate = messagingTemplate;
     }
 
     @Override
     public CustomResponseEntity<List<Venta>> findAll() {
 
         CustomResponseEntity<List<Venta>> ventas = VentasConexion.findAll();
-        /*
         for(Venta v : ventas.getBody()){
-            System.out.println(v.getId());
-            //Roller
-            List<Articulo> articulos = ArticuloService.findArticulos(v.getId()).getBody();
-            v.setArticulos(articulos);
+            v.setCliente(ClienteService.findById(v.getCliente().getId()).getBody());
         }
-        */
         return ventas;
     }
 
@@ -88,7 +86,7 @@ public class VentaService implements IService<Venta>{
                             }
 
                             Orden orden = orderService.CrearNuevaOrdenRoller(responseRoller.getBody());
-
+                            MandarMensaje("Recarga");
                     }
                 }
 
@@ -106,6 +104,16 @@ public class VentaService implements IService<Venta>{
         return responseVenta;
     }
 
+    public String MandarMensaje(String mensaje) {
+        System.out.println("mensaje");
+        this.MandarNuevaOrden(mensaje);
+        return "Mensaje enviado";
+    }
+
+    public void MandarNuevaOrden(String orderDetails) {
+        messagingTemplate.convertAndSend("/topic/orders", orderDetails);
+    }
+
     @Override
     public CustomResponseEntity<Venta> update(Venta venta) {
         return VentasConexion.update(venta);
@@ -120,8 +128,17 @@ public class VentaService implements IService<Venta>{
     public CustomResponseEntity<Venta> findById(int id) {
         CustomResponseEntity<Venta> responseVenta = new CustomResponseEntity<>();
         Venta v = VentasConexion.findById(id).getBody();
+        v.setCliente(ClienteService.findById(v.getCliente().getId()).getBody());
         List<Articulo> articulos = ArticuloService.findArticulos(id).getBody();
         v.setArticulos(articulos);
+        responseVenta.setBody(v);
+        responseVenta.setMessage("Ok");
+        return responseVenta;
+    }
+    public CustomResponseEntity<Venta> findByIdSoloVenta(int id) {
+        CustomResponseEntity<Venta> responseVenta = new CustomResponseEntity<>();
+        Venta v = VentasConexion.findById(id).getBody();
+        v.setCliente(ClienteService.findById(v.getCliente().getId()).getBody());
         responseVenta.setBody(v);
         responseVenta.setMessage("Ok");
         return responseVenta;
@@ -131,5 +148,7 @@ public class VentaService implements IService<Venta>{
         CustomResponseEntity<List<Venta>> ventas = VentasConexion.findAllWorden();
         return ventas;
     }
+
+
 }
 

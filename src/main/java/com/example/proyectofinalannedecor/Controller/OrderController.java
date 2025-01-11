@@ -5,6 +5,7 @@ import com.example.proyectofinalannedecor.Clases.Orden.Orden;
 import com.example.proyectofinalannedecor.Clases.Orden.PasoOrden;
 import com.example.proyectofinalannedecor.Service.OrderService;
 import org.hibernate.criterion.Order;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -48,12 +49,16 @@ public class OrderController implements IController<Orden>{
         return null;
     }
 
-    @PutMapping("/PasoOrden/{PasoNombre}")
-    public CustomResponseEntity<Orden> AvanzarPasoOrden(
-            @PathVariable String PasoNombre,
-            @RequestBody Orden orden) {
+
+    @PutMapping("/PasoOrden/Completar/{id}")
+    public CustomResponseEntity<Orden> AvanzarPasoOrden(@PathVariable int id) {
         CustomResponseEntity<Orden> response = new CustomResponseEntity<>();
-        //response.setBody(Oservice.avanzarPaso(PasoNombre, orden));
+        boolean ret =Oservice.avanzarPaso(id);
+        if(ret){
+            response.setStatus(HttpStatus.OK);
+        }else{
+            response.setStatus(HttpStatus.BAD_REQUEST);
+        }
         return response;
     }
 

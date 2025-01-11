@@ -4,9 +4,14 @@ import com.example.proyectofinalannedecor.Clases.CustomResponseEntity;
 import com.example.proyectofinalannedecor.Clases.Orden.Lote;
 import com.example.proyectofinalannedecor.Clases.Orden.Orden;
 import com.example.proyectofinalannedecor.Clases.Orden.PasoOrden;
+import com.example.proyectofinalannedecor.Clases.Venta;
 import com.example.proyectofinalannedecor.Conexion.LoteConexion;
+import org.springframework.http.HttpStatus;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.messaging.support.ExecutorSubscribableChannel;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -14,6 +19,8 @@ public class LoteService implements IService<Lote> {
 
     private static final LoteConexion LConexion= new LoteConexion();
     private static final OrderService OService= new OrderService();
+    private static final SimpMessagingTemplate messagingTemplate = new SimpMessagingTemplate(new ExecutorSubscribableChannel());
+    private static final VentaService VService = new VentaService(messagingTemplate);
 
     @Override
     public CustomResponseEntity<List<Lote>> findAll() {
@@ -30,13 +37,18 @@ public class LoteService implements IService<Lote> {
     public CustomResponseEntity<Lote> Save(Lote lote) {
         CustomResponseEntity<Lote> response = new CustomResponseEntity<>();
         Lote Savedlote = LConexion.save(lote).getBody();
-        System.out.println(Savedlote);
         for (PasoOrden orden : lote.getPasosordenes()) {
-            System.out.println(orden);
             LConexion.savePasoLote(orden.getIdPasoOrden(),Savedlote.getIdlote());
         }
+        // Enviar el lote como mensaje
+        VService.MandarMensaje("Nuevo lote guardado: " + Savedlote.toString());
         response.setBody(Savedlote);
+        response.setStatus(HttpStatus.OK);
         return response;
+    }
+
+    public String mensajee() {
+        return VService.MandarMensaje("Nuevo Lote");
     }
 
     @Override
@@ -46,7 +58,8 @@ public class LoteService implements IService<Lote> {
 
     @Override
     public CustomResponseEntity<Lote> delete(int id) {
-        return null;
+        LConexion.DeleteLotePaaso(id);
+        return LConexion.delete(id);
     }
 
     @Override
@@ -54,12 +67,41 @@ public class LoteService implements IService<Lote> {
         return null;
     }
 
+    public String MandarMensaje(String mensaje) {
+        System.out.println(mensaje);
+        this.MandarNuevaOrden("Nueva orden disponible");
+        return "Mensaje enviado";
+    }
+
+    public void MandarNuevaOrden(String orderDetails) {
+        messagingTemplate.convertAndSend("/topic/orders", orderDetails);
+    }
+
+
     public CustomResponseEntity<List<Lote>> findAllFecha(String fecha) {
         List<Lote> lista =  LConexion.findAllFECHA(fecha).getBody();
+
         for (Lote lote : lista) {
             List<Orden> Ordenes = OService.GetOrdenesLote(lote).getBody();
-            lote.setOrdenes(Ordenes);
+            ArrayList<Integer> idOrdenes = new ArrayList<>();
+            ArrayList<Venta> ventas = new ArrayList<>();
+            for(Orden orden : Ordenes) {
+                if(!idOrdenes.contains(orden.getIdVenta())){
+                    idOrdenes.add(orden.getIdVenta());
+                    Venta v = VService.findByIdSoloVenta(orden.getIdVenta()).getBody();
+                    v.addOrden(orden);
+                    ventas.add(v);
+                }else{
+                    for(Venta v : ventas) {
+                        if(v.getId()==orden.getIdVenta()){
+                            v.addOrden(orden);
+                        }
+                    }
+                }
+            }
+            lote.setVentas(ventas);
         }
+
         CustomResponseEntity<List<Lote>> response = new CustomResponseEntity<>();
         response.setBody(lista);
         return response;

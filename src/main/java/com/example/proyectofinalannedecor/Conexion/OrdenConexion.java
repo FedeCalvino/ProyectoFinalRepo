@@ -25,6 +25,7 @@ public class OrdenConexion implements IConexion<Orden>{
     private static final String DeleteOrder = "DELETE FROM ORDEN WHERE ORDER_ID = ?";
     private static final String UpdatePasoOrden = "UPDATE PASO_ORDEN SET TERMINADA = ?, FECHA_FINALIZACION = ? WHERE ID_PASO_ORDEN = ?";
     private static final String UpdateOrden = "UPDATE ORDER SET FECHA_FINALIZADO = ?, SET ESTADO = ? WHERE ID_ORDEN = ?";
+    private static final String setOrdenTerminada = "UPDATE PASO_ORDEN SET TERMINADA = 1 WHERE ID_PASO_ORDEN = ?";
     private static final String CheckForUpdateRollerTela_Corte = "SELECT po.TERMINADA FROM PASO_ORDEN po JOIN ORDEN o ON o.ID_ORDEN = po.ID_ORDEN WHERE o.ID_ORDEN = ? AND (po.NOMBRE_PASO = 'CORTE_TELA' OR po.NOMBRE_PASO = 'CORTE_CANO');";
     private static final String SELECT_PASO_ORDEN_LOTE = "SELECT * FROM PASO_ORDEN po join LOTE_PASO lp on lp.ID_PASO=po.ID_PASO_ORDEN where lp.ID_LOTE =  ?";
 
@@ -430,5 +431,37 @@ public class OrdenConexion implements IConexion<Orden>{
         }
         return response;
 
+    }
+
+    public boolean UpdatePaso(int id) {
+        CustomResponseEntity<Orden> response = new CustomResponseEntity<>();
+        java.sql.Connection connection = null;
+        try {
+            connection = (java.sql.Connection) Conexion.GetConexion();
+            PreparedStatement ps = connection.prepareStatement(setOrdenTerminada);
+
+            ps.setInt( 1, id);
+
+            ps.execute();
+            response.setStatus(HttpStatus.OK);
+            return true;
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+            response.setStatus(HttpStatus.SERVICE_UNAVAILABLE);
+            response.setBody(null);
+            response.setMessage("error en la conexion");
+            return false;
+
+        } finally {
+            try {
+                connection.close();
+            } catch (Exception e) {
+                response.setStatus(HttpStatus.BAD_REQUEST);
+                return false;
+            }
+
+        }
     }
 }
