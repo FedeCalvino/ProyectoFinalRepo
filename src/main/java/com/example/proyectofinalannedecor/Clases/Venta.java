@@ -1,7 +1,7 @@
 package com.example.proyectofinalannedecor.Clases;
 
+import com.example.proyectofinalannedecor.Clases.Articulos.Articulo;
 import com.example.proyectofinalannedecor.Clases.Orden.Orden;
-import com.example.proyectofinalannedecor.Clases.TipoCortina.Roller;
 
 import java.sql.Date;
 import java.util.ArrayList;

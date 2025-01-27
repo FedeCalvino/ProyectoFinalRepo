@@ -1,11 +1,8 @@
 package com.example.proyectofinalannedecor.Dto;
 
-import com.example.proyectofinalannedecor.Clases.Articulo;
 import com.example.proyectofinalannedecor.Clases.Cliente;
 
 import java.sql.Date;
-import java.util.ArrayList;
-import java.util.List;
 
 public class VentaSimpleDto {
     private int id;

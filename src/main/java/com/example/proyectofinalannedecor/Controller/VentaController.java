@@ -1,10 +1,12 @@
 package com.example.proyectofinalannedecor.Controller;
 
+import com.example.proyectofinalannedecor.Clases.Articulos.Articulo;
 import com.example.proyectofinalannedecor.Clases.CustomResponseEntity;
 import com.example.proyectofinalannedecor.Clases.Venta;
 import com.example.proyectofinalannedecor.Service.VentaService;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 
 @CrossOrigin(origins = "*")
@@ -29,6 +31,12 @@ public class VentaController implements IController<Venta> {
         return ventaService.MandarMensaje("msj");
     }
 
+
+    @PutMapping("/UpdateFO/{instalacion}/{obra}/{idVen}")
+    public CustomResponseEntity<String> update(@PathVariable String instalacion, @PathVariable String obra, @PathVariable int idVen) {
+        CustomResponseEntity<String> response = ventaService.updateVentaFO(instalacion,obra,idVen);
+        return response;
+    }
     @GetMapping("/Wordenes")
     public CustomResponseEntity<List<Venta>> findAllConOrden() {
         CustomResponseEntity<List<Venta>> response = ventaService.findAllWordenes();

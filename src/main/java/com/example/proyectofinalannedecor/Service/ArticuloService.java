@@ -1,9 +1,8 @@
 package com.example.proyectofinalannedecor.Service;
 
-import com.example.proyectofinalannedecor.Clases.Articulo;
+import com.example.proyectofinalannedecor.Clases.Articulos.Articulo;
 import com.example.proyectofinalannedecor.Clases.CustomResponseEntity;
 import com.example.proyectofinalannedecor.Conexion.ArticuloConexion;
-import com.example.proyectofinalannedecor.Conexion.RollerConexion;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,9 +39,18 @@ public class ArticuloService implements IService<Articulo>{
 
         CustomResponseEntity<Articulo> response = articuloConexion.findById(id);
         System.out.println(response.getBody());
+
         if (response.getBody().getNombre().equals("Roller")) {
             Articulo articuloret= rollerService.findRollerArticulo(response.getBody()).getBody();
             articuloret.setIdArticulo(response.getBody().getIdArticulo());
+            articuloret.setNumeroArticulo(response.getBody().getNumeroArticulo());
+            response.setBody(articuloret);
+            response.setMessage("OK");
+        }
+        if (response.getBody().getNombre().equals("Riel")) {
+            Articulo articuloret = rollerService.findRielArticulo(response.getBody()).getBody();
+            articuloret.setIdArticulo(response.getBody().getIdArticulo());
+            articuloret.setNumeroArticulo(response.getBody().getNumeroArticulo());
             response.setBody(articuloret);
             response.setMessage("OK");
         }
@@ -56,8 +64,17 @@ public class ArticuloService implements IService<Articulo>{
         List<Articulo> articulosVenta  = new ArrayList<>();
         if(articulos!=null){
             for (Articulo articulo : articulos) {
+                System.out.println(articulo.getNombre());
                 if (articulo.getNombre().equals("Roller")) {
                     Articulo articuloAdd = rollerService.findRollerArticulo(articulo).getBody();
+                    articuloAdd.setIdArticulo(articulo.getIdArticulo());
+                    if (articuloAdd != null) {
+                        articulosVenta.add(articuloAdd);
+                    }
+                }
+                if (articulo.getNombre().equals("Riel")) {
+
+                    Articulo articuloAdd = rollerService.findRielArticulo(articulo).getBody();
                     articuloAdd.setIdArticulo(articulo.getIdArticulo());
                     if (articuloAdd != null) {
                         articulosVenta.add(articuloAdd);

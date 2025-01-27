@@ -1,13 +1,9 @@
 package com.example.proyectofinalannedecor.Conexion;
 
-import com.example.proyectofinalannedecor.Clases.Articulo;
-import com.example.proyectofinalannedecor.Clases.Cliente;
+import com.example.proyectofinalannedecor.Clases.Articulos.Articulo;
 import com.example.proyectofinalannedecor.Clases.CustomResponseEntity;
-import com.example.proyectofinalannedecor.Clases.Orden.Orden;
-import com.example.proyectofinalannedecor.Clases.Venta;
 import org.springframework.http.HttpStatus;
 
-import java.io.Serializable;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
@@ -15,8 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ArticuloConexion implements IConexion<Articulo>{
-    private static final String SQL_INSERT = "INSERT INTO ARTICULO (NOMBRE,CODIGO) VALUES (?,?)";
-    private static final String SQL_SELECT_ARTICULOS_VENTA_ID = "SELECT  * FROM ARTICULO A JOIN  VENTA_ARTICULO VA ON VA.ID_ARTICULO=A.ID_ARTICULO WHERE VA.ID_VENTA=?";
+    private static final String SQL_INSERT = "INSERT INTO ARTICULO (NOMBRE,CODIGO,ID_VENTA,NUMERO_ARTICULO) VALUES (?,?,?,?)";
+    private static final String SQL_SELECT_ARTICULOS_VENTA_ID = "SELECT  * FROM ARTICULO A WHERE A.ID_VENTA=?";
     private static final String SelectArticulosByIdOrden = "SELECT * FROM ARTICULO a JOIN ORDEN o ON o.ID_ARTICULO=a.ID_ARTICULO WHERE ID_ORDEN = ?";
     private static final String SQL_BY_ID = "SELECT * FROM ARTICULO WHERE ID_ARTICULO = ?";
 
@@ -36,6 +32,9 @@ public class ArticuloConexion implements IConexion<Articulo>{
                 PreparedStatement ps = connection.prepareStatement(SQL_INSERT, Statement.RETURN_GENERATED_KEYS);
                 ps.setString(1, articulo.getNombre());
                 ps.setString(2, articulo.getCodigoBarras());
+                ps.setInt(3, articulo.getIdVenta());
+                ps.setInt(4, articulo.getNumeroArticulo());
+
                 ps.execute();
                 ResultSet rs = ps.getGeneratedKeys();
                 if (rs.next()) {
@@ -73,7 +72,7 @@ public class ArticuloConexion implements IConexion<Articulo>{
             statement.setInt(1, id);
             ResultSet rs = statement.executeQuery();
             while(rs.next()){
-                Articulo A = new Articulo(rs.getString(2));
+                Articulo A = new Articulo(rs.getString(2),rs.getInt(5));
                 A.setIdArticulo(rs.getInt(1));
                 A.setCodigoBarras(rs.getString(3));
                 articulos.add(A);
@@ -111,7 +110,7 @@ public class ArticuloConexion implements IConexion<Articulo>{
             statement.setInt(1, id);
             ResultSet rs = statement.executeQuery();
             while(rs.next()){
-                Articulo A = new Articulo(rs.getString(2));
+                Articulo A = new Articulo(rs.getString(2),rs.getInt(5));
                 A.setIdArticulo(rs.getInt(1));
                 A.setCodigoBarras(rs.getString(3));
                 response.setBody(A);
@@ -158,7 +157,7 @@ public class ArticuloConexion implements IConexion<Articulo>{
             statement.setInt(1, ventaId);
             ResultSet rs = statement.executeQuery();
             while(rs.next()){
-                Articulo A = new Articulo(rs.getString(2));
+                Articulo A = new Articulo(rs.getString(2),rs.getInt(5));
                 A.setIdArticulo(rs.getInt(1));
                 A.setCodigoBarras(rs.getString(3));
                 articulos.add(A);

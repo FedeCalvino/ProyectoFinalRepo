@@ -1,9 +1,11 @@
 package com.example.proyectofinalannedecor.Service;
 
 import com.example.proyectofinalannedecor.Clases.*;
-import com.example.proyectofinalannedecor.Clases.Orden.Lote;
+import com.example.proyectofinalannedecor.Clases.Articulos.Articulo;
+import com.example.proyectofinalannedecor.Clases.Articulos.Riel;
 import com.example.proyectofinalannedecor.Clases.Orden.Orden;
-import com.example.proyectofinalannedecor.Clases.TipoCortina.Roller;
+import com.example.proyectofinalannedecor.Clases.Articulos.Roller;
+import com.example.proyectofinalannedecor.Clases.Articulos.Tradicional;
 import com.example.proyectofinalannedecor.Conexion.VentasConexion;
 import org.springframework.http.HttpStatus;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -22,7 +24,7 @@ public class VentaService implements IService<Venta>{
     private static final RollerService RollerService = new RollerService();
     private static final OrderService orderService = new OrderService();
     private static final LoteService LoteService = new LoteService();
-
+    private static final RielService RielService = new RielService();
     private final SimpMessagingTemplate messagingTemplate;
 
     public VentaService(SimpMessagingTemplate messagingTemplate) {
@@ -41,16 +43,21 @@ public class VentaService implements IService<Venta>{
 
     @Override
     public CustomResponseEntity<Venta> Save(Venta venta) {
+
         CustomResponseEntity<Venta> responseVenta = new CustomResponseEntity<>();
 
         CustomResponseEntity<Cliente> responseCliente = ClienteService.Save(venta.getCliente());
 
         if(responseCliente.getStatus() == HttpStatus.CREATED) {
+
             responseVenta = VentasConexion.save(venta);
+
             if (responseVenta.getStatus() == HttpStatus.OK) {
                 Cliente c = responseCliente.getBody();
                 venta.setCliente(c);
+
                 for (Articulo articulo : venta.getListaArticulos()) {
+                    articulo.setIdVenta(responseVenta.getBody().getId());
                     CustomResponseEntity<Articulo> responseArticulo = ArticuloService.Save(articulo);
 
                     if(responseArticulo.getStatus()!= HttpStatus.CREATED) {
@@ -59,17 +66,11 @@ public class VentaService implements IService<Venta>{
                         return responseVenta;
                     }
 
+
                     if(articulo instanceof Roller){
 
-                        boolean ventaArticulo = VentasConexion.SaveArticuloVenta(responseArticulo.getBody().getIdArticulo(),responseVenta.getBody().getId());
-
-                        if(!ventaArticulo) {
-                            responseVenta.setStatus(HttpStatus.BAD_REQUEST);
-                            responseVenta.setMessage(responseArticulo.getMessage());
-                            return responseVenta;
-                        }
-
                             Roller roller = (Roller) articulo;
+                            roller.setIdArticulo(responseArticulo.getBody().getIdArticulo());
                             CustomResponseEntity<Cortina> responseCortina = CortinaService.Save(roller);
 
                             if (responseCortina.getStatus() != HttpStatus.OK) {
@@ -86,7 +87,32 @@ public class VentaService implements IService<Venta>{
                             }
 
                             Orden orden = orderService.CrearNuevaOrdenRoller(responseRoller.getBody());
-                            MandarMensaje("Recarga");
+                    }
+                    if(articulo instanceof Riel){
+
+                        Riel riel = (Riel) articulo;
+                        CustomResponseEntity<Bastones> responseBaston = RielService.SaveBaston(riel.getBastones());
+                        riel.setBastones(responseBaston.getBody());
+
+                        CustomResponseEntity<Soporte> responseSoporte = RielService.SaveSoporte(riel.getSoportes());
+                        riel.setSoportes(responseSoporte.getBody());
+
+                        riel.setIdArticulo(responseArticulo.getBody().getIdArticulo());
+
+                        CustomResponseEntity<Riel> responseRiel = RielService.Save(riel);
+
+
+
+                        if (responseRiel.getStatus() != HttpStatus.OK) {
+                            responseVenta.setStatus(HttpStatus.BAD_REQUEST);
+                            responseVenta.setMessage(responseRiel.getMessage());
+                            return responseVenta;
+                        }
+
+                        Orden orden = orderService.CrearNuevaOrdenRiel(responseRiel.getBody());
+                    }
+                    if(articulo instanceof Tradicional){
+
                     }
                 }
 
@@ -101,6 +127,7 @@ public class VentaService implements IService<Venta>{
             responseVenta.setStatus(HttpStatus.BAD_REQUEST);
             responseVenta.setMessage(responseCliente.getMessage());
         }
+        MandarMensaje("Recarga");
         return responseVenta;
     }
 
@@ -136,6 +163,7 @@ public class VentaService implements IService<Venta>{
         return responseVenta;
     }
     public CustomResponseEntity<Venta> findByIdSoloVenta(int id) {
+        System.out.println(id);
         CustomResponseEntity<Venta> responseVenta = new CustomResponseEntity<>();
         Venta v = VentasConexion.findById(id).getBody();
         v.setCliente(ClienteService.findById(v.getCliente().getId()).getBody());
@@ -150,5 +178,8 @@ public class VentaService implements IService<Venta>{
     }
 
 
+    public CustomResponseEntity<String> updateVentaFO(String instalacion, String obra,int IdVen) {
+        return VentasConexion.updateVentaFO(instalacion,obra,IdVen);
+    }
 }
 

@@ -1,6 +1,7 @@
 package com.example.proyectofinalannedecor.Service;
 
-import com.example.proyectofinalannedecor.Clases.ConfiguracionCortinas.*;
+import com.example.proyectofinalannedecor.Clases.ConfiguracionRiel.ConfiguracionRiel;
+import com.example.proyectofinalannedecor.Clases.ConfiguracionRoller.*;
 import com.example.proyectofinalannedecor.Clases.CustomResponseEntity;
 import com.example.proyectofinalannedecor.Clases.TipoCliente;
 import com.example.proyectofinalannedecor.Conexion.ConfiguracionesConexion;
@@ -14,6 +15,11 @@ public class ConfigService {
 
     public CustomResponseEntity<ConfiguracionRoller> findAllConfigRoller() {
         CustomResponseEntity<ConfiguracionRoller> response = rollerConfConexion.findAllConfRollers();
+        return response;
+    }
+
+    public CustomResponseEntity<ConfiguracionRiel> findAllConfigTradicional() {
+        CustomResponseEntity<ConfiguracionRiel> response = rollerConfConexion.findAllConfTradicional();
         return response;
     }
 

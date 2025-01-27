@@ -8,7 +8,7 @@ public class Conexion {
 
 	private static final String DRIVER = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
 
-    private static final String connectionUrl = "jdbc:sqlserver://annedecorserver2.database.windows.net;user=Adminanne;password=Annedecor1;databaseName=anndeDecorDB;trustServerCertificate=true;encrypt=true";
+    private static final String connectionUrl = "jdbc:sqlserver://200.40.89.254:1433;databaseName=SistemaAnneDecorLocal;user=SA;password=Federico.1809;";
 
     public static Connection GetConexion() {
         Connection connection = null;

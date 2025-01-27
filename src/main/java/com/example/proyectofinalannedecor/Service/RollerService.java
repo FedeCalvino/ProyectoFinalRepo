@@ -1,11 +1,10 @@
 package com.example.proyectofinalannedecor.Service;
 
-import com.example.proyectofinalannedecor.Clases.Articulo;
+import com.example.proyectofinalannedecor.Clases.Articulos.Articulo;
+import com.example.proyectofinalannedecor.Clases.Articulos.Riel;
 import com.example.proyectofinalannedecor.Clases.CustomResponseEntity;
-import com.example.proyectofinalannedecor.Clases.TipoCortina.Roller;
-import com.example.proyectofinalannedecor.Conexion.CortinaConexion;
+import com.example.proyectofinalannedecor.Clases.Articulos.Roller;
 import com.example.proyectofinalannedecor.Conexion.RollerConexion;
-import com.example.proyectofinalannedecor.Conexion.VentasConexion;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -33,8 +32,13 @@ public class RollerService implements IService<Roller>{
     }
 
     @Override
-    public CustomResponseEntity<Roller> update(Roller venta) {
-        return null;
+    public CustomResponseEntity<Roller> update(Roller roller) {
+
+        return rollerConexion.update(roller);
+    }
+    public CustomResponseEntity<Roller> update(Roller roller,int IdCortina) {
+
+        return rollerConexion.update(roller,IdCortina);
     }
 
     @Override
@@ -45,5 +49,15 @@ public class RollerService implements IService<Roller>{
     @Override
     public CustomResponseEntity<Roller> findById(int id) {
         return null;
+    }
+
+    public CustomResponseEntity<Riel> findRielArticulo(Articulo riel) {
+        System.out.println(riel);
+        CustomResponseEntity<Riel> response = new CustomResponseEntity<>();
+        Riel responseRiel =  rollerConexion.findRielArticulo(riel).getBody();
+        System.out.println(riel);
+        response.setBody(responseRiel);
+        return response;
+
     }
 }

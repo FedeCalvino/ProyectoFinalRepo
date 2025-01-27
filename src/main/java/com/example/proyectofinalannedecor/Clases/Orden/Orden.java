@@ -1,10 +1,9 @@
 package com.example.proyectofinalannedecor.Clases.Orden;
 
-import com.example.proyectofinalannedecor.Clases.Articulo;
+import com.example.proyectofinalannedecor.Clases.Articulos.Articulo;
 import com.example.proyectofinalannedecor.Clases.Venta;
 
 import java.sql.Date;
-import java.util.ArrayList;
 import java.util.List;
 
 

@@ -1,13 +1,9 @@
 package com.example.proyectofinalannedecor.Service;
 
-import com.example.proyectofinalannedecor.Clases.Articulo;
+import com.example.proyectofinalannedecor.Clases.Articulos.Articulo;
 import com.example.proyectofinalannedecor.Clases.CustomResponseEntity;
-import com.example.proyectofinalannedecor.Clases.Instalacion;
 import com.example.proyectofinalannedecor.Clases.Orden.*;
-import com.example.proyectofinalannedecor.Clases.TipoCortina.Roller;
-import com.example.proyectofinalannedecor.Clases.TipoCortina.Tradicional;
 import com.example.proyectofinalannedecor.Conexion.OrdenConexion;
-import org.hibernate.annotations.Check;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -23,6 +19,7 @@ public class OrderService implements IService<Orden> {
     public Orden CrearNuevaOrdenRoller(Articulo articulo) {
 
         Orden orden = new Orden(0,new ArrayList<>(),EstadosPasosOrden.TELA_CANO,articulo.getIdArticulo());
+
         orden.setArticulo(articulo);
         OrdenConexion.save(orden);
 
@@ -36,6 +33,23 @@ public class OrderService implements IService<Orden> {
         agregarPaso(orden,paso3);
 
 
+
+        return orden;
+    }
+
+    public Orden CrearNuevaOrdenRiel(Articulo articulo) {
+
+        Orden orden = new Orden(0,new ArrayList<>(),EstadosPasosOrden.CORTE_ARMADO,articulo.getIdArticulo());
+
+        orden.setArticulo(articulo);
+        OrdenConexion.save(orden);
+
+        PasoOrden paso1 = new PasoOrden(0,false,null,PasosArticulo.CORTE_RIEL);
+        PasoOrden paso2 =  new PasoOrden(0,false,null,PasosArticulo.ARMADO);
+
+
+        agregarPaso(orden,paso1);
+        agregarPaso(orden,paso2);
 
         return orden;
     }
@@ -180,7 +194,7 @@ public class OrderService implements IService<Orden> {
             for (PasoOrden paso : pasos) {
                 if (!IdOrdenes.contains(paso.getIdOrden())) {
                     List<PasoOrden> pasosAdd = new ArrayList<>();
-
+                    System.out.println((paso.getIdOrden()));
                     Orden ord = OrdenConexion.findById(paso.getIdOrden()).getBody();
 
                     if (ord != null) {

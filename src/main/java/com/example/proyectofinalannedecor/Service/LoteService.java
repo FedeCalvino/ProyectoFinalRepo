@@ -80,11 +80,12 @@ public class LoteService implements IService<Lote> {
 
     public CustomResponseEntity<List<Lote>> findAllFecha(String fecha) {
         List<Lote> lista =  LConexion.findAllFECHA(fecha).getBody();
-
         for (Lote lote : lista) {
+
             List<Orden> Ordenes = OService.GetOrdenesLote(lote).getBody();
             ArrayList<Integer> idOrdenes = new ArrayList<>();
             ArrayList<Venta> ventas = new ArrayList<>();
+
             for(Orden orden : Ordenes) {
                 if(!idOrdenes.contains(orden.getIdVenta())){
                     idOrdenes.add(orden.getIdVenta());
@@ -99,9 +100,9 @@ public class LoteService implements IService<Lote> {
                     }
                 }
             }
+
             lote.setVentas(ventas);
         }
-
         CustomResponseEntity<List<Lote>> response = new CustomResponseEntity<>();
         response.setBody(lista);
         return response;

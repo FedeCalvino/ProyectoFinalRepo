@@ -1,7 +1,9 @@
 package com.example.proyectofinalannedecor.Conexion;
 
-import com.example.proyectofinalannedecor.Clases.ConfiguracionCortinas.*;
+import com.example.proyectofinalannedecor.Clases.ConfiguracionRiel.*;
+import com.example.proyectofinalannedecor.Clases.ConfiguracionRoller.*;
 import com.example.proyectofinalannedecor.Clases.CustomResponseEntity;
+import com.example.proyectofinalannedecor.Clases.Soporte;
 import com.example.proyectofinalannedecor.Clases.TipoCliente;
 import org.springframework.http.HttpStatus;
 
@@ -14,6 +16,24 @@ import java.util.List;
 
 
 public class ConfiguracionesConexion {
+    private static final String SQL_SELECT_TIPO_SOPORTES_TRADICIONAL = "SELECT * FROM TIPO_SOPORTE WHERE TIPO=2";
+
+    private static final String SQL_INSERT_TIPO_SOPORTES = "INSERT INTO TIPO_SOPORTE (NOMBRE) VALUES (?)";
+    private static final String SQL_SELECT_TIPO_SOPORTES_ROLLER = "SELECT * FROM TIPO_SOPORTE WHERE TIPO=1";
+    private static final String SQL_SELECT_TIPO_SOPORTES_BY_ID = "";
+
+    private static final String SQL_INSERT_TIPO_BASTONES = "INSERT INTO TIPO_BASTON (NOMBRE) VALUES (?)";
+    private static final String SQL_SELECT_TIPO_BASTONES = "SELECT * FROM TIPO_BASTON";
+    private static final String SQL_SELECT_TIPO_BASTONES_BY_ID = "";
+
+
+    private static final String SQL_INSERT_TIPO_RIEL = "INSERT INTO TIPO_RIEL (NOMBRE) VALUES (?)";
+    private static final String SQL_SELECT_TIPO_RIEL = "SELECT * FROM TIPO_RIEL";
+    private static final String SQL_SELECT_TIPO_RIEL_BY_ID = "";
+
+    private static final String SQL_INSERT_LADO_ACUMULA = "INSERT INTO LADO_ACUMULA (NOMBRE) VALUES (?)";
+    private static final String SQL_SELECT_LADO_ACUMULA = "SELECT * FROM LADO_ACUMULA";
+    private static final String SQL_SELECT_LADO_ACUMULA_BY_ID = "";
 
     private static final String SQL_INSERT_LADO_CADENA = "INSERT INTO LADO_CADENA (NOMBRE) VALUES (?)";
     private static final String SQL_SELECT_LADO_CADENAS = "SELECT * FROM LADO_CADENA";
@@ -46,7 +66,8 @@ public class ConfiguracionesConexion {
                 this.GetCanos(),
                 this.GetMotores(),
                 this.GetLadosCadenas(),
-                this.GetTipoCadenas()
+                this.GetTipoCadenas(),
+                this.GetSoportesRoller()
         );
         CustomResponseEntity<ConfiguracionRoller> response = new CustomResponseEntity<ConfiguracionRoller>();
         response.setStatus(HttpStatus.OK);
@@ -289,6 +310,23 @@ public class ConfiguracionesConexion {
         }
         return motores;
     }
+    public List<TipoSoportes> GetSoportesRoller() {
+        List<TipoSoportes> tipos = new ArrayList<>();
+        this.conexion = (java.sql.Connection) Conexion.GetConexion();
+        try (PreparedStatement stmt = conexion.prepareStatement(SQL_SELECT_TIPO_SOPORTES_ROLLER);
+             ResultSet rs = stmt.executeQuery()) {
+            while (rs.next()) {
+                String nombre = rs.getString(3);
+                int tipo = rs.getInt(2);
+                int soporteId = rs.getInt(1);
+                TipoSoportes tipoSoportes = new TipoSoportes(soporteId,tipo,nombre);
+                tipos.add(tipoSoportes);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al obtener los lados de cadenas: " + e.getMessage());
+        }
+        return tipos;
+    }
 
 
     public CustomResponseEntity<LadoCadena> SaveLadoCadena(LadoCadena ladoCadena) {
@@ -426,4 +464,86 @@ public class ConfiguracionesConexion {
         return tiposCadenas;
     }
 
+    public List<LadoAcumula> GetLadosAcumula() {
+        List<LadoAcumula> ladosAcumula = new ArrayList<>();
+        this.conexion = (java.sql.Connection) Conexion.GetConexion();
+        try (PreparedStatement stmt = conexion.prepareStatement(SQL_SELECT_LADO_ACUMULA);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                String nombre = rs.getString(2);
+                int ladoId = rs.getInt(1);
+                LadoAcumula ladoAcumula = new LadoAcumula(ladoId);
+                ladoAcumula.setNombre(nombre);
+                ladosAcumula.add(ladoAcumula);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al obtener los lados de cadenas: " + e.getMessage());
+        }
+        return ladosAcumula;
+    }
+
+    public List<TipoRiel> GetTiposRiel() {
+        List<TipoRiel> tipos = new ArrayList<>();
+        this.conexion = (java.sql.Connection) Conexion.GetConexion();
+        try (PreparedStatement stmt = conexion.prepareStatement(SQL_SELECT_TIPO_RIEL);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                String nombre = rs.getString(2);
+                int tipoId = rs.getInt(1);
+                TipoRiel tipoRiel = new TipoRiel(tipoId);
+                tipoRiel.setTipo(nombre);
+                tipos.add(tipoRiel);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al obtener los lados de cadenas: " + e.getMessage());
+        }
+        return tipos;
+    }
+
+    public List<TipoBaston> GetTiposBastones() {
+
+        List<TipoBaston> tipos = new ArrayList<>();
+        this.conexion = (java.sql.Connection) Conexion.GetConexion();
+        try (PreparedStatement stmt = conexion.prepareStatement(SQL_SELECT_TIPO_BASTONES);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                String nombre = rs.getString(2);
+                int tipoId = rs.getInt(1);
+                TipoBaston tipoBaston = new TipoBaston(tipoId,nombre);
+                tipos.add(tipoBaston);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al obtener los lados de cadenas: " + e.getMessage());
+        }
+        return tipos;
+    }
+
+    public List<TipoSoportes> GetTiposSoportes() {
+
+        List<TipoSoportes> tipos = new ArrayList<>();
+        this.conexion = (java.sql.Connection) Conexion.GetConexion();
+        try (PreparedStatement stmt = conexion.prepareStatement(SQL_SELECT_TIPO_SOPORTES_TRADICIONAL);
+             ResultSet rs = stmt.executeQuery()) {
+            while (rs.next()) {
+                String nombre = rs.getString(3);
+                int tipo = rs.getInt(2);
+                int soporteId = rs.getInt(1);
+                TipoSoportes tipoSoportes = new TipoSoportes(soporteId,tipo,nombre);
+                tipos.add(tipoSoportes);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al obtener los lados de cadenas: " + e.getMessage());
+        }
+        return tipos;
+    }
+    public CustomResponseEntity<ConfiguracionRiel> findAllConfTradicional() {
+        ConfiguracionRiel conf = new ConfiguracionRiel(this.GetLadosAcumula(),this.GetTiposRiel(),this.GetTiposBastones(),this.GetTiposSoportes());
+        CustomResponseEntity<ConfiguracionRiel> response = new CustomResponseEntity<>();
+        response.setStatus(HttpStatus.OK);
+        response.setBody(conf);
+        return response;
+    }
 }

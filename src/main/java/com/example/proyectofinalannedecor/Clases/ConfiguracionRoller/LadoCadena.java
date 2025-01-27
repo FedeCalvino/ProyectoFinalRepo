@@ -1,4 +1,4 @@
-package com.example.proyectofinalannedecor.Clases.ConfiguracionCortinas;
+package com.example.proyectofinalannedecor.Clases.ConfiguracionRoller;
 
 public class LadoCadena {
     String Lado;

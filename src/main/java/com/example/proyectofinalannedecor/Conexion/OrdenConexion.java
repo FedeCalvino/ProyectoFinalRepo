@@ -1,11 +1,7 @@
 package com.example.proyectofinalannedecor.Conexion;
 
-import com.example.proyectofinalannedecor.Clases.Articulo;
-import com.example.proyectofinalannedecor.Clases.Cliente;
-import com.example.proyectofinalannedecor.Clases.ConfiguracionCortinas.*;
 import com.example.proyectofinalannedecor.Clases.CustomResponseEntity;
 import com.example.proyectofinalannedecor.Clases.Orden.*;
-import com.example.proyectofinalannedecor.Clases.TipoCortina.Roller;
 import org.springframework.http.HttpStatus;
 
 import java.sql.PreparedStatement;
@@ -20,8 +16,8 @@ public class OrdenConexion implements IConexion<Orden>{
     private static final String InsertPasoOrder = "INSERT INTO PASO_ORDEN(ID_ORDEN,NOMBRE_PASO,ESTADO_PASO,TERMINADA) VALUES (?,?,?,?)";
     private static final String SelectPasosOrden = "SELECT * FROM PASO_ORDEN WHERE ID_ORDEN = ?";
     private static final String SelectPasosOrdenSinT = "SELECT * FROM PASO_ORDEN WHERE TERMINADA=0 and ID_ORDEN = ?";
-    private static final String SelectOrdenes = "SELECT o.FECHA_CREACION,o.ID_ORDEN,o.ID_ARTICULO,o.ESTADO,va.ID_VENTA FROM ORDEN o join articulo a on o.ID_ARTICULO=a.ID_ARTICULO join VENTA_ARTICULO va on va.ID_ARTICULO=a.ID_ARTICULO";
-    private static final String SQL_SELECT_BY_ID = "SELECT o.FECHA_CREACION,o.ID_ORDEN,o.ID_ARTICULO,o.ESTADO,va.ID_VENTA FROM ORDEN o join articulo a on o.ID_ARTICULO=a.ID_ARTICULO join VENTA_ARTICULO va on va.ID_ARTICULO=a.ID_ARTICULO WHERE o.ID_ORDEN = ?";
+    private static final String SelectOrdenes = "SELECT o.FECHA_CREACION,o.ID_ORDEN,o.ID_ARTICULO,o.ESTADO,a.ID_VENTA FROM ORDEN o join articulo a on o.ID_ARTICULO=a.ID_ARTICULO";
+    private static final String SQL_SELECT_BY_ID = "SELECT o.FECHA_CREACION,o.ID_ORDEN,o.ID_ARTICULO,o.ESTADO,a.ID_VENTA FROM ORDEN o join articulo a on o.ID_ARTICULO=a.ID_ARTICULO WHERE o.ID_ORDEN = ?";
     private static final String DeleteOrder = "DELETE FROM ORDEN WHERE ORDER_ID = ?";
     private static final String UpdatePasoOrden = "UPDATE PASO_ORDEN SET TERMINADA = ?, FECHA_FINALIZACION = ? WHERE ID_PASO_ORDEN = ?";
     private static final String UpdateOrden = "UPDATE ORDER SET FECHA_FINALIZADO = ?, SET ESTADO = ? WHERE ID_ORDEN = ?";

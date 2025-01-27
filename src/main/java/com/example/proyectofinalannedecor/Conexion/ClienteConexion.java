@@ -12,13 +12,14 @@ import java.util.List;
 
 public class ClienteConexion implements IConexion<Cliente>{
 
-    private static final String SQL_INSERT = "INSERT INTO CLIENTE (RUT,NOMBRE,NUMERO_TELEFONO,DIRECCION,TIPO) VALUES (?,?,?,?,?)";
+    private static final String SQL_INSERT = "INSERT INTO CLIENTE (RUT,NOMBRE,NUMERO_TELEFONO,DIRECCION,TIPO,MAIL) VALUES (?,?,?,?,?,?)";
     private static final String SQL_SELECT_ALL = "SELECT * FROM CLIENTE";
     private static final String SQL_UPDATE = "UPDATE CLIENTE SET RUT = ?, NOMBRE = ? , NUMERO_TELEFONO = ? , DIRECCION = ?,TIPO=? WHERE ID_CLIENTE = ?";
     private static final String SQL_BY_ID = "SELECT * FROM CLIENTE WHERE ID_CLIENTE = ?";
     private static final String SQL_DELETE = "DELETE FROM CLIENTE WHERE ID_CLIENTE = ?";
     private static final String SQL_LIKE_NAME = "SELECT * FROM CLIENTE WHERE NOMBRE LIKE '%' + ? + '%'";
-
+    private static final String SQL_VALIDATE_MAIL = "SELECT COUNT(*) AS Total FROM CLIENTE WHERE MAIL = ?";
+    private static final String SQL_VALIDATE_RUT = "SELECT COUNT(*) AS Total FROM CLIENTE WHERE RUT = ?";
 
     @Override
     public CustomResponseEntity<Cliente> save(Cliente cliente) {
@@ -38,6 +39,7 @@ public class ClienteConexion implements IConexion<Cliente>{
                 ps.setBigDecimal(3, cliente.getNumeroTelefono());
                 ps.setString(4, cliente.getDireccion());
                 ps.setString(5, cliente.getTipo());
+                ps.setString(6, cliente.getMail());
                 ps.execute();
                 ResultSet rs = ps.getGeneratedKeys();
                 if (rs.next()) {
@@ -225,7 +227,7 @@ public class ClienteConexion implements IConexion<Cliente>{
             statement.setString(1,name);
             ResultSet rs = statement.executeQuery();
             while(rs.next()){
-                c = new Cliente (1,rs.getBigDecimal(2),rs.getString(3),rs.getBigDecimal(4),rs.getString(5),rs.getString(6),rs.getString(7));
+                c = new Cliente (rs.getInt(1),rs.getBigDecimal(2),rs.getString(3),rs.getBigDecimal(4),rs.getString(5),rs.getString(6),rs.getString(7));
                 clientes.add(c);
             }
         }catch(Exception e){
@@ -249,6 +251,72 @@ public class ClienteConexion implements IConexion<Cliente>{
             response.setBody(clientes);
             response.setStatus(HttpStatus.OK);
         }
+        return response;
+    }
+
+    public CustomResponseEntity<Cliente> Validate(Cliente c) {
+        CustomResponseEntity<Cliente> response = new CustomResponseEntity<>();
+        java.sql.Connection connection = null;
+
+        try{
+            connection = (java.sql.Connection) Conexion.GetConexion();
+            PreparedStatement statement = connection.prepareStatement(SQL_VALIDATE_MAIL);
+            statement.setString(1,c.getMail());
+
+            ResultSet rs = statement.executeQuery();
+
+            while(rs.next()){
+                if(rs.getInt(1)>=1){
+                    response.setStatus(HttpStatus.BAD_REQUEST);
+                    response.setBody(null);
+                    response.setMessage("El mail ya existe");
+                    return response;
+                }
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+            response.setStatus(HttpStatus.SERVICE_UNAVAILABLE);
+            response.setBody(null);
+            response.setMessage("error en la conexion");
+            return response;
+        }finally{
+            try{
+                connection.close();
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+        }
+
+        try{
+            connection = (java.sql.Connection) Conexion.GetConexion();
+            PreparedStatement statement = connection.prepareStatement(SQL_VALIDATE_RUT);
+            statement.setBigDecimal(1,c.getRut());
+
+            ResultSet rs = statement.executeQuery();
+
+            while(rs.next()){
+                if(rs.getInt(1)>=1){
+                    response.setStatus(HttpStatus.BAD_REQUEST);
+                    response.setBody(null);
+                    response.setMessage("El rut ya existe");
+                    return response;
+                }
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+            response.setStatus(HttpStatus.SERVICE_UNAVAILABLE);
+            response.setBody(null);
+            response.setMessage("error en la conexion");
+            return response;
+        }finally{
+            try{
+                connection.close();
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+        }
+        response.setStatus(HttpStatus.OK);
+        response.setBody(c);
         return response;
     }
 }

@@ -2,12 +2,8 @@ package com.example.proyectofinalannedecor.Controller;
 
 import com.example.proyectofinalannedecor.Clases.Cortina;
 import com.example.proyectofinalannedecor.Clases.CustomResponseEntity;
-import com.example.proyectofinalannedecor.Clases.TipoCortina.Roller;
-import com.example.proyectofinalannedecor.Service.ClienteService;
 import com.example.proyectofinalannedecor.Service.CortinaService;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 @CrossOrigin(origins = "*")
@@ -30,13 +26,19 @@ public class CortinaController implements IController<Cortina> {
 
 
     @Override
-    public CustomResponseEntity<Cortina> Save(Cortina venta) {
+    public CustomResponseEntity<Cortina> Save(Cortina cor) {
         return null;
     }
 
+    @PutMapping()
     @Override
-    public CustomResponseEntity<Cortina> update(Cortina venta) {
-        return null;
+    public CustomResponseEntity<Cortina> update(Cortina cor) {
+        return CortinaService.update(cor);
+    }
+
+    @PutMapping("/{idCortina}")
+    public CustomResponseEntity<Cortina> update(@RequestBody Cortina cor,@PathVariable int idCortina) {
+        return CortinaService.update(cor,idCortina);
     }
 
     @Override

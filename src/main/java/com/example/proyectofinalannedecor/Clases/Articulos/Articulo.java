@@ -1,8 +1,5 @@
-package com.example.proyectofinalannedecor.Clases;
+package com.example.proyectofinalannedecor.Clases.Articulos;
 
-import com.example.proyectofinalannedecor.Clases.Orden.Lote;
-import com.example.proyectofinalannedecor.Clases.TipoCortina.Roller;
-import com.example.proyectofinalannedecor.Clases.TipoCortina.Tradicional;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
@@ -12,16 +9,22 @@ import java.util.UUID;
         include = JsonTypeInfo.As.PROPERTY,
         property = "tipoArticulo"
 )
+
 @JsonSubTypes({
         @JsonSubTypes.Type(value = Roller.class, name = "roller"),
         @JsonSubTypes.Type(value = Tradicional.class, name = "tradicional"),
+        @JsonSubTypes.Type(value = Riel.class, name = "riel"),
 })
 
 public class Articulo{
+    private int numeroArticulo;
+    private int IdVenta;
     public int IdArticulo;
     private String codigoBarras;
     private String nombre;
-    public Articulo(String nombre) {
+
+    public Articulo(String nombre,int numeroArticulo) {
+        this.numeroArticulo=numeroArticulo;
         this.nombre = nombre;
         this.codigoBarras = generarCodigoBarras();
     }
@@ -38,6 +41,22 @@ public class Articulo{
 
     public String getCodigoBarras() {
         return codigoBarras;
+    }
+
+    public int getIdVenta() {
+        return IdVenta;
+    }
+
+    public void setIdVenta(int idVenta) {
+        IdVenta = idVenta;
+    }
+
+    public int getNumeroArticulo() {
+        return numeroArticulo;
+    }
+
+    public void setNumeroArticulo(int numeroArticulo) {
+        this.numeroArticulo = numeroArticulo;
     }
 
     public int getIdArticulo() {

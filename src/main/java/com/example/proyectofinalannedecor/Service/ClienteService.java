@@ -3,8 +3,10 @@ package com.example.proyectofinalannedecor.Service;
 import com.example.proyectofinalannedecor.Clases.Cliente;
 import com.example.proyectofinalannedecor.Conexion.ClienteConexion;
 import com.example.proyectofinalannedecor.Clases.CustomResponseEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import javax.net.ssl.SSLEngineResult;
 import java.util.List;
 @Service
 public class ClienteService implements IService<Cliente>{
@@ -16,7 +18,12 @@ public class ClienteService implements IService<Cliente>{
 
     @Override
     public CustomResponseEntity<Cliente> Save(Cliente c){
-        return ClienteConexion.save(c);
+        CustomResponseEntity<Cliente> responseValidate = ClienteConexion.Validate(c);
+        if(responseValidate.getStatus()==HttpStatus.OK){
+            return ClienteConexion.save(c);
+        }else{
+            return responseValidate;
+        }
     }
 
     @Override

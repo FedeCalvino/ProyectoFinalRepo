@@ -24,6 +24,14 @@ public class Cliente {
         this.Tipo = Tipo;
     }
 
+    public String getMail() {
+        return Mail;
+    }
+
+    public void setMail(String mail) {
+        Mail = mail;
+    }
+
     public String   getTipo() {
         return Tipo;
     }

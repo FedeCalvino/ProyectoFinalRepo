@@ -10,12 +10,13 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 public class CortinaConexion implements IConexion<Cortina>{
     private static final String SQL_INSERT_CORTINA = "INSERT INTO CORTINA(ALTO,ANCHO,ID_TIPO_TELA,AMBIENTE,DETALLES,ID_ARTICULO) VALUES(?,?,?,?,?,?)";
 
     private static final String SQL_DELETE = "DELETE FROM CORTINAS WHERE ID_CORTINA = ?";
-    private static final String SQL_UPDATE_CORTINA = "UPDATE CORTINAS SET AMBIENTE =? ,ALTO = ?, ANCHO = ? , TIPO_TELA_ID = ? , MOTORIZADA = ? WHERE ID_CORTINA = ?";
+    private static final String SQL_UPDATE_CORTINA = "UPDATE CORTINA SET ALTO = ?, ANCHO = ?, ID_TIPO_TELA = ?, AMBIENTE = ?, DETALLES = ? WHERE ID_CORTINA = ?;";
     private static final String SQL_UPDATE_ROLLER = "UPDATE ROLLER SET POSICION =? ,LADO_CADENA = ?, CANO = ? WHERE ID_CORTINA = ?";
     private static final String SQL_SELECT_ALL = "SELECT * FROM CORTINA";
     private static final String SQL_SELECT_BY_ID = "SELECT * FROM CORTINAS WHERE ID_CORTINA = ?";
@@ -28,6 +29,14 @@ public class CortinaConexion implements IConexion<Cortina>{
         CustomResponseEntity<Cortina> response = new CustomResponseEntity<>();
         java.sql.Connection conexion = null;
         try {
+            // Redondear valores a tres decimales antes de asignarlos
+            BigDecimal alto = new BigDecimal(C.getAlto()).setScale(3, RoundingMode.HALF_UP);
+            BigDecimal ancho = new BigDecimal(C.getAncho()).setScale(3, RoundingMode.HALF_UP);
+
+            // Actualizar los valores en el objeto Cortina si es necesario
+            C.setAlto(alto.floatValue());
+            C.setAncho(ancho.floatValue());
+
             // Obtener la conexión
             conexion = (java.sql.Connection) Conexion.GetConexion();
 
@@ -78,8 +87,47 @@ public class CortinaConexion implements IConexion<Cortina>{
     }
 
     @Override
-    public CustomResponseEntity<Cortina> update(Cortina cortina) {
+    public CustomResponseEntity<Cortina> update(Cortina C) {
         return null;
+    }
+
+    public CustomResponseEntity<Cortina> update(Cortina C,int idCortina) {
+        CustomResponseEntity<Cortina> response = new CustomResponseEntity<>();
+        java.sql.Connection conexion = null;
+        try {
+            conexion = (java.sql.Connection) Conexion.GetConexion();
+
+            PreparedStatement ps = conexion.prepareStatement(SQL_UPDATE_CORTINA);
+            ps.setFloat(1, C.getAlto());
+            ps.setFloat(2, C.getAncho());
+            ps.setInt(3, C.GetTipoTelaId());
+            ps.setString(4, C.getAmbiente());
+            ps.setString(5, C.getDetalle());
+            ps.setInt(6, idCortina);
+
+            ps.execute();
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setStatus(HttpStatus.BAD_REQUEST);
+            response.setMessage(e.getMessage());
+            return response;
+        } finally {
+            // Cerrar la conexión en el bloque finally
+            if (conexion != null) {
+                try {
+                    conexion.close();
+                }catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        if(C!=null){
+            response.setBody(C);
+            response.setStatus(HttpStatus.OK);
+        }
+        return response;
     }
 
     @Override
@@ -98,7 +146,8 @@ public class CortinaConexion implements IConexion<Cortina>{
             ResultSet rs = statement.executeQuery();
             while(rs.next()){
                     boolean motorizada = rs.getByte(5)==trueBite;
-                    Cortina c = new Cortina ("Cortina",rs.getFloat(4),rs.getFloat(3),0,rs.getString(2),rs.getString(7));
+                    Cortina c = new Cortina ("Cortina",rs.getFloat(4),rs.getFloat(3),0,rs.getString(2),rs.getString(7),0);
+                    c.setId(rs.getInt(1));
                     cortinas.add(c);
             }
             if(cortinas.isEmpty()){

@@ -6,7 +6,7 @@ package com.example.proyectofinalannedecor.Conexion;
 
 
 import com.example.proyectofinalannedecor.Clases.*;
-import com.example.proyectofinalannedecor.Clases.TipoCortina.Roller;
+import com.example.proyectofinalannedecor.Clases.Articulos.Articulo;
 import com.sun.jdi.connect.spi.Connection;
 import org.springframework.http.HttpStatus;
 
@@ -25,11 +25,9 @@ public class VentasConexion implements IConexion<Venta>{
     private static final String SQL_INSERT = "INSERT INTO VENTA(CLIENTE_ID, FECHA, OBRA, FECHA_INSTALACION) VALUES( ?, ?, ?,?)";;
     private static final String SQL_DELETE = "DELETE FROM VENTA WHERE ID_VENTA = ?";
     private static final String SQL_UPDATE = "UPDATE VENTA SET FECHA = ? , CLIENTE_ID = ?,OBRA=?,FECHA_INSTALACION=?  WHERE ID_VENTA = ?";
+    private static final String SQL_UPDATE_FO = "UPDATE VENTA SET OBRA=?, FECHA_INSTALACION=?  WHERE ID_VENTA = ?";
     private static final String SQL_SELECT_ALL="SELECT * FROM venta v JOIN CLIENTE c on c.ID_CLIENTE=v.CLIENTE_ID";
-    private static final String SQL_INSERT_ARTICULO_VENTA = "INSERT INTO VENTA_ARTICULO (ID_ARTICULO,ID_VENTA) VALUES (?,?)";
-    private static final String SQL_SELECT_ALL_CON_ORDEN = "SELECT * FROM venta v JOIN CLIENTE c on c.ID_CLIENTE=v.CLIENTE_ID WHERE v.ID_VENTA IN(\n" +
-            "SELECT v.ID_VENTA FROM venta v JOIN CLIENTE c on c.ID_CLIENTE=v.CLIENTE_ID JOIN VENTA_ARTICULO va on va.ID_VENTA=v.ID_VENTA JOIN Articulo a on a.ID_ARTICULO=va.ID_ARTICULO JOIN ORDEN O on O.ID_ARTICULO=a.ID_ARTICULO join PASO_ORDEN PO on PO.ID_ORDEN=O.ID_ORDEN where PO.TERMINADA=0\n" +
-            ")";
+    private static final String SQL_SELECT_ALL_CON_ORDEN = "SELECT * FROM venta v JOIN CLIENTE c on c.ID_CLIENTE=v.CLIENTE_ID WHERE v.ID_VENTA IN (SELECT v.ID_VENTA FROM venta v JOIN CLIENTE c on c.ID_CLIENTE=v.CLIENTE_ID JOIN Articulo a on a.ID_VENTA=v.ID_VENTA JOIN ORDEN O on O.ID_ARTICULO=a.ID_ARTICULO join PASO_ORDEN PO on PO.ID_ORDEN=O.ID_ORDEN where PO.TERMINADA=0)";
     public static Connection conexion;
 
     @Override
@@ -86,32 +84,6 @@ public class VentasConexion implements IConexion<Venta>{
             response.setMessage("Venta creada con exito");
         }
         return response;
-    }
-
-    public boolean SaveArticuloVenta(int ArticuloId,int VentaId) {
-        java.sql.Connection connection = null;
-        try {
-            connection = (java.sql.Connection) Conexion.GetConexion();
-            PreparedStatement ps = connection.prepareStatement(SQL_INSERT_ARTICULO_VENTA, Statement.RETURN_GENERATED_KEYS);
-            ps.setInt(1, ArticuloId);
-            ps.setInt(2, VentaId);
-            ps.execute();
-            ResultSet rs = ps.getGeneratedKeys();
-            if (rs.next()) {
-
-            }else{
-                return false;
-            }
-        } catch (Exception e) {
-            return false;
-        } finally {
-            try {
-                connection.close();
-            } catch (Exception e) {
-                return false;
-            }
-        }
-        return true;
     }
 
 
@@ -285,6 +257,38 @@ public class VentasConexion implements IConexion<Venta>{
             response.setStatus(HttpStatus.OK);
             response.setBody(ventas);
         }
+        return response;
+    }
+
+    public CustomResponseEntity<String> updateVentaFO(String instalacion, String obra,int IdVen) {
+        java.sql.Connection conexion=null;
+        System.out.println(instalacion);
+        CustomResponseEntity<String> response = new CustomResponseEntity<>();
+        instalacion = instalacion.replace("/", "-"); // Reemplaza barras por guiones
+        try{
+            conexion = (java.sql.Connection) Conexion.GetConexion();
+            PreparedStatement ps = conexion.prepareStatement(SQL_UPDATE_FO);
+            ps.setDate(2, Date.valueOf(instalacion));
+            ps.setString(1,obra);
+            ps.setInt(3,IdVen);
+            ps.execute();
+        }catch(Exception e){
+            e.printStackTrace();
+            response.setStatus(HttpStatus.BAD_REQUEST);
+            response.setMessage(e.getMessage());
+            return response;
+        }finally{
+            try{
+                conexion.close();
+            }catch(Exception e){
+                e.printStackTrace();
+                response.setStatus(HttpStatus.BAD_REQUEST);
+                response.setMessage(e.getMessage());
+                return response;
+            }
+        }
+        response.setStatus(HttpStatus.OK);
+        response.setMessage("Venta actualizada");
         return response;
     }
 }

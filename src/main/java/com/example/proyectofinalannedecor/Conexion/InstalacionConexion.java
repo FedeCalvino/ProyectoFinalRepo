@@ -2,7 +2,6 @@ package com.example.proyectofinalannedecor.Conexion;
 
 import com.example.proyectofinalannedecor.Clases.CustomResponseEntity;
 import com.example.proyectofinalannedecor.Clases.Instalacion;
-import com.example.proyectofinalannedecor.Clases.TipoCortina.Roller;
 import org.springframework.http.HttpStatus;
 
 import java.sql.PreparedStatement;

@@ -2,10 +2,10 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.example.proyectofinalannedecor.Clases.TipoCortina;
+package com.example.proyectofinalannedecor.Clases.Articulos;
 
 
-import com.example.proyectofinalannedecor.Clases.ConfiguracionCortinas.Motor;
+import com.example.proyectofinalannedecor.Clases.ConfiguracionRoller.Motor;
 import com.example.proyectofinalannedecor.Clases.Cortina;
 
 public class Tradicional extends Cortina {
@@ -17,8 +17,8 @@ public class Tradicional extends Cortina {
     private byte trueBite = 1;
     private byte falseBite = 0;
 
-    public Tradicional(String NombreArt, Float Alto, Float largo, Motor motorizada, int Idtela, int cantidadPanos, String Ambiente, String detalle, int numeroCortina, String AnchoDerecho, String Acumula, String pinza) {
-        super(NombreArt,Alto, largo, Idtela,Ambiente,detalle);
+    public Tradicional(String NombreArt, Float Alto, Float largo, Motor motorizada, int Idtela, int cantidadPanos, String Ambiente, String detalle, int numeroArticulo, String AnchoDerecho, String Acumula, String pinza) {
+        super(NombreArt,Alto, largo, Idtela,Ambiente,detalle,numeroArticulo);
         CantidadPanos = cantidadPanos;
         this.Pinza=pinza;
         this.AnchoDerecho = AnchoDerecho;

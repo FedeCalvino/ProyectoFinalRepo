@@ -51,9 +51,9 @@ public class OrderController implements IController<Orden>{
 
 
     @PutMapping("/PasoOrden/Completar/{id}")
-    public CustomResponseEntity<Orden> AvanzarPasoOrden(@PathVariable int id) {
+    public CustomResponseEntity<Orden> TerminarPasoOrden(@PathVariable int id) {
         CustomResponseEntity<Orden> response = new CustomResponseEntity<>();
-        boolean ret =Oservice.avanzarPaso(id);
+        boolean ret = Oservice.avanzarPaso(id);
         if(ret){
             response.setStatus(HttpStatus.OK);
         }else{

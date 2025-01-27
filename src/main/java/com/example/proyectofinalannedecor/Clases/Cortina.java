@@ -1,12 +1,12 @@
 package com.example.proyectofinalannedecor.Clases;
 
-import com.example.proyectofinalannedecor.Clases.ConfiguracionCortinas.Motor;
+import com.example.proyectofinalannedecor.Clases.Articulos.Articulo;
 
 import java.util.Date;
 
-public class Cortina extends Articulo{
+public class Cortina extends Articulo {
 
-    public int Id;
+    public int IdCortina;
     Float Alto;
     public int IdTipoTela;
     public String Ambiente;
@@ -23,8 +23,8 @@ public class Cortina extends Articulo{
         return Ambiente;
     }
 
-    public Cortina(String nombre,Float Alto, Float Ancho, int Idtela, String Ambiente,String detalle) {
-        super(nombre);
+    public Cortina(String nombre,Float Alto, Float Ancho, int Idtela, String Ambiente,String detalle,int numeroArticulo) {
+        super(nombre,numeroArticulo);
         this.IdTipoTela=Idtela;
         this.Alto = Alto;
         this.Ancho = Ancho;
@@ -50,11 +50,11 @@ public class Cortina extends Articulo{
     }
 
     public int getId() {
-        return Id;
+        return IdCortina;
     }
 
     public void setId(int Id) {
-        this.Id = Id;
+        this.IdCortina = Id;
     }
 
     public Float getAlto() {
