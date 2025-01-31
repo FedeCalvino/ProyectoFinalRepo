@@ -22,8 +22,8 @@ public class Roller extends Cortina {
     private final byte falseBite = 0;
     private Soporte soporte;
 
-    public Roller(String NombreArt,String Ambiente, Float Alto, Float Ancho, int Idtela, TipoCadena cadena, Cano cano, Posicion Posicion, LadoCadena LadoCadena,String detalle,int numeroArticulo,Motor motor,Soporte soporte) {
-        super(NombreArt,Alto, Ancho, Idtela, Ambiente,detalle,numeroArticulo);
+    public Roller(String NombreArt,String Ambiente, Float Alto, Float Ancho, int Idtela, TipoCadena cadena, Cano cano, Posicion Posicion, LadoCadena LadoCadena,String detalle,int numeroArticulo,Motor motor,Soporte soporte,String detalleInstalacion) {
+        super(NombreArt,Alto, Ancho, Idtela, Ambiente,detalle,numeroArticulo,detalleInstalacion);
         this.soporte = soporte;
         this.TipoCadena = cadena;
         this.MotorRoller=motor;
@@ -99,8 +99,8 @@ public class Roller extends Cortina {
         double anchoCano;
         if(!this.Exterior) {
             if (this.MotorRoller.getIdMotor()!=0) {
-                anchoCortina = AnchoCortinaDouble - 0.030;
-                anchoCano = AnchoCortinaDouble - 0.025;
+                anchoCortina = AnchoCortinaDouble - 0.040;
+                anchoCano = AnchoCortinaDouble - 0.035;
             } else {
                 anchoCortina = AnchoCortinaDouble - 0.040;
                 anchoCano = AnchoCortinaDouble - 0.040;

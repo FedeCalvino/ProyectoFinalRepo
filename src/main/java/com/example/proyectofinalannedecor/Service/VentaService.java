@@ -25,6 +25,8 @@ public class VentaService implements IService<Venta>{
     private static final OrderService orderService = new OrderService();
     private static final LoteService LoteService = new LoteService();
     private static final RielService RielService = new RielService();
+    private static final TradicionalService TradiService = new TradicionalService();
+    private static final InstalacionService instalacionService = new InstalacionService();
     private final SimpMessagingTemplate messagingTemplate;
 
     public VentaService(SimpMessagingTemplate messagingTemplate) {
@@ -112,8 +114,41 @@ public class VentaService implements IService<Venta>{
                         Orden orden = orderService.CrearNuevaOrdenRiel(responseRiel.getBody());
                     }
                     if(articulo instanceof Tradicional){
+                        Tradicional tradicional = (Tradicional) articulo;
+                        tradicional.setIdArticulo(responseArticulo.getBody().getIdArticulo());
+
+                        CustomResponseEntity<Cortina> responseCortina = CortinaService.Save(tradicional);
+                        tradicional.setId(responseCortina.getBody().getId());
+                        CustomResponseEntity<Tradicional> responseTradicional = TradiService.Save(tradicional);
+
+                        if (responseCortina.getStatus() != HttpStatus.OK) {
+                            responseVenta.setStatus(HttpStatus.BAD_REQUEST);
+                            responseVenta.setMessage(responseCortina.getMessage());
+                            return responseVenta;
+                        }
+
+                        if (responseTradicional.getStatus() != HttpStatus.OK) {
+                            responseVenta.setStatus(HttpStatus.BAD_REQUEST);
+                            responseVenta.setMessage(responseTradicional.getMessage());
+                            return responseVenta;
+                        }
+
+                        Orden orden = orderService.CrearNuevaOrdenTradicional(responseTradicional.getBody());
 
                     }
+                }
+
+                if(responseVenta.getBody().fechaInstalacion!=null){
+                    String start = responseVenta.getBody().fechaInstalacion +" 00:00:00.000";
+                    String end = responseVenta.getBody().fechaInstalacion +" 00:00:00.000";
+                    Instalacion instalacion = new Instalacion(
+                            responseVenta.getBody().getId(),
+                            start,
+                            "",
+                            end,
+                            responseVenta.getBody().getCliente().getNombre()
+                    );
+                    instalacionService.Save(instalacion);
                 }
 
                 responseVenta.setStatus(HttpStatus.OK);
@@ -148,6 +183,16 @@ public class VentaService implements IService<Venta>{
 
     @Override
     public CustomResponseEntity<Venta> delete(int id) {
+        System.out.println("ventaid: "+id);
+        List<Articulo> articulos = ArticuloService.findArticulos(id).getBody();
+
+        for (Articulo articulo : articulos) {
+            ArticuloService.deleteArticulo(articulo);
+        }
+        Instalacion inst = instalacionService.findByIdVenta(id).getBody();
+        if(inst!=null){
+            instalacionService.delete(inst.getId());
+        }
         return VentasConexion.delete(id);
     }
 
@@ -162,6 +207,7 @@ public class VentaService implements IService<Venta>{
         responseVenta.setMessage("Ok");
         return responseVenta;
     }
+
     public CustomResponseEntity<Venta> findByIdSoloVenta(int id) {
         System.out.println(id);
         CustomResponseEntity<Venta> responseVenta = new CustomResponseEntity<>();
@@ -177,8 +223,11 @@ public class VentaService implements IService<Venta>{
         return ventas;
     }
 
-
     public CustomResponseEntity<String> updateVentaFO(String instalacion, String obra,int IdVen) {
+        if(instalacion.equals("null")){
+        }else{
+            instalacionService.UpdateFecha(instalacion,IdVen);
+        }
         return VentasConexion.updateVentaFO(instalacion,obra,IdVen);
     }
 }

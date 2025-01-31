@@ -2,6 +2,9 @@ package com.example.proyectofinalannedecor.Conexion;
 
 import com.example.proyectofinalannedecor.Clases.ConfiguracionRiel.*;
 import com.example.proyectofinalannedecor.Clases.ConfiguracionRoller.*;
+import com.example.proyectofinalannedecor.Clases.ConfiguracionTradicional.ConfiguracionTradicional;
+import com.example.proyectofinalannedecor.Clases.ConfiguracionTradicional.Ganchos;
+import com.example.proyectofinalannedecor.Clases.ConfiguracionTradicional.Pinza;
 import com.example.proyectofinalannedecor.Clases.CustomResponseEntity;
 import com.example.proyectofinalannedecor.Clases.Soporte;
 import com.example.proyectofinalannedecor.Clases.TipoCliente;
@@ -16,6 +19,11 @@ import java.util.List;
 
 
 public class ConfiguracionesConexion {
+
+    private static final String SQL_SELECT_GANCHOS = "SELECT * FROM TIPO_GANCHO";
+
+    private static final String SQL_SELECT_PINZAS = "SELECT * FROM TIPO_PINZA";
+
     private static final String SQL_SELECT_TIPO_SOPORTES_TRADICIONAL = "SELECT * FROM TIPO_SOPORTE WHERE TIPO=2";
 
     private static final String SQL_INSERT_TIPO_SOPORTES = "INSERT INTO TIPO_SOPORTE (NOMBRE) VALUES (?)";
@@ -539,11 +547,55 @@ public class ConfiguracionesConexion {
         }
         return tipos;
     }
-    public CustomResponseEntity<ConfiguracionRiel> findAllConfTradicional() {
+    public CustomResponseEntity<ConfiguracionRiel> findAllConfRiel() {
         ConfiguracionRiel conf = new ConfiguracionRiel(this.GetLadosAcumula(),this.GetTiposRiel(),this.GetTiposBastones(),this.GetTiposSoportes());
         CustomResponseEntity<ConfiguracionRiel> response = new CustomResponseEntity<>();
         response.setStatus(HttpStatus.OK);
         response.setBody(conf);
         return response;
+    }
+
+    public CustomResponseEntity<ConfiguracionTradicional> findAllConfTradicional() {
+        ConfiguracionTradicional conf = new ConfiguracionTradicional(this.GetGanchos(),this.GetPinzas());
+        CustomResponseEntity<ConfiguracionTradicional> response = new CustomResponseEntity<>();
+        response.setStatus(HttpStatus.OK);
+        response.setBody(conf);
+        return response;
+    }
+
+    private List<Pinza> GetPinzas() {
+        List<Pinza> tipos = new ArrayList<>();
+        this.conexion = (java.sql.Connection) Conexion.GetConexion();
+        try (PreparedStatement stmt = conexion.prepareStatement(SQL_SELECT_PINZAS);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                String nombre = rs.getString(2);
+                int tipoId = rs.getInt(1);
+                Pinza pinza = new Pinza(nombre,tipoId);
+                tipos.add(pinza);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al obtener las pinzas: " + e.getMessage());
+        }
+        return tipos;
+    }
+
+    private List<Ganchos> GetGanchos() {
+        List<Ganchos> tipos = new ArrayList<>();
+        this.conexion = (java.sql.Connection) Conexion.GetConexion();
+        try (PreparedStatement stmt = conexion.prepareStatement(SQL_SELECT_GANCHOS);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                String nombre = rs.getString(2);
+                int tipoId = rs.getInt(1);
+                Ganchos gancho = new Ganchos(nombre,tipoId);
+                tipos.add(gancho);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al obtener los ganchos: " + e.getMessage());
+        }
+        return tipos;
     }
 }

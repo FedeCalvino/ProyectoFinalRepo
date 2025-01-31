@@ -2,6 +2,7 @@ package com.example.proyectofinalannedecor.Controller;
 
 import com.example.proyectofinalannedecor.Clases.ConfiguracionRiel.ConfiguracionRiel;
 import com.example.proyectofinalannedecor.Clases.ConfiguracionRoller.ConfiguracionRoller;
+import com.example.proyectofinalannedecor.Clases.ConfiguracionTradicional.ConfiguracionTradicional;
 import com.example.proyectofinalannedecor.Clases.CustomResponseEntity;
 import com.example.proyectofinalannedecor.Clases.TipoCliente;
 import com.example.proyectofinalannedecor.Dto.ConfiguracionDto;
@@ -20,10 +21,12 @@ import java.util.List;
 @RequestMapping("/Conf")
 public class ConfiguracionesController {
 
+    private final ConfigService configService;
     private ConfigService ConfService;
 
-    public ConfiguracionesController(ConfigService cs) {
+    public ConfiguracionesController(ConfigService cs, ConfigService configService) {
         this.ConfService = cs;
+        this.configService = configService;
     }
 
     @GetMapping
@@ -31,10 +34,11 @@ public class ConfiguracionesController {
         CustomResponseEntity<ConfiguracionDto> response = new CustomResponseEntity<>();
         ConfiguracionDto configuracionDto = new ConfiguracionDto();
         CustomResponseEntity<ConfiguracionRoller> responseRoller = ConfService.findAllConfigRoller();
-        CustomResponseEntity<ConfiguracionRiel> responseTradicional = ConfService.findAllConfigTradicional();
-
+        CustomResponseEntity<ConfiguracionRiel> responseRiel = ConfService.findAllConfigRiel();
+        CustomResponseEntity<ConfiguracionTradicional> responseTradicional = configService.findAllConfigTradicional();
         configuracionDto.setConfiguracionRoller(responseRoller.getBody());
-        configuracionDto.setConfiguracionRiel(responseTradicional.getBody());
+        configuracionDto.setConfiguracionRiel(responseRiel.getBody());
+        configuracionDto.setConfiguracionTradicional(responseTradicional.getBody());
         response.setBody(configuracionDto);
         response.setStatus(HttpStatus.OK);
         return response;

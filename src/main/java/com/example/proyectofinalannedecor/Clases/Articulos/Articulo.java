@@ -22,13 +22,22 @@ public class Articulo{
     public int IdArticulo;
     private String codigoBarras;
     private String nombre;
+    private String detalleInstalacion;
 
-    public Articulo(String nombre,int numeroArticulo) {
+    public Articulo(String nombre,int numeroArticulo,String detalleInstalacion) {
+        this.detalleInstalacion = detalleInstalacion;
         this.numeroArticulo=numeroArticulo;
         this.nombre = nombre;
         this.codigoBarras = generarCodigoBarras();
     }
 
+    public String getDetalleInstalacion() {
+        return detalleInstalacion;
+    }
+
+    public void setDetalleInstalacion(String detalleInstalacion) {
+        this.detalleInstalacion = detalleInstalacion;
+    }
 
     private String generarCodigoBarras() {
         String uniqueID = UUID.randomUUID().toString().substring(0, 8);

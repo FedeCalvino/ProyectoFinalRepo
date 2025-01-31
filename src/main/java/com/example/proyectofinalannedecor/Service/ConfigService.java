@@ -2,6 +2,7 @@ package com.example.proyectofinalannedecor.Service;
 
 import com.example.proyectofinalannedecor.Clases.ConfiguracionRiel.ConfiguracionRiel;
 import com.example.proyectofinalannedecor.Clases.ConfiguracionRoller.*;
+import com.example.proyectofinalannedecor.Clases.ConfiguracionTradicional.ConfiguracionTradicional;
 import com.example.proyectofinalannedecor.Clases.CustomResponseEntity;
 import com.example.proyectofinalannedecor.Clases.TipoCliente;
 import com.example.proyectofinalannedecor.Conexion.ConfiguracionesConexion;
@@ -18,8 +19,8 @@ public class ConfigService {
         return response;
     }
 
-    public CustomResponseEntity<ConfiguracionRiel> findAllConfigTradicional() {
-        CustomResponseEntity<ConfiguracionRiel> response = rollerConfConexion.findAllConfTradicional();
+    public CustomResponseEntity<ConfiguracionRiel> findAllConfigRiel() {
+        CustomResponseEntity<ConfiguracionRiel> response = rollerConfConexion.findAllConfRiel();
         return response;
     }
 
@@ -55,6 +56,11 @@ public class ConfigService {
         CustomResponseEntity<LadoCadena> response = new CustomResponseEntity<>();
         LadoCadena ResLadoCadena = rollerConfConexion.GetLadoCadenaPorId(LadoCadenaId);
         response.setBody(ResLadoCadena);
+        return response;
+    }
+
+    public CustomResponseEntity<ConfiguracionTradicional> findAllConfigTradicional() {
+        CustomResponseEntity<ConfiguracionTradicional> response = rollerConfConexion.findAllConfTradicional();
         return response;
     }
 }

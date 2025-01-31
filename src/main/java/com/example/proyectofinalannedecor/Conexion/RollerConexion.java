@@ -2,13 +2,17 @@ package com.example.proyectofinalannedecor.Conexion;
 
 import com.example.proyectofinalannedecor.Clases.Articulos.Articulo;
 import com.example.proyectofinalannedecor.Clases.Articulos.Riel;
+import com.example.proyectofinalannedecor.Clases.Articulos.Tradicional;
 import com.example.proyectofinalannedecor.Clases.Bastones;
 import com.example.proyectofinalannedecor.Clases.ConfiguracionRiel.LadoAcumula;
 import com.example.proyectofinalannedecor.Clases.ConfiguracionRiel.TipoRiel;
 import com.example.proyectofinalannedecor.Clases.ConfiguracionRoller.*;
+import com.example.proyectofinalannedecor.Clases.ConfiguracionTradicional.Ganchos;
+import com.example.proyectofinalannedecor.Clases.ConfiguracionTradicional.Pinza;
 import com.example.proyectofinalannedecor.Clases.CustomResponseEntity;
 import com.example.proyectofinalannedecor.Clases.Articulos.Roller;
 import com.example.proyectofinalannedecor.Clases.Soporte;
+import com.example.proyectofinalannedecor.Clases.Venta;
 import org.springframework.http.HttpStatus;
 
 import java.sql.PreparedStatement;
@@ -18,12 +22,11 @@ import java.util.List;
 
 public class RollerConexion implements IConexion<Roller> {
     private static final String SQL_SELECT_ROLLER_ARTICULO = "SELECT * FROM ROLLER R JOIN CORTINA C ON C.ID_CORTINA=R.ID_CORTINA WHERE C.ID_ARTICULO=?";
-    private static final String SQL_SELECT_RIEL_ARTICULO = "SELECT * FROM RIEL R WHERE R.ID_ARTICULO=?";
     private static final String SQL_INSERT = "INSERT INTO ROLLER(ID_CORTINA,ID_CADENA,ID_MOTOR,ID_POSICION,ID_LADO_CADENA,ID_CANO,ID_TIPO_SOPORTE) VALUES(?,?,?,?,?,?,?)";
     private static final String SQL_UPDATE= "UPDATE ROLLER SET ID_CADENA = ? ,ID_MOTOR = ?, ID_POSICION = ?, ID_LADO_CADENA = ? ,ID_CANO = ? ,ID_TIPO_SOPORTE = ? WHERE ID_CORTINA = ?;";
-    private static final String SQL_SELECT_BASTONES_RIEL = "SELECT * FROM BASTONES B JOIN TIPO_BASTON TB ON TB.ID_TIPO_BASTON=B.ID_TIPO_BASTONES WHERE B.ID_BASTONES=?";
+    private static final String SQL_DELETE = "DELETE FROM ROLLER WHERE ID_ROLLER = ?";
+    private static final String SQL_BY_ID = "SELECT * FROM ROLLER WHERE ID_ROLLER = ?";
 
-    private static final String SQL_SELECT_SOPORTE_RIEL = "SELECT * FROM SOPORTE S JOIN TIPO_SOPORTE TS ON TS.ID_TIPO_SOPORTE=S.ID_TIPO_SOPORTE WHERE S.ID_SOPORTE=?";
     Byte truebyte=1;
     @Override
     public CustomResponseEntity<Roller> save(Roller R) {
@@ -76,7 +79,47 @@ public class RollerConexion implements IConexion<Roller> {
 
     @Override
     public CustomResponseEntity<Roller> findById(Integer id) {
-        return null;
+        CustomResponseEntity<Roller> response = new CustomResponseEntity<>();
+        java.sql.Connection connection = null;
+        try{
+            connection = (java.sql.Connection) Conexion.GetConexion();
+            PreparedStatement statement = connection.prepareStatement(SQL_BY_ID);
+            statement.setInt(1, id);
+            ResultSet rs = statement.executeQuery();
+            while(rs.next()){
+                Roller r = new Roller (
+                        "Roller",
+                        "",
+                        1F,
+                        1F,
+                        0,
+                        new TipoCadena(rs.getInt(3)),
+                        new Cano(rs.getInt(7)),
+                        new Posicion(rs.getInt(5)),
+                        new LadoCadena(rs.getInt(6)),
+                        "",
+                        1,
+                        new Motor(rs.getInt(4)),
+                        new Soporte(rs.getInt(8),2),""
+                );
+                r.setIdRoller(rs.getInt(1));
+                response.setBody(r);
+                response.setStatus(HttpStatus.OK);
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+            response.setStatus(HttpStatus.BAD_REQUEST);
+            response.setMessage(e.getMessage());
+        }finally{
+            try{
+                connection.close();
+            }catch(Exception e){
+                e.printStackTrace();
+                response.setStatus(HttpStatus.BAD_REQUEST);
+                response.setMessage(e.getMessage());
+            }
+        }
+        return response;
     }
 
     @Override
@@ -125,8 +168,34 @@ public class RollerConexion implements IConexion<Roller> {
 
     @Override
     public CustomResponseEntity<Roller> delete(Integer id) {
-        return null;
+        CustomResponseEntity<Roller> response = new CustomResponseEntity<>();
+        java.sql.Connection conexion=null;
+        try{
+            Roller r = this.findById(id).getBody();
+            if(r!=null) {
+                conexion = (java.sql.Connection) Conexion.GetConexion();
+                PreparedStatement ps = conexion.prepareStatement(SQL_DELETE);
+                ps.setInt(1, id);
+                ps.execute();
+                response.setBody(r);
+                response.setStatus(HttpStatus.OK);
+                response.setMessage("rollero eliminado");
+            }else{
+                response.setStatus(HttpStatus.NOT_FOUND);
+                response.setMessage("roller no encontrado");
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }finally{
+            try{
+                conexion.close();
+            }catch(Exception e){
+            }
+        }
+        return response;
     }
+
+
 
     @Override
     public CustomResponseEntity<List<Roller>> findAll() {
@@ -156,7 +225,7 @@ public class RollerConexion implements IConexion<Roller> {
                         rs.getString(14),
                         1,
                         new Motor(rs.getInt(4)),
-                        new Soporte(rs.getInt(8),2)
+                        new Soporte(rs.getInt(8),2),""
                 );
                 r.setId(rs.getInt(2));
 
@@ -181,109 +250,27 @@ public class RollerConexion implements IConexion<Roller> {
         }
         return response;
     }
-    public Bastones findBastonesRiel(int idBaston) {
 
-        java.sql.Connection connection = null;
+
+
+    public boolean deleteFromArticulo(int id) {
+        java.sql.Connection conexion=null;
         try{
-            connection = (java.sql.Connection) Conexion.GetConexion();
-            PreparedStatement statement = connection.prepareStatement(SQL_SELECT_BASTONES_RIEL);
-
-            statement.setInt(1,idBaston);
-            ResultSet rs = statement.executeQuery();
-
-            while(rs.next()){
-
-                Bastones baston = new Bastones(rs.getInt(2),rs.getInt(3));
-                baston.setNombre(rs.getString(5));
-
-                return baston;
-            }
+            conexion = (java.sql.Connection) Conexion.GetConexion();
+            PreparedStatement ps = conexion.prepareStatement(SQL_DELETE);
+            ps.setInt(1, id);
+            ps.execute();
         }catch(Exception e){
             e.printStackTrace();
-            return null;
+            return false;
         }finally{
             try{
-                connection.close();
+                conexion.close();
             }catch(Exception e){
-                e.printStackTrace();
-                return null;
+                return false;
             }
         }
-        return null;
-    }
-    public Soporte findSoportesId(int idSoportes) {
-
-        java.sql.Connection connection = null;
-        try{
-            connection = (java.sql.Connection) Conexion.GetConexion();
-            PreparedStatement statement = connection.prepareStatement(SQL_SELECT_SOPORTE_RIEL);
-
-            statement.setInt(1,idSoportes);
-            ResultSet rs = statement.executeQuery();
-
-            while(rs.next()){
-
-                Soporte soporte = new Soporte(rs.getInt(2),rs.getInt(3));
-
-                soporte.setNombre(rs.getString(6));
-
-                return soporte;
-            }
-        }catch(Exception e){
-            e.printStackTrace();
-            return null;
-        }finally{
-            try{
-                connection.close();
-            }catch(Exception e){
-                e.printStackTrace();
-                return null;
-            }
-        }
-        return null;
+        return true;
     }
 
-    public CustomResponseEntity<Riel> findRielArticulo(Articulo riel) {
-        CustomResponseEntity<Riel> response = new CustomResponseEntity<>();
-
-        java.sql.Connection connection = null;
-        try{
-            connection = (java.sql.Connection) Conexion.GetConexion();
-            PreparedStatement statement = connection.prepareStatement(SQL_SELECT_RIEL_ARTICULO);
-            statement.setInt(1,riel.getIdArticulo());
-            ResultSet rs = statement.executeQuery();
-
-            while(rs.next()){
-
-                Riel r = new Riel (
-                        riel.getNombre(),
-                        rs.getString(2),
-                        rs.getFloat(8),
-                        new TipoRiel(rs.getInt(3)),
-                        new LadoAcumula(rs.getInt(4)),
-                        rs.getString(7),
-                        this.findBastonesRiel(rs.getInt(5)),
-                        this.findSoportesId(rs.getInt(6)),0
-                );
-
-                response.setBody(r);
-                response.setStatus(HttpStatus.OK);
-            }
-        }catch(Exception e){
-            e.printStackTrace();
-            response.setStatus(HttpStatus.BAD_REQUEST);
-            response.setMessage(e.getMessage());
-            return response;
-        }finally{
-            try{
-                connection.close();
-            }catch(Exception e){
-                e.printStackTrace();
-                response.setStatus(HttpStatus.BAD_REQUEST);
-                response.setMessage(e.getMessage());
-                return response;
-            }
-        }
-        return response;
-    }
 }

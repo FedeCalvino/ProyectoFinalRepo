@@ -4,5 +4,6 @@ public enum EstadosPasosOrden {
     TELA_CANO,
     ARMANDO,
     INSTALANDO,
-    CORTE_ARMADO
+    CORTE_ARMADO,
+    CONFECCION
 }

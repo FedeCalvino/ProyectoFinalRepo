@@ -16,8 +16,8 @@ public class Riel extends Articulo {
     private Bastones bastones;
     private Soporte soportes;
 
-    public Riel(String nombre, String ambiente, Float ancho, TipoRiel tipoRiel, LadoAcumula ladoAcumula, String detalle, Bastones bastones, Soporte soportes,int numeroArticulo) {
-        super(nombre,numeroArticulo);
+    public Riel(String nombre, String ambiente, Float ancho, TipoRiel tipoRiel, LadoAcumula ladoAcumula, String detalle, Bastones bastones, Soporte soportes,int numeroArticulo,String detalleInstalacion) {
+        super(nombre,numeroArticulo,detalleInstalacion);
         this.Ambiente = ambiente;
         Ancho = ancho;
         this.tipoRiel = tipoRiel;

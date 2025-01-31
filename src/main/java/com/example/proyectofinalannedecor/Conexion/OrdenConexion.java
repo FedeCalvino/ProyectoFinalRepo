@@ -1,5 +1,6 @@
 package com.example.proyectofinalannedecor.Conexion;
 
+import com.example.proyectofinalannedecor.Clases.Articulos.Roller;
 import com.example.proyectofinalannedecor.Clases.CustomResponseEntity;
 import com.example.proyectofinalannedecor.Clases.Orden.*;
 import org.springframework.http.HttpStatus;
@@ -24,8 +25,10 @@ public class OrdenConexion implements IConexion<Orden>{
     private static final String setOrdenTerminada = "UPDATE PASO_ORDEN SET TERMINADA = 1 WHERE ID_PASO_ORDEN = ?";
     private static final String CheckForUpdateRollerTela_Corte = "SELECT po.TERMINADA FROM PASO_ORDEN po JOIN ORDEN o ON o.ID_ORDEN = po.ID_ORDEN WHERE o.ID_ORDEN = ? AND (po.NOMBRE_PASO = 'CORTE_TELA' OR po.NOMBRE_PASO = 'CORTE_CANO');";
     private static final String SELECT_PASO_ORDEN_LOTE = "SELECT * FROM PASO_ORDEN po join LOTE_PASO lp on lp.ID_PASO=po.ID_PASO_ORDEN where lp.ID_LOTE =  ?";
-
-
+    private static final String SELECT_ORDEN_ARTICULO = "SELECT * FROM ORDEN WHERE ID_ARTICULO=?";
+    private static final String SQL_DELETE_BY_ARTICULOID = "DELETE FROM ARTICULO WHERE ID_ARTICULO = ?";
+    private static final String SQL_DELETE_PASO_ORDEN = "DELETE FROM PASO_ORDEN WHERE ID_ORDEN = ?";
+    private static final String SQL_DELETE_ORDEN = "DELETE FROM ORDEN WHERE ID_ORDEN = ?";
     private Byte trueByte =1;
     private Byte falseByte =0;
 
@@ -458,6 +461,67 @@ public class OrdenConexion implements IConexion<Orden>{
                 return false;
             }
 
+        }
+    }
+
+    public void deleteOrdenArticuloId(int idArticulo) {
+        java.sql.Connection conexion=null;
+        try{
+                conexion = (java.sql.Connection) Conexion.GetConexion();
+                PreparedStatement ps = conexion.prepareStatement(SQL_DELETE_ORDEN);
+                ps.setInt(1, idArticulo);
+                ps.execute();
+        }catch(Exception e){
+            e.printStackTrace();
+        }finally{
+            try{
+                conexion.close();
+            }catch(Exception e){
+            }
+        }
+    }
+
+    public Orden finOrdenByArticulo(int idArticulo) {
+        java.sql.Connection connection = null;
+
+        try {
+            connection = (java.sql.Connection) Conexion.GetConexion();
+            PreparedStatement statement = connection.prepareStatement(SELECT_ORDEN_ARTICULO);
+            statement.setInt(1, idArticulo);
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()) {
+                Orden o = new Orden(rs.getInt(1),null, EstadosPasosOrden.valueOf(rs.getString(3)), rs.getInt(2));
+                return o;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        } finally {
+            try {
+                connection.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+        return null;
+    }
+
+    public void deletePasosOrden(int idOrden) {
+        java.sql.Connection conexion=null;
+        try{
+                conexion = (java.sql.Connection) Conexion.GetConexion();
+                PreparedStatement ps = conexion.prepareStatement(SQL_DELETE_PASO_ORDEN);
+                ps.setInt(1, idOrden);
+                ps.execute();
+        }catch(Exception e){
+            e.printStackTrace();
+        }finally{
+            try{
+                conexion.close();
+            }catch(Exception e){
+                e.printStackTrace();
+            }
         }
     }
 }

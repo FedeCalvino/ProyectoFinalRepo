@@ -32,6 +32,7 @@ public class CortinaService implements IService<Cortina>{
     }
 
     public CustomResponseEntity<Cortina> update(Cortina cortina,int idCortina) {
+        System.out.println(cortina);
         CustomResponseEntity<Cortina> response = cortinaConexion.update(cortina,idCortina);
         if(cortina instanceof Roller){
             rollerService.update((Roller) cortina,idCortina);
@@ -42,6 +43,10 @@ public class CortinaService implements IService<Cortina>{
     @Override
     public CustomResponseEntity<Cortina> delete(int id) {
         return cortinaConexion.delete(id);
+    }
+
+    public boolean deleteFromArticulo(int id) {
+        return cortinaConexion.deleteFromArticulo(id);
     }
 
     @Override

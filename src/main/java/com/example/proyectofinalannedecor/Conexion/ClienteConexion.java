@@ -18,7 +18,7 @@ public class ClienteConexion implements IConexion<Cliente>{
     private static final String SQL_BY_ID = "SELECT * FROM CLIENTE WHERE ID_CLIENTE = ?";
     private static final String SQL_DELETE = "DELETE FROM CLIENTE WHERE ID_CLIENTE = ?";
     private static final String SQL_LIKE_NAME = "SELECT * FROM CLIENTE WHERE NOMBRE LIKE '%' + ? + '%'";
-    private static final String SQL_VALIDATE_MAIL = "SELECT COUNT(*) AS Total FROM CLIENTE WHERE MAIL = ?";
+    private static final String SQL_VALIDATE_MAIL = "SELECT COUNT(*) AS Total FROM CLIENTE WHERE MAIL = ? AND MAIL <> '';";
     private static final String SQL_VALIDATE_RUT = "SELECT COUNT(*) AS Total FROM CLIENTE WHERE RUT = ?";
 
     @Override

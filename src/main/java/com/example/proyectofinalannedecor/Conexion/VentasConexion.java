@@ -268,8 +268,17 @@ public class VentasConexion implements IConexion<Venta>{
         try{
             conexion = (java.sql.Connection) Conexion.GetConexion();
             PreparedStatement ps = conexion.prepareStatement(SQL_UPDATE_FO);
-            ps.setDate(2, Date.valueOf(instalacion));
-            ps.setString(1,obra);
+            if(instalacion.equals("null")){
+                ps.setDate(2, null);
+            }else{
+                ps.setDate(2, Date.valueOf(instalacion));
+            }
+            if(obra.equals("null")){
+                ps.setString(1,null);
+            }else{
+                ps.setString(1,obra);
+            }
+
             ps.setInt(3,IdVen);
             ps.execute();
         }catch(Exception e){

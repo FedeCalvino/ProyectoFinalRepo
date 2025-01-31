@@ -1,6 +1,7 @@
 package com.example.proyectofinalannedecor.Service;
 
 import com.example.proyectofinalannedecor.Clases.Articulos.Articulo;
+import com.example.proyectofinalannedecor.Clases.Articulos.Tradicional;
 import com.example.proyectofinalannedecor.Clases.CustomResponseEntity;
 import com.example.proyectofinalannedecor.Clases.Orden.*;
 import com.example.proyectofinalannedecor.Conexion.OrdenConexion;
@@ -57,128 +58,7 @@ public class OrderService implements IService<Orden> {
     public CustomResponseEntity<List<Articulo>> findArticulosByIdOrden(Integer id) {
         return articuloService.findArticulosByIdOrden(id);
     }
-    /*
-    public Orden AvanzarPasoRoller(PasoOrden paso,Orden orden){
 
-        boolean CorteCano=false;
-        boolean CorteTela=false;
-        boolean Armado=false;
-        boolean pasoInstalacion=false;
-
-        for (PasoOrden pasoOrden : orden.getPasos()) {
-            if(pasoOrden.getPaso().name().equals("CORTE_CANO") && pasoOrden.getTerminada()){
-                CorteCano=true;
-            }
-            if(pasoOrden.getPaso().name().equals("CORTE_TELA") && pasoOrden.getTerminada()){
-                CorteTela=true;
-            }
-            if(pasoOrden.getPaso().name().equals("ARMADO") && pasoOrden.getTerminada()){
-                Armado=true;
-            }
-            if(pasoOrden.getPaso().name().equals("INSTALACION") && pasoOrden.getTerminada()){
-                pasoInstalacion=true;
-            }
-        }
-
-        if (paso.getPaso().name().equals("CORTE_CANO") || paso.getPaso().name().equals("CORTE_TELA")) {
-            if(CorteCano && CorteTela && !Armado){
-                PasoOrden pasoorden = new PasoOrden(false,null,PasosArticulo.ARMADO);
-                orden.setEstado(EstadosPasosOrden.ARMANDO);
-                OrdenConexion.update(orden);
-                agregarPaso(orden,pasoorden);
-            }
-        }
-
-        if (paso.getPaso().name().equals("ARMADO") && !pasoInstalacion){
-            if (paso.getTerminada()) {
-                PasoOrden pasoorden = new PasoOrden(false,null,PasosArticulo.INSTALACION);
-                orden.setEstado(EstadosPasosOrden.INSTALANDO);
-                OrdenConexion.update(orden);
-                agregarPaso(orden, pasoorden);
-            }
-        }
-
-        return orden;
-    }
-
-    public Orden AvanzarPasoTradicional(PasoOrden paso,Orden orden){
-
-        boolean Confeccion=false;
-        boolean CorteRiel=false;
-        boolean ArmadoRiel=false;
-        boolean pasoInstalacion=false;
-
-        for (PasoOrden pasoOrden : orden.getPasos()) {
-            if(pasoOrden.getPaso().name().equals("CONFECCION") && pasoOrden.getTerminada()){
-                Confeccion=true;
-            }
-            if(pasoOrden.getPaso().name().equals("CORTE_RIEL") && pasoOrden.getTerminada()){
-                CorteRiel=true;
-            }
-            if(pasoOrden.getPaso().name().equals("ARMADO_RIEL") && pasoOrden.getTerminada()){
-                ArmadoRiel=true;
-            }
-            if(pasoOrden.getPaso().name().equals("INSTALACION") && pasoOrden.getTerminada()){
-                pasoInstalacion=true;
-            }
-        }
-
-        if (paso.getPaso().name().equals("CORTE_RIEL")) {
-                PasoOrden pasoorden = new PasoOrden(false,null,PasosArticulo.ARMADO_RIEL);
-                agregarPaso(orden,pasoorden);
-        }
-
-        if (paso.getPaso().name().equals("ARMADO") && !pasoInstalacion){
-            if (paso.getTerminada()) {
-                PasoOrden pasoorden = new PasoOrden(false,null,PasosArticulo.INSTALACION);
-                agregarPaso(orden, pasoorden);
-            }
-        }
-
-        return orden;
-    }
-
-    public Orden avanzarPaso(String NombrePaso ,Orden orden){
-
-        if (NombrePaso == null) {
-            return null;
-        }
-
-        PasoOrden paso=null;
-        List<PasoOrden> pasos = OrdenConexion.selectPasosOrden(orden.getIdOrden()).getBody();
-        orden.setPasos(pasos);
-        for(PasoOrden pasofor : orden.getPasos()) {
-            if(pasofor.getPaso().name().equals(NombrePaso)) {
-                paso=pasofor;
-            }
-        }
-
-        if (!paso.getTerminada()) {
-
-            paso.setTerminada(true);
-            paso.setFinalizado(new java.sql.Date(System.currentTimeMillis()));
-            OrdenConexion.updatePasoOrden(paso);
-            for(PasoOrden pasofor : orden.getPasos()) {
-                if(pasofor.getPaso().name().equals(NombrePaso)) {
-                    if(!pasofor.getTerminada()) {
-                        pasofor.setTerminada(true);
-                        pasofor.setFinalizado(new java.sql.Date(System.currentTimeMillis()));
-                    }
-                }
-            }
-            if(orden.getArticulo() instanceof Roller) {
-                AvanzarPasoRoller(paso, orden);
-            }
-            if(orden.getArticulo() instanceof Tradicional) {
-                AvanzarPasoTradicional(paso, orden);
-            }
-
-        } else {
-            System.out.println("El paso '" + paso.toString() + "' ya está completado.");
-        }
-        return orden;
-    }
-*/
     private void agregarPaso(Orden orden, PasoOrden nuevoPaso) {
         orden.getPasos().add(nuevoPaso);
         OrdenConexion.savePasoOrden(nuevoPaso,orden);
@@ -270,5 +150,24 @@ public class OrderService implements IService<Orden> {
 
     public boolean avanzarPaso(int id) {
         return OrdenConexion.UpdatePaso(id);
+    }
+
+    public void deleteOrdenArticulo(Articulo art) {
+        Orden o = OrdenConexion.finOrdenByArticulo(art.getIdArticulo());
+        OrdenConexion.deletePasosOrden(o.getIdOrden());
+        OrdenConexion.deleteOrdenArticuloId(art.getIdArticulo());
+    }
+
+    public Orden CrearNuevaOrdenTradicional(Tradicional tradicional) {
+        Orden orden = new Orden(0,new ArrayList<>(),EstadosPasosOrden.CONFECCION,tradicional.getIdArticulo());
+
+        orden.setArticulo(tradicional);
+        OrdenConexion.save(orden);
+
+        PasoOrden paso1 = new PasoOrden(0,false,null,PasosArticulo.CONFECCION);
+
+        agregarPaso(orden,paso1);
+
+        return orden;
     }
 }

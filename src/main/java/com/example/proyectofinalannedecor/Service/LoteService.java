@@ -100,7 +100,6 @@ public class LoteService implements IService<Lote> {
                     }
                 }
             }
-
             lote.setVentas(ventas);
         }
         CustomResponseEntity<List<Lote>> response = new CustomResponseEntity<>();

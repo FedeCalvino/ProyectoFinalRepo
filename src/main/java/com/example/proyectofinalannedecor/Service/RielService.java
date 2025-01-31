@@ -1,5 +1,6 @@
 package com.example.proyectofinalannedecor.Service;
 
+import com.example.proyectofinalannedecor.Clases.Articulos.Articulo;
 import com.example.proyectofinalannedecor.Clases.Articulos.Riel;
 import com.example.proyectofinalannedecor.Clases.Bastones;
 import com.example.proyectofinalannedecor.Clases.CustomResponseEntity;
@@ -19,6 +20,15 @@ public class RielService implements IService<Riel>{
     public CustomResponseEntity<List<Riel>> findAll() {
         return null;
     }
+    public CustomResponseEntity<Riel> findRielArticulo(Articulo riel) {
+        System.out.println(riel);
+        CustomResponseEntity<Riel> response = new CustomResponseEntity<>();
+        Riel responseRiel =  rielConexion.findRielArticulo(riel).getBody();
+        System.out.println(riel);
+        response.setBody(responseRiel);
+        return response;
+
+    }
 
     @Override
     public CustomResponseEntity<Riel> Save(Riel riel) {
@@ -32,7 +42,7 @@ public class RielService implements IService<Riel>{
 
     @Override
     public CustomResponseEntity<Riel> delete(int id) {
-        return null;
+        return rielConexion.delete(id);
     }
 
     @Override

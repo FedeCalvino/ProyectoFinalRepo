@@ -10,15 +10,13 @@ public class Instalacion {
     int Id;
     Venta venta;
     int IdVenta;
-    Date Dia;
     String Start;
     String End;
     String Aclaraciones;
     String title;
 
-    public Instalacion(int Idventa, Date dia, String start, String aclaraciones, String end, String title) {
+    public Instalacion(int Idventa, String start, String aclaraciones, String end, String title) {
         this.IdVenta = Idventa;
-        Dia = dia;
         Start = start;
         Aclaraciones = aclaraciones;
         End = end;
@@ -39,14 +37,6 @@ public class Instalacion {
 
     public void setVenta(Venta venta) {
         this.venta = venta;
-    }
-
-    public Date getDia() {
-        return Dia;
-    }
-
-    public void setDia(Date dia) {
-        Dia = dia;
     }
 
     public int getIdVenta() {
@@ -94,7 +84,6 @@ public class Instalacion {
         return "Instalacion{" +
                 "Id=" + Id +
                 "Idventa=" + IdVenta +
-                ", Dia=" + Dia +
                 ", Start='" + Start + '\'' +
                 ", End='" + End + '\'' +
                 ", Aclaraciones='" + Aclaraciones + '\'' +

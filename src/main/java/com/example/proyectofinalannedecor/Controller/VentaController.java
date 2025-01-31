@@ -59,7 +59,8 @@ public class VentaController implements IController<Venta> {
 
     @Override
     @DeleteMapping("/{id}")
-    public CustomResponseEntity<Venta> delete(int id) {
+    public CustomResponseEntity<Venta> delete(@PathVariable int id) {
+        System.out.println(id);
         CustomResponseEntity<Venta> response = ventaService.delete(id);
         return response;
     }

@@ -3,6 +3,7 @@ package com.example.proyectofinalannedecor.Conexion;
 import com.example.proyectofinalannedecor.Clases.Cliente;
 import com.example.proyectofinalannedecor.Clases.Cortina;
 import com.example.proyectofinalannedecor.Clases.CustomResponseEntity;
+import com.example.proyectofinalannedecor.Clases.Venta;
 import org.springframework.http.HttpStatus;
 
 import java.sql.PreparedStatement;
@@ -15,7 +16,7 @@ import java.math.RoundingMode;
 public class CortinaConexion implements IConexion<Cortina>{
     private static final String SQL_INSERT_CORTINA = "INSERT INTO CORTINA(ALTO,ANCHO,ID_TIPO_TELA,AMBIENTE,DETALLES,ID_ARTICULO) VALUES(?,?,?,?,?,?)";
 
-    private static final String SQL_DELETE = "DELETE FROM CORTINAS WHERE ID_CORTINA = ?";
+    private static final String SQL_DELETE = "DELETE FROM CORTINA WHERE ID_ARTICULO = ?";
     private static final String SQL_UPDATE_CORTINA = "UPDATE CORTINA SET ALTO = ?, ANCHO = ?, ID_TIPO_TELA = ?, AMBIENTE = ?, DETALLES = ? WHERE ID_CORTINA = ?;";
     private static final String SQL_UPDATE_ROLLER = "UPDATE ROLLER SET POSICION =? ,LADO_CADENA = ?, CANO = ? WHERE ID_CORTINA = ?";
     private static final String SQL_SELECT_ALL = "SELECT * FROM CORTINA";
@@ -91,6 +92,26 @@ public class CortinaConexion implements IConexion<Cortina>{
         return null;
     }
 
+    public Boolean deleteFromArticulo(int id) {
+        java.sql.Connection conexion=null;
+        try{
+                conexion = (java.sql.Connection) Conexion.GetConexion();
+                PreparedStatement ps = conexion.prepareStatement(SQL_DELETE);
+                ps.setInt(1, id);
+                ps.execute();
+        }catch(Exception e){
+            e.printStackTrace();
+            return false;
+        }finally{
+            try{
+                conexion.close();
+            }catch(Exception e){
+                return false;
+            }
+        }
+        return true;
+    }
+
     public CustomResponseEntity<Cortina> update(Cortina C,int idCortina) {
         CustomResponseEntity<Cortina> response = new CustomResponseEntity<>();
         java.sql.Connection conexion = null;
@@ -146,7 +167,7 @@ public class CortinaConexion implements IConexion<Cortina>{
             ResultSet rs = statement.executeQuery();
             while(rs.next()){
                     boolean motorizada = rs.getByte(5)==trueBite;
-                    Cortina c = new Cortina ("Cortina",rs.getFloat(4),rs.getFloat(3),0,rs.getString(2),rs.getString(7),0);
+                    Cortina c = new Cortina ("Cortina",rs.getFloat(4),rs.getFloat(3),0,rs.getString(2),rs.getString(7),0,"");
                     c.setId(rs.getInt(1));
                     cortinas.add(c);
             }

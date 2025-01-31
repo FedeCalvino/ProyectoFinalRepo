@@ -23,8 +23,8 @@ public class Cortina extends Articulo {
         return Ambiente;
     }
 
-    public Cortina(String nombre,Float Alto, Float Ancho, int Idtela, String Ambiente,String detalle,int numeroArticulo) {
-        super(nombre,numeroArticulo);
+    public Cortina(String nombre,Float Alto, Float Ancho, int Idtela, String Ambiente,String detalle,int numeroArticulo,String detalleInstalacion) {
+        super(nombre,numeroArticulo,detalleInstalacion);
         this.IdTipoTela=Idtela;
         this.Alto = Alto;
         this.Ancho = Ancho;

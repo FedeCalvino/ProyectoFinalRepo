@@ -25,7 +25,6 @@ public class OrderController implements IController<Orden>{
     @Override
     @GetMapping
     public CustomResponseEntity<List<Orden>> findAll() {
-
         CustomResponseEntity<List<Orden>> ordenes = Oservice.findAll();
         List<Orden> ordenesList = ordenes.getBody();
         List<Orden> updatedOrdenesList = new ArrayList<>();
@@ -41,7 +40,6 @@ public class OrderController implements IController<Orden>{
         }
         ordenes.setBody(updatedOrdenesList);
         return ordenes;
-
     }
 
     @Override
@@ -51,7 +49,7 @@ public class OrderController implements IController<Orden>{
 
 
     @PutMapping("/PasoOrden/Completar/{id}")
-    public CustomResponseEntity<Orden> TerminarPasoOrden(@PathVariable int id) {
+    public CustomResponseEntity<Orden> TerminarPasoOrden(@PathVariable int id){
         CustomResponseEntity<Orden> response = new CustomResponseEntity<>();
         boolean ret = Oservice.avanzarPaso(id);
         if(ret){
@@ -64,17 +62,17 @@ public class OrderController implements IController<Orden>{
 
     @Override
     @PutMapping
-    public CustomResponseEntity<Orden> update(Orden order) {
+    public CustomResponseEntity<Orden> update(Orden order){
         return Oservice.update(order);
     }
 
     @Override
-    public CustomResponseEntity<Orden> delete(int id) {
+    public CustomResponseEntity<Orden> delete(int id){
         return null;
     }
 
     @Override
-    public CustomResponseEntity<Orden> findById(int id) {
+    public CustomResponseEntity<Orden> findById(int id){
         return Oservice.findById(id);
     }
 
