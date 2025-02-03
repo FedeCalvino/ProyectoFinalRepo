@@ -2,10 +2,9 @@ package com.example.proyectofinalannedecor.Service;
 
 import com.example.proyectofinalannedecor.Clases.Articulos.Articulo;
 import com.example.proyectofinalannedecor.Clases.Articulos.Riel;
-import com.example.proyectofinalannedecor.Clases.Bastones;
+import com.example.proyectofinalannedecor.Clases.ConfiguracionRiel.Bastones;
 import com.example.proyectofinalannedecor.Clases.CustomResponseEntity;
 import com.example.proyectofinalannedecor.Clases.Soporte;
-import com.example.proyectofinalannedecor.Conexion.OrdenConexion;
 import com.example.proyectofinalannedecor.Conexion.RielConexion;
 import org.springframework.stereotype.Service;
 
@@ -36,8 +35,10 @@ public class RielService implements IService<Riel>{
     }
 
     @Override
-    public CustomResponseEntity<Riel> update(Riel Clase) {
-        return null;
+    public CustomResponseEntity<Riel> update(Riel riel) {
+        rielConexion.updateBastones(riel);
+        rielConexion.updateSoportes(riel);
+        return rielConexion.update(riel);
     }
 
     @Override

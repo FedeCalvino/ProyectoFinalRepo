@@ -89,30 +89,7 @@ public class CortinaConexion implements IConexion<Cortina>{
 
     @Override
     public CustomResponseEntity<Cortina> update(Cortina C) {
-        return null;
-    }
-
-    public Boolean deleteFromArticulo(int id) {
-        java.sql.Connection conexion=null;
-        try{
-                conexion = (java.sql.Connection) Conexion.GetConexion();
-                PreparedStatement ps = conexion.prepareStatement(SQL_DELETE);
-                ps.setInt(1, id);
-                ps.execute();
-        }catch(Exception e){
-            e.printStackTrace();
-            return false;
-        }finally{
-            try{
-                conexion.close();
-            }catch(Exception e){
-                return false;
-            }
-        }
-        return true;
-    }
-
-    public CustomResponseEntity<Cortina> update(Cortina C,int idCortina) {
+        System.out.println(C);
         CustomResponseEntity<Cortina> response = new CustomResponseEntity<>();
         java.sql.Connection conexion = null;
         try {
@@ -124,7 +101,7 @@ public class CortinaConexion implements IConexion<Cortina>{
             ps.setInt(3, C.GetTipoTelaId());
             ps.setString(4, C.getAmbiente());
             ps.setString(5, C.getDetalle());
-            ps.setInt(6, idCortina);
+            ps.setInt(6, C.getId());
 
             ps.execute();
 
@@ -150,6 +127,27 @@ public class CortinaConexion implements IConexion<Cortina>{
         }
         return response;
     }
+
+    public Boolean deleteFromArticulo(int id) {
+        java.sql.Connection conexion=null;
+        try{
+                conexion = (java.sql.Connection) Conexion.GetConexion();
+                PreparedStatement ps = conexion.prepareStatement(SQL_DELETE);
+                ps.setInt(1, id);
+                ps.execute();
+        }catch(Exception e){
+            e.printStackTrace();
+            return false;
+        }finally{
+            try{
+                conexion.close();
+            }catch(Exception e){
+                return false;
+            }
+        }
+        return true;
+    }
+
 
     @Override
     public CustomResponseEntity<Cortina> delete(Integer id) {

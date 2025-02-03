@@ -1,6 +1,6 @@
 package com.example.proyectofinalannedecor.Clases.Articulos;
 
-import com.example.proyectofinalannedecor.Clases.Bastones;
+import com.example.proyectofinalannedecor.Clases.ConfiguracionRiel.Bastones;
 import com.example.proyectofinalannedecor.Clases.ConfiguracionRiel.LadoAcumula;
 import com.example.proyectofinalannedecor.Clases.ConfiguracionRiel.TipoRiel;
 import com.example.proyectofinalannedecor.Clases.Soporte;
@@ -97,5 +97,22 @@ public class Riel extends Articulo {
 
     public void setSoportes(Soporte soportes) {
         this.soportes = soportes;
+    }
+
+    @Override
+    public String toString() {
+        return "Riel{" +
+                "idRiel=" + idRiel +
+                ", ArticuloId=" + ArticuloId +
+                ", Ambiente='" + Ambiente + '\'' +
+                ", Ancho=" + Ancho +
+                ", tipoRiel=" + tipoRiel +
+                ", ladoAcumula=" + ladoAcumula +
+                ", detalle='" + detalle + '\'' +
+                "detalle instalacion="+getDetalleInstalacion()+"/"+
+                ", bastones=" + bastones +
+                ", soportes=" + soportes +
+                ", IdArticulo=" + IdArticulo +
+                '}';
     }
 }

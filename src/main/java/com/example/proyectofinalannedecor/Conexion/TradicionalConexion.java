@@ -1,6 +1,7 @@
 package com.example.proyectofinalannedecor.Conexion;
 
 import com.example.proyectofinalannedecor.Clases.Articulos.Articulo;
+import com.example.proyectofinalannedecor.Clases.Articulos.Riel;
 import com.example.proyectofinalannedecor.Clases.Articulos.Roller;
 import com.example.proyectofinalannedecor.Clases.Articulos.Tradicional;
 import com.example.proyectofinalannedecor.Clases.ConfiguracionRoller.*;
@@ -20,7 +21,7 @@ public class TradicionalConexion implements IConexion<Tradicional>{
     private static final String SQL_SELECT_TRADICIONAL_ARTICULO = "SELECT * FROM TRADICIONAL T JOIN CORTINA C ON C.ID_CORTINA=T.ID_CORTINA WHERE C.ID_ARTICULO=?";
     private static final String SQL_DELETE = "DELETE FROM TRADICIONAL WHERE ID_TRADICIONAL = ?";
     private static final String SQL_BY_ID = "SELECT * FROM TRADICIONAL T JOIN CORTINA C ON C.ID_CORTINA=T.ID_CORTINA WHERE T.ID_TRADICIONAL = ?";
-
+    private static final String SQL_UPDATE = "UPDATE TRADICIONAL SET ID_PINZA = ?, ID_GANCHO = ?, ANCHO_DERECHO = ?, ALTO_DERECHO=?, CANTIDAD_PANOS=?, CANTIDAD_ALTOS=? WHERE ID_CORTINA = ?";
     @Override
     public CustomResponseEntity<Tradicional> save(Tradicional tradicional) {
         CustomResponseEntity<Tradicional> response = new CustomResponseEntity<>();
@@ -117,7 +118,44 @@ public class TradicionalConexion implements IConexion<Tradicional>{
 
     @Override
     public CustomResponseEntity<Tradicional> update(Tradicional tradicional) {
-        return null;
+        System.out.println("id dela cortina a update "+tradicional.getId());
+        CustomResponseEntity<Tradicional> response = new CustomResponseEntity<>();
+        java.sql.Connection conexion = null;
+        try {
+            conexion = (java.sql.Connection) Conexion.GetConexion();
+
+            PreparedStatement ps = conexion.prepareStatement(SQL_UPDATE);
+            ps.setInt(1, tradicional.getPinza().getIdPinza());
+            ps.setInt(2, tradicional.getGanchos().getIdGanchos());
+            ps.setBigDecimal(3, tradicional.getAnchoDerecho());
+            ps.setBigDecimal(4, tradicional.getAltoDerecho());
+            ps.setInt(5, tradicional.getCantidadPanos());
+            ps.setInt(6, tradicional.getCantidadAltos());
+            ps.setInt(7, tradicional.getId());
+
+            ps.execute();
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setStatus(HttpStatus.BAD_REQUEST);
+            response.setMessage(e.getMessage());
+            return response;
+        } finally {
+            // Cerrar la conexión en el bloque finally
+            if (conexion != null) {
+                try {
+                    conexion.close();
+                }catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        if(tradicional!=null){
+            response.setBody(tradicional);
+            response.setStatus(HttpStatus.OK);
+        }
+        return response;
     }
 
     @Override
@@ -182,6 +220,7 @@ public class TradicionalConexion implements IConexion<Tradicional>{
                         ""
                 );
                 t.setTradicionalId(rs.getInt("ID_TRADICIONAL"));
+                t.setId(rs.getInt("ID_CORTINA"));
 
                 response.setBody(t);
                 response.setStatus(HttpStatus.OK);

@@ -4,6 +4,7 @@ import com.example.proyectofinalannedecor.Clases.Articulos.Articulo;
 import com.example.proyectofinalannedecor.Clases.Articulos.Riel;
 import com.example.proyectofinalannedecor.Clases.Articulos.Roller;
 import com.example.proyectofinalannedecor.Clases.Articulos.Tradicional;
+import com.example.proyectofinalannedecor.Clases.Cortina;
 import com.example.proyectofinalannedecor.Clases.CustomResponseEntity;
 import com.example.proyectofinalannedecor.Clases.Orden.Orden;
 import com.example.proyectofinalannedecor.Conexion.ArticuloConexion;
@@ -47,20 +48,29 @@ public class ArticuloService implements IService<Articulo>{
     public CustomResponseEntity<Articulo> deleteArticulo(Articulo art) {
         System.out.println("ID ARTICULO :"+ art.getIdArticulo());
         ordenService.deleteOrdenArticulo(art);
+        System.out.println("eliminando articulos");
         if(art.getNombre().equals("Roller")){
             Roller r = rollerService.findRollerArticulo(art).getBody();
-            rollerService.delete(r.getIdRoller());
+            if (r != null && r.getIdRoller() > 0) {
+                rollerService.delete(r.getIdRoller());
+            }
             cortinaService.deleteFromArticulo(art.getIdArticulo());
         }
         if(art.getNombre().equals("Riel")){
             Riel r = rielService.findRielArticulo(art).getBody();
-            rielService.delete(r.getIdRiel());
+            System.out.println("eliminando riel: "+r.getIdRiel());
+            if (r != null && r.getIdRiel() > 0) {
+                rielService.delete(r.getIdRiel());
+            }
         }
         if(art.getNombre().equals("Tradicional")){
             Tradicional t = tradicionalService.findTradicionalArticulo(art).getBody();
-            tradicionalService.delete(t.getTradicionalId());
+            if (t != null && t.getTradicionalId() > 0) {
+                tradicionalService.delete(t.getTradicionalId());
+            }
             cortinaService.deleteFromArticulo(art.getIdArticulo());
         }
+
         CustomResponseEntity<Articulo> response = articuloConexion.delete(art.getIdArticulo());
         return response;
     }
@@ -104,6 +114,8 @@ public class ArticuloService implements IService<Articulo>{
                         articuloAdd.setNumeroArticulo(articulo.getNumeroArticulo());
                         articuloAdd.setDetalleInstalacion(articulo.getDetalleInstalacion());
                         articulosVenta.add(articuloAdd);
+                    }else{
+                        articulosVenta.add(articulo);
                     }
                 }
                 if (articulo.getNombre().equals("Riel")) {
@@ -114,6 +126,8 @@ public class ArticuloService implements IService<Articulo>{
                         articuloAdd.setNumeroArticulo(articulo.getNumeroArticulo());
                         articuloAdd.setDetalleInstalacion(articulo.getDetalleInstalacion());
                         articulosVenta.add(articuloAdd);
+                    }else{
+                        articulosVenta.add(articulo);
                     }
                 }
                 if (articulo.getNombre().equals("Tradicional")) {
@@ -126,6 +140,8 @@ public class ArticuloService implements IService<Articulo>{
                         articuloAdd.setNumeroArticulo(articulo.getNumeroArticulo());
                         articuloAdd.setDetalleInstalacion(articulo.getDetalleInstalacion());
                         articulosVenta.add(articuloAdd);
+                    }else{
+                        articulosVenta.add(articulo);
                     }
                 }
             }

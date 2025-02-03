@@ -38,7 +38,8 @@ public class CortinaController implements IController<Cortina> {
 
     @PutMapping("/{idCortina}")
     public CustomResponseEntity<Cortina> update(@RequestBody Cortina cor,@PathVariable int idCortina) {
-        return CortinaService.update(cor,idCortina);
+        cor.setId(idCortina);
+        return CortinaService.update(cor);
     }
 
     @Override

@@ -2,11 +2,9 @@ package com.example.proyectofinalannedecor.Conexion;
 
 import com.example.proyectofinalannedecor.Clases.Articulos.Articulo;
 import com.example.proyectofinalannedecor.Clases.Articulos.Riel;
-import com.example.proyectofinalannedecor.Clases.Articulos.Roller;
-import com.example.proyectofinalannedecor.Clases.Bastones;
+import com.example.proyectofinalannedecor.Clases.ConfiguracionRiel.Bastones;
 import com.example.proyectofinalannedecor.Clases.ConfiguracionRiel.LadoAcumula;
 import com.example.proyectofinalannedecor.Clases.ConfiguracionRiel.TipoRiel;
-import com.example.proyectofinalannedecor.Clases.ConfiguracionRoller.*;
 import com.example.proyectofinalannedecor.Clases.CustomResponseEntity;
 import com.example.proyectofinalannedecor.Clases.Soporte;
 import org.springframework.http.HttpStatus;
@@ -25,6 +23,9 @@ public class RielConexion implements IConexion<Riel>{
     private static final String SQL_SELECT_RIEL_ARTICULO = "SELECT * FROM RIEL R WHERE R.ID_ARTICULO=?";
     private static final String SQL_SELECT_SOPORTE_RIEL = "SELECT * FROM SOPORTE S JOIN TIPO_SOPORTE TS ON TS.ID_TIPO_SOPORTE=S.ID_TIPO_SOPORTE WHERE S.ID_SOPORTE=?";
     private static final String SQL_SELECT_BASTONES_RIEL = "SELECT * FROM BASTONES B JOIN TIPO_BASTON TB ON TB.ID_TIPO_BASTON=B.ID_TIPO_BASTONES WHERE B.ID_BASTONES=?";
+    private static final String SQL_UPDATE = "UPDATE RIEL SET AMBIENTE = ?, DETALLES = ?, ANCHO = ?, ID_ACUMULA=?, ID_TIPO_RIEL=? WHERE ID_ARTICULO = ?";
+    private static final String SQL_UPDATE_SOPORTE = "UPDATE SOPORTE SET ID_TIPO_SOPORTE = ?, CANTIDAD = ? WHERE ID_SOPORTE = ?";
+    private static final String SQL_UPDATE_BASTONES = "UPDATE BASTONES SET ID_TIPO_BASTONES = ?, CANTIDAD = ? WHERE ID_BASTONES = ?";
 
     @Override
     public CustomResponseEntity<Riel> save(Riel R) {
@@ -41,7 +42,7 @@ public class RielConexion implements IConexion<Riel>{
             ps.setInt(3, R.getLadoAcumula().getLadoAcumulaId());
             ps.setFloat(4, anchoConTresDecimales);
             ps.setString(5, R.getDetalle());
-            ps.setInt(6, R.getBastones().getIdBatones());
+            ps.setInt(6, R.getBastones().getIdBastones());
             ps.setInt(7, R.getSoportes().getIdSoporte());
             ps.setInt(8, R.getIdArticulo());
 
@@ -90,7 +91,7 @@ public class RielConexion implements IConexion<Riel>{
 
             while(rs.next()){
 
-                Bastones baston = new Bastones(rs.getInt(2),rs.getInt(3));
+                Bastones baston = new Bastones(rs.getInt(1),rs.getInt(2),rs.getInt(3));
                 baston.setNombre(rs.getString(5));
 
                 return baston;
@@ -120,7 +121,7 @@ public class RielConexion implements IConexion<Riel>{
 
             while(rs.next()){
 
-                Soporte soporte = new Soporte(rs.getInt(2),rs.getInt(3));
+                Soporte soporte = new Soporte(rs.getInt(1),rs.getInt(2),rs.getInt(3));
 
                 soporte.setNombre(rs.getString(6));
 
@@ -161,7 +162,7 @@ public class RielConexion implements IConexion<Riel>{
                         this.findBastonesRiel(rs.getInt(5)),
                         this.findSoportesId(rs.getInt(6)),0,""
                 );
-
+                r.setIdRiel(rs.getInt(1));
                 response.setBody(r);
                 response.setStatus(HttpStatus.OK);
             }
@@ -222,10 +223,106 @@ public class RielConexion implements IConexion<Riel>{
         }
         return response;
     }
+    public CustomResponseEntity<Riel> updateSoportes(Riel riel) {
+        CustomResponseEntity<Riel> response = new CustomResponseEntity<>();
+        java.sql.Connection conexion = null;
+        System.out.println(riel.getSoportes());
+        try {
+            conexion = (java.sql.Connection) Conexion.GetConexion();
+
+            PreparedStatement ps = conexion.prepareStatement(SQL_UPDATE_SOPORTE);
+            ps.setInt(1, riel.getSoportes().getIdTipo());
+            ps.setInt(2, riel.getSoportes().getCantidad());
+            ps.setInt(3, riel.getSoportes().getIdSoporte());
+            ps.execute();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setStatus(HttpStatus.BAD_REQUEST);
+            response.setMessage(e.getMessage());
+            return response;
+        } finally {
+            // Cerrar la conexión en el bloque finally
+            if (conexion != null) {
+                try {
+                    conexion.close();
+                }catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return response;
+    }
+
+    public CustomResponseEntity<Riel> updateBastones(Riel riel) {
+        CustomResponseEntity<Riel> response = new CustomResponseEntity<>();
+        java.sql.Connection conexion = null;
+        try {
+            conexion = (java.sql.Connection) Conexion.GetConexion();
+
+            PreparedStatement ps = conexion.prepareStatement(SQL_UPDATE_BASTONES);
+            ps.setInt(1, riel.getBastones().getIdtipo());
+            ps.setInt(2, riel.getBastones().getCantidad());
+            ps.setInt(3, riel.getBastones().getIdBastones());
+            ps.execute();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setStatus(HttpStatus.BAD_REQUEST);
+            response.setMessage(e.getMessage());
+            return response;
+        } finally {
+            // Cerrar la conexión en el bloque finally
+            if (conexion != null) {
+                try {
+                    conexion.close();
+                }catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return response;
+    }
 
     @Override
     public CustomResponseEntity<Riel> update(Riel riel) {
-        return null;
+        CustomResponseEntity<Riel> response = new CustomResponseEntity<>();
+        java.sql.Connection conexion = null;
+        System.out.println(riel.getLadoAcumula().getLadoAcumulaId());
+        try {
+            conexion = (java.sql.Connection) Conexion.GetConexion();
+
+            PreparedStatement ps = conexion.prepareStatement(SQL_UPDATE);
+            ps.setString(1, riel.getAmbiente());
+            ps.setString(2, riel.getDetalle());
+            ps.setFloat(3, riel.getAncho());
+            ps.setInt(4, riel.getLadoAcumula().getLadoAcumulaId());
+            ps.setInt(5, riel.getTipoRiel().getTipoId());
+            ps.setInt(6, riel.getIdArticulo());
+
+            ps.execute();
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setStatus(HttpStatus.BAD_REQUEST);
+            response.setMessage(e.getMessage());
+            return response;
+        } finally {
+            // Cerrar la conexión en el bloque finally
+            if (conexion != null) {
+                try {
+                    conexion.close();
+                }catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        if(riel!=null){
+            response.setBody(riel);
+            response.setStatus(HttpStatus.OK);
+        }
+        return response;
     }
 
     @Override
@@ -277,7 +374,7 @@ public class RielConexion implements IConexion<Riel>{
             ResultSet rs = ps.getGeneratedKeys();
             if (rs.next()) {
                 int generatedId = rs.getInt(1);
-                baston.setIdBatones(generatedId);
+                baston.setIdBastones(generatedId);
             } else {
                 response.setStatus(HttpStatus.BAD_REQUEST);
                 response.setMessage("No se pudo agregar el baston");

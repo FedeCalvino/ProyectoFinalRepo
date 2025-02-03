@@ -21,6 +21,7 @@ public class LoteConexion implements IConexion<Lote>{
     private static final String SQL_UPDATE_LOTE = "UPDATE LOTE SET FECHA =? ,NOMBRE = ? WHERE ID_LOTE = ?";
     private static final String SQL_DELETE_LOTE = "DELETE LOTE WHERE ID_LOTE = ?";
     private static final String SQL_DELETE_LOTE_PASO = "DELETE LOTE_PASO WHERE ID_LOTE = ?";
+    private static final String SQL_DELETE_PASO_LOTE = "DELETE LOTE_PASO WHERE ID_PASO = ?";
     private static final String SQL_GET_LOTES = "SELECT * FROM LOTE";
     private static final String SQL_GET_LOTES_FECHA = "SELECT * FROM LOTE WHERE FECHA=?";
 
@@ -151,6 +152,30 @@ public class LoteConexion implements IConexion<Lote>{
         try {
             conexion = Conexion.GetConexion();
             PreparedStatement ps = conexion.prepareStatement(SQL_DELETE_LOTE_PASO);
+            ps.setInt(1,id);
+
+            ps.execute();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            if (conexion != null) {
+                try {
+                    conexion.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return true;
+    }
+
+    public boolean DeletePasoLote(Integer id) {
+        java.sql.Connection conexion = null;
+
+        try {
+            conexion = Conexion.GetConexion();
+            PreparedStatement ps = conexion.prepareStatement(SQL_DELETE_PASO_LOTE);
             ps.setInt(1,id);
 
             ps.execute();

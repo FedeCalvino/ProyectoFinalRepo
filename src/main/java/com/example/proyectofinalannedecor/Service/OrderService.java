@@ -15,7 +15,7 @@ public class OrderService implements IService<Orden> {
     private static final OrdenConexion OrdenConexion= new OrdenConexion();
 
     private ArticuloService articuloService = new ArticuloService();
-
+    private LoteService loteService = new LoteService();
 
     public Orden CrearNuevaOrdenRoller(Articulo articulo) {
 
@@ -154,8 +154,14 @@ public class OrderService implements IService<Orden> {
 
     public void deleteOrdenArticulo(Articulo art) {
         Orden o = OrdenConexion.finOrdenByArticulo(art.getIdArticulo());
-        OrdenConexion.deletePasosOrden(o.getIdOrden());
-        OrdenConexion.deleteOrdenArticuloId(art.getIdArticulo());
+        if(o!=null) {
+            List<PasoOrden> pasos = OrdenConexion.selectPasosOrden(o.getIdOrden()).getBody();
+            for (PasoOrden paso : pasos) {
+                loteService.DeletePasoLote(paso.getIdPasoOrden());
+            }
+            OrdenConexion.deletePasosOrden(o.getIdOrden());
+            OrdenConexion.deleteOrdenArticuloId(art.getIdArticulo());
+        }
     }
 
     public Orden CrearNuevaOrdenTradicional(Tradicional tradicional) {

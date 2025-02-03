@@ -120,4 +120,18 @@ public class Cortina extends Articulo {
             Estado = estado;
         }
     }
+
+    @Override
+    public String toString() {
+        return "Cortina{" +
+                "IdCortina=" + IdCortina +
+                ", Alto=" + Alto +
+                ", IdTipoTela=" + IdTipoTela +
+                ", Ambiente='" + Ambiente + '\'' +
+                ", Ancho=" + Ancho +
+                ", Detalle='" + Detalle + '\'' +
+                ", tela=" + tela +
+                ", IdArticulo=" + IdArticulo +
+                '}';
+    }
 }

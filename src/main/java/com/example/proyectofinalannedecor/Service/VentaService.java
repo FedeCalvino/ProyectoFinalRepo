@@ -3,6 +3,7 @@ package com.example.proyectofinalannedecor.Service;
 import com.example.proyectofinalannedecor.Clases.*;
 import com.example.proyectofinalannedecor.Clases.Articulos.Articulo;
 import com.example.proyectofinalannedecor.Clases.Articulos.Riel;
+import com.example.proyectofinalannedecor.Clases.ConfiguracionRiel.Bastones;
 import com.example.proyectofinalannedecor.Clases.Orden.Orden;
 import com.example.proyectofinalannedecor.Clases.Articulos.Roller;
 import com.example.proyectofinalannedecor.Clases.Articulos.Tradicional;
@@ -185,7 +186,7 @@ public class VentaService implements IService<Venta>{
     public CustomResponseEntity<Venta> delete(int id) {
         System.out.println("ventaid: "+id);
         List<Articulo> articulos = ArticuloService.findArticulos(id).getBody();
-
+        System.out.println("articulos size: "+articulos.size());
         for (Articulo articulo : articulos) {
             ArticuloService.deleteArticulo(articulo);
         }
@@ -224,9 +225,25 @@ public class VentaService implements IService<Venta>{
     }
 
     public CustomResponseEntity<String> updateVentaFO(String instalacion, String obra,int IdVen) {
+        Venta v = this.findById(IdVen).getBody();
         if(instalacion.equals("null")){
+
         }else{
-            instalacionService.UpdateFecha(instalacion,IdVen);
+            Instalacion i = instalacionService.findByIdVenta(IdVen).getBody();
+            if(i!=null){
+                instalacionService.UpdateFecha(instalacion,IdVen);
+            }else{
+                String fecha = instalacion + " 00:00:00.000";
+                Instalacion newInstalacion = new Instalacion(
+                        IdVen,
+                        fecha,
+                        "",
+                        fecha,
+                        v.getCliente().getNombre()
+                );
+                instalacionService.Save(newInstalacion);
+            }
+
         }
         return VentasConexion.updateVentaFO(instalacion,obra,IdVen);
     }

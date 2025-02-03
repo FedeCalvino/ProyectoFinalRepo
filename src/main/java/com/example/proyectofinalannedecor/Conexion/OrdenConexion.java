@@ -28,7 +28,7 @@ public class OrdenConexion implements IConexion<Orden>{
     private static final String SELECT_ORDEN_ARTICULO = "SELECT * FROM ORDEN WHERE ID_ARTICULO=?";
     private static final String SQL_DELETE_BY_ARTICULOID = "DELETE FROM ARTICULO WHERE ID_ARTICULO = ?";
     private static final String SQL_DELETE_PASO_ORDEN = "DELETE FROM PASO_ORDEN WHERE ID_ORDEN = ?";
-    private static final String SQL_DELETE_ORDEN = "DELETE FROM ORDEN WHERE ID_ORDEN = ?";
+    private static final String SQL_DELETE_ORDEN = "DELETE FROM ORDEN WHERE ID_ARTICULO = ?";
     private Byte trueByte =1;
     private Byte falseByte =0;
 
@@ -489,9 +489,11 @@ public class OrdenConexion implements IConexion<Orden>{
             PreparedStatement statement = connection.prepareStatement(SELECT_ORDEN_ARTICULO);
             statement.setInt(1, idArticulo);
             ResultSet rs = statement.executeQuery();
-            while (rs.next()) {
+            if (rs.next()) {
                 Orden o = new Orden(rs.getInt(1),null, EstadosPasosOrden.valueOf(rs.getString(3)), rs.getInt(2));
                 return o;
+            }else{
+                return null;
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -504,7 +506,6 @@ public class OrdenConexion implements IConexion<Orden>{
                 return null;
             }
         }
-        return null;
     }
 
     public void deletePasosOrden(int idOrden) {

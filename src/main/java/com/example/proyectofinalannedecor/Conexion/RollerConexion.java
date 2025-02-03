@@ -1,18 +1,10 @@
 package com.example.proyectofinalannedecor.Conexion;
 
 import com.example.proyectofinalannedecor.Clases.Articulos.Articulo;
-import com.example.proyectofinalannedecor.Clases.Articulos.Riel;
-import com.example.proyectofinalannedecor.Clases.Articulos.Tradicional;
-import com.example.proyectofinalannedecor.Clases.Bastones;
-import com.example.proyectofinalannedecor.Clases.ConfiguracionRiel.LadoAcumula;
-import com.example.proyectofinalannedecor.Clases.ConfiguracionRiel.TipoRiel;
 import com.example.proyectofinalannedecor.Clases.ConfiguracionRoller.*;
-import com.example.proyectofinalannedecor.Clases.ConfiguracionTradicional.Ganchos;
-import com.example.proyectofinalannedecor.Clases.ConfiguracionTradicional.Pinza;
 import com.example.proyectofinalannedecor.Clases.CustomResponseEntity;
 import com.example.proyectofinalannedecor.Clases.Articulos.Roller;
 import com.example.proyectofinalannedecor.Clases.Soporte;
-import com.example.proyectofinalannedecor.Clases.Venta;
 import org.springframework.http.HttpStatus;
 
 import java.sql.PreparedStatement;
@@ -100,7 +92,7 @@ public class RollerConexion implements IConexion<Roller> {
                         "",
                         1,
                         new Motor(rs.getInt(4)),
-                        new Soporte(rs.getInt(8),2),""
+                        new Soporte(0,rs.getInt(8),2),""
                 );
                 r.setIdRoller(rs.getInt(1));
                 response.setBody(r);
@@ -225,7 +217,7 @@ public class RollerConexion implements IConexion<Roller> {
                         rs.getString(14),
                         1,
                         new Motor(rs.getInt(4)),
-                        new Soporte(rs.getInt(8),2),""
+                        new Soporte(0,rs.getInt(8),2),""
                 );
                 r.setId(rs.getInt(2));
 

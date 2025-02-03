@@ -11,6 +11,7 @@ import java.util.List;
 @Service
 public class TradicionalService implements IService<Tradicional>{
     private static final TradicionalConexion tradicionalConexion= new TradicionalConexion();
+    private static final CortinaService cortinaService= new CortinaService();
 
     @Override
     public CustomResponseEntity<List<Tradicional>> findAll() {
@@ -24,7 +25,8 @@ public class TradicionalService implements IService<Tradicional>{
 
     @Override
     public CustomResponseEntity<Tradicional> update(Tradicional tradi) {
-        return null;
+        cortinaService.update(tradi);
+        return tradicionalConexion.update(tradi);
     }
 
     @Override

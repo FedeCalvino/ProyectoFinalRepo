@@ -6,7 +6,8 @@ public class Soporte {
     private int idTipo;
     private int Cantidad;
 
-    public Soporte(int idTipo, int cantidad) {
+    public Soporte(int idSoporte,int idTipo, int cantidad) {
+        this.idSoporte = idSoporte;
         this.idTipo = idTipo;
         Cantidad = cantidad;
     }

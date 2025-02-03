@@ -76,7 +76,9 @@ public class LoteService implements IService<Lote> {
     public void MandarNuevaOrden(String orderDetails) {
         messagingTemplate.convertAndSend("/topic/orders", orderDetails);
     }
-
+    public void DeletePasoLote(int IdPasoOrden) {
+        LConexion.DeletePasoLote(IdPasoOrden);
+    }
 
     public CustomResponseEntity<List<Lote>> findAllFecha(String fecha) {
         List<Lote> lista =  LConexion.findAllFECHA(fecha).getBody();

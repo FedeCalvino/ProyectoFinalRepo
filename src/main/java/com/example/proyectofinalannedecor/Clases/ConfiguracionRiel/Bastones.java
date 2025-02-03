@@ -1,22 +1,23 @@
-package com.example.proyectofinalannedecor.Clases;
+package com.example.proyectofinalannedecor.Clases.ConfiguracionRiel;
 
 public class Bastones {
-    private int IdBatones;
+    private int IdBastones;
     private int Idtipo;
     private int cantidad;
     private String nombre;
 
-    public Bastones(int Idtipo, int cantidad) {
+    public Bastones(int IdBastones,int Idtipo, int cantidad) {
+        this.IdBastones = IdBastones;
         this.Idtipo = Idtipo;
         this.cantidad = cantidad;
     }
 
-    public int getIdBatones() {
-        return IdBatones;
+    public int getIdBastones() {
+        return IdBastones;
     }
 
-    public void setIdBatones(int idBatones) {
-        IdBatones = idBatones;
+    public void setIdBastones(int idBatones) {
+        IdBastones = idBatones;
     }
 
     public int getIdtipo() {
@@ -46,7 +47,7 @@ public class Bastones {
     @Override
     public String toString() {
         return "Bastones{" +
-                "IdBatones=" + IdBatones +
+                "IdBatones=" + IdBastones +
                 ", Idtipo=" + Idtipo +
                 ", cantidad=" + cantidad +
                 ", nombre='" + nombre + '\'' +
