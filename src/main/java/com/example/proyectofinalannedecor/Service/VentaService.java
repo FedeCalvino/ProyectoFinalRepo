@@ -48,8 +48,15 @@ public class VentaService implements IService<Venta>{
     public CustomResponseEntity<Venta> Save(Venta venta) {
 
         CustomResponseEntity<Venta> responseVenta = new CustomResponseEntity<>();
+        CustomResponseEntity<Cliente> responseCliente = null;
 
-        CustomResponseEntity<Cliente> responseCliente = ClienteService.Save(venta.getCliente());
+        if(venta.getCliente().getId() == null){
+            responseCliente = ClienteService.Save(venta.getCliente());
+        }else{
+            responseCliente.setBody(venta.getCliente());
+            responseCliente.setStatus(HttpStatus.CREATED);
+        }
+
 
         if(responseCliente.getStatus() == HttpStatus.CREATED) {
 

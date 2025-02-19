@@ -18,7 +18,8 @@ public class ClienteConexion implements IConexion<Cliente>{
     private static final String SQL_BY_ID = "SELECT * FROM CLIENTE WHERE ID_CLIENTE = ?";
     private static final String SQL_DELETE = "DELETE FROM CLIENTE WHERE ID_CLIENTE = ?";
     private static final String SQL_LIKE_NAME = "SELECT * FROM CLIENTE WHERE NOMBRE LIKE '%' + ? + '%'";
-    private static final String SQL_VALIDATE_MAIL = "SELECT COUNT(*) AS Total FROM CLIENTE WHERE MAIL = ? AND MAIL <> '';";
+    private static final String SQL_VALIDATE_MAIL = "SELECT COUNT(*) AS Total FROM CLIENTE WHERE MAIL = ? AND MAIL <> '' ";
+    private static final String SQL_VALIDATE_TELEFONO = "SELECT COUNT(*) AS Total FROM CLIENTE WHERE NUMERO_TELEFONO = ? AND NUMERO_TELEFONO <> '' ";
     private static final String SQL_VALIDATE_RUT = "SELECT COUNT(*) AS Total FROM CLIENTE WHERE RUT = ?";
 
     @Override
@@ -36,7 +37,7 @@ public class ClienteConexion implements IConexion<Cliente>{
                 PreparedStatement ps = connection.prepareStatement(SQL_INSERT, Statement.RETURN_GENERATED_KEYS);
                 ps.setBigDecimal(1, cliente.getRut());
                 ps.setString(2, cliente.getNombre());
-                ps.setBigDecimal(3, cliente.getNumeroTelefono());
+                ps.setString(3, cliente.getNumeroTelefono());
                 ps.setString(4, cliente.getDireccion());
                 ps.setString(5, cliente.getTipo());
                 ps.setString(6, cliente.getMail());
@@ -76,7 +77,7 @@ public class ClienteConexion implements IConexion<Cliente>{
             statement.setInt(1,id);
             ResultSet rs = statement.executeQuery();
             while(rs.next()){
-                c = new Cliente (1,rs.getBigDecimal(2),rs.getString(3),rs.getBigDecimal(4),rs.getString(5),rs.getString(6),rs.getString(7));
+                c = new Cliente (1,rs.getBigDecimal(2),rs.getString(3),rs.getString(4),rs.getString(5),rs.getString(6),rs.getString(7));
             }
 
         }catch(Exception e){
@@ -114,7 +115,7 @@ public class ClienteConexion implements IConexion<Cliente>{
                 PreparedStatement ps = connection.prepareStatement(SQL_UPDATE);
                 ps.setBigDecimal(1, cliente.getRut());
                 ps.setString(2, cliente.getNombre());
-                ps.setBigDecimal(3, cliente.getNumeroTelefono());
+                ps.setString(3, cliente.getNumeroTelefono());
                 ps.setString(4, cliente.getDireccion());
                 ps.setString(5, cliente.getTipo());
                 ps.setInt(6, cliente.getId());
@@ -188,7 +189,7 @@ public class ClienteConexion implements IConexion<Cliente>{
             PreparedStatement statement = connection.prepareStatement(SQL_SELECT_ALL);
             ResultSet rs = statement.executeQuery();
             while(rs.next()){
-                c = new Cliente (rs.getInt(1),rs.getBigDecimal(2),rs.getString(3),rs.getBigDecimal(4),rs.getString(5),rs.getString(6),rs.getString(7));
+                c = new Cliente (rs.getInt(1),rs.getBigDecimal(2),rs.getString(3),rs.getString(4),rs.getString(5),rs.getString(6),rs.getString(7));
                 Clientes.add(c);
             }
         }catch(Exception e){
@@ -227,7 +228,7 @@ public class ClienteConexion implements IConexion<Cliente>{
             statement.setString(1,name);
             ResultSet rs = statement.executeQuery();
             while(rs.next()){
-                c = new Cliente (rs.getInt(1),rs.getBigDecimal(2),rs.getString(3),rs.getBigDecimal(4),rs.getString(5),rs.getString(6),rs.getString(7));
+                c = new Cliente (rs.getInt(1),rs.getBigDecimal(2),rs.getString(3),rs.getString(4),rs.getString(5),rs.getString(6),rs.getString(7));
                 clientes.add(c);
             }
         }catch(Exception e){
@@ -299,6 +300,35 @@ public class ClienteConexion implements IConexion<Cliente>{
                     response.setStatus(HttpStatus.BAD_REQUEST);
                     response.setBody(null);
                     response.setMessage("El rut ya existe");
+                    return response;
+                }
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+            response.setStatus(HttpStatus.SERVICE_UNAVAILABLE);
+            response.setBody(null);
+            response.setMessage("error en la conexion");
+            return response;
+        }finally{
+            try{
+                connection.close();
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+        }
+
+        try{
+            connection = (java.sql.Connection) Conexion.GetConexion();
+            PreparedStatement statement = connection.prepareStatement(SQL_VALIDATE_TELEFONO);
+            statement.setString(1,c.getNumeroTelefono());
+
+            ResultSet rs = statement.executeQuery();
+
+            while(rs.next()){
+                if(rs.getInt(1)>=1){
+                    response.setStatus(HttpStatus.BAD_REQUEST);
+                    response.setBody(null);
+                    response.setMessage("El numero de telefono ya existe");
                     return response;
                 }
             }

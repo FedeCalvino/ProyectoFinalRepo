@@ -17,6 +17,7 @@ import java.util.UUID;
 })
 
 public class Articulo{
+
     private int numeroArticulo;
     private int IdVenta;
     public int IdArticulo;

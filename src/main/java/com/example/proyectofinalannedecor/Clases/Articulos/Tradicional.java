@@ -24,10 +24,6 @@ public class Tradicional extends Cortina {
     public Pinza Pinza;
     private Ganchos Ganchos;
 
-
-    private byte trueBite = 1;
-    private byte falseBite = 0;
-
     public Tradicional(String NombreArt, Float Alto, Float Ancho, Ganchos ganchos, int Idtela, int cantidadPanos,int CantidadAltos, String Ambiente, String detalle, int numeroArticulo, BigDecimal AnchoDerecho, BigDecimal AltoDerecho, Pinza pinza,String detalleInstalacion) {
         super(NombreArt,Alto, Ancho, Idtela,Ambiente,detalle,numeroArticulo,detalleInstalacion);
         CantidadPanos = cantidadPanos;

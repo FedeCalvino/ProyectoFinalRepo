@@ -7,14 +7,14 @@ public class Cliente {
     Integer Id;
     BigDecimal Rut;
     String Nombre;
-    BigDecimal NumeroTelefono;
+    String NumeroTelefono;
     String direccion;
     String Mail;
     String Tipo;
 
 
 
-    public Cliente(Integer Id, BigDecimal rut,String Nombre, BigDecimal NumeroTelefono, String direccion, String Tipo,String Mail) {
+    public Cliente(Integer Id, BigDecimal rut,String Nombre, String NumeroTelefono, String direccion, String Tipo,String Mail) {
         this.Id = Id;
         this.Mail=Mail;
         this.Nombre = Nombre;
@@ -68,7 +68,7 @@ public class Cliente {
         return Nombre;
     }
 
-    public BigDecimal getNumeroTelefono() {
+    public String getNumeroTelefono() {
         return NumeroTelefono;
     }
 
@@ -88,7 +88,7 @@ public class Cliente {
         Nombre = nombre;
     }
 
-    public void setNumeroTelefono(BigDecimal numeroTelefono) {
+    public void setNumeroTelefono(String numeroTelefono) {
         NumeroTelefono = numeroTelefono;
     }
 

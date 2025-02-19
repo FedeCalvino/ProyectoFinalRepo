@@ -106,6 +106,7 @@ public class LoteService implements IService<Lote> {
         }
         CustomResponseEntity<List<Lote>> response = new CustomResponseEntity<>();
         response.setBody(lista);
+        response.setStatus(HttpStatus.OK);
         return response;
     }
 }

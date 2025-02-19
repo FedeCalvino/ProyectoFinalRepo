@@ -20,12 +20,20 @@ public class VentaController implements IController<Venta> {
         this.ventaService = vs;
     }
 
-    @GetMapping()
+    @GetMapping("/con-token")
+    public CustomResponseEntity<List<Venta>> findAllWithToken(
+            @RequestHeader(value = "Authorization", required = false) String token) {
+        if (token != null) {
+            // Lógica con token
+        }
+        return ventaService.findAll();
+    }
+
     @Override
     public CustomResponseEntity<List<Venta>> findAll() {
-        CustomResponseEntity<List<Venta>> response = ventaService.findAll();
-        return response;
+        return null;
     }
+
     @GetMapping("/Mensaje")
     public String MandaMensaje() {
         return ventaService.MandarMensaje("msj");

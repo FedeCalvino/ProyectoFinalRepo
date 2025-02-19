@@ -56,11 +56,14 @@ public class Roller extends Cortina {
 
     public void setAltoTelaCadena() {
         this.AltoTela = Math.round((this.getAlto() + 0.30) * 1000.0) / 1000.0;
-
-        if (this.cano.getTipo() == 30) {
-            this.LargoCadena = Math.round((this.getAlto() * 1.75) * 1000.0) / 1000.0;
-        } else {
-            this.LargoCadena = Math.round((this.getAlto() * 1.85) * 1000.0) / 1000.0;
+        if(this.MotorRoller.getIdMotor()!=1) {
+            this.LargoCadena = (double) 0;
+        }else{
+            if (this.cano.getTipo() == 30) {
+                this.LargoCadena = Math.round((this.getAlto() * 1.75) * 1000.0) / 1000.0;
+            } else {
+                this.LargoCadena = Math.round((this.getAlto() * 1.85) * 1000.0) / 1000.0;
+            }
         }
     }
 
@@ -98,12 +101,12 @@ public class Roller extends Cortina {
         double anchoCortina;
         double anchoCano;
         if(!this.Exterior) {
-            if (this.MotorRoller.getIdMotor()!=0) {
+            if (this.MotorRoller.getIdMotor()!=1) {
                 anchoCortina = AnchoCortinaDouble - 0.040;
                 anchoCano = AnchoCortinaDouble - 0.035;
-            } else {
-                anchoCortina = AnchoCortinaDouble - 0.040;
-                anchoCano = AnchoCortinaDouble - 0.040;
+            }else {
+                anchoCortina = AnchoCortinaDouble - 0.030;
+                anchoCano = AnchoCortinaDouble - 0.025;
             }
         }else{
             anchoCortina = AnchoCortinaDouble - 0.080;
